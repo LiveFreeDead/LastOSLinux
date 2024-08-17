@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=LastOSLinux Launcher
+Exec="/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" "-launcher"
+Path=/LastOS/LastOSLinux_Store/
+Comment=This will find store installed games to let you play them
+Terminal=false
+Icon=/LastOS/LLOSLauncher.png
+Type=Application
+Categories=Other
+X-Desktop-File-Install-Version=0.26

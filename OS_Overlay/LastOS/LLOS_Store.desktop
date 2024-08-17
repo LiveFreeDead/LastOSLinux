@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=LastOSLinux Store
+Exec="/LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
+Path=/LastOS/LastOSLinux_Store/
+Comment=Insert LastOS DVD or USB to show items
+Terminal=false
+Icon=/LastOS/LLOSStore.png
+Type=Application
+Categories=Other
+X-Desktop-File-Install-Version=0.26

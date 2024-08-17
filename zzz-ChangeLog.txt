@@ -1,0 +1,11 @@
+################################################################################
+*                          LastOSLinux Change Log                              *
+################################################################################
+
+---------- 2024-08-15 ----------
+
+
+---------- 2024-08-14 ----------
+ADD: Sudo Update (System wide overlays and scripts can be applied at firstlogon)
+REM: Handbreak Flatpak (It's too big to include)
+FIX: LLApps Now supports -install -build and context menu options provided

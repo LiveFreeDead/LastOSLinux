@@ -1,0 +1,105 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,90,29)
+  { !TagsCombo ComboBox
+    MoveScaled(1,1,31,4)
+    #Public = True
+  }
+  { AddBut Button
+    MoveScaled(32,1,5,4)
+    Text = ("Add")
+  }
+  { !TagsPicks TextBox
+    MoveScaled(37,1,52,4)
+    #Public = True
+  }
+  { Label1 Label
+    MoveScaled(1,6,9,4)
+    Alignment = Align.Right
+    Text = ("Publisher")
+  }
+  { !PublisherText TextBox
+    MoveScaled(11,6,31,4)
+    #Public = True
+  }
+  { Label2 Label
+    MoveScaled(42,6,14,4)
+    Alignment = Align.Right
+    Text = ("Release Version")
+  }
+  { !ReleaseVersionText TextBox
+    MoveScaled(58,6,31,4)
+    #Public = True
+  }
+  { Label3 Label
+    MoveScaled(1,10,9,4)
+    Alignment = Align.Right
+    Text = ("Language")
+  }
+  { !LanguageText TextBox
+    MoveScaled(11,10,31,4)
+    #Public = True
+  }
+  { Label4 Label
+    MoveScaled(42,10,14,4)
+    Alignment = Align.Right
+    Text = ("Release Date")
+  }
+  { !ReleaseDateText TextBox
+    MoveScaled(58,10,31,4)
+    #Public = True
+  }
+  { Label5 Label
+    MoveScaled(1,14,9,4)
+    Alignment = Align.Right
+    Text = ("Rating")
+  }
+  { !RatingText TextBox
+    MoveScaled(11,14,31,4)
+    #Public = True
+  }
+  { Label6 Label
+    MoveScaled(42,14,14,4)
+    Alignment = Align.Right
+    Text = ("Builder")
+  }
+  { !BuilderText TextBox
+    MoveScaled(58,14,31,4)
+    #Public = True
+  }
+  { Label7 Label
+    MoveScaled(1,18,9,4)
+    Alignment = Align.Right
+    Text = ("Players")
+  }
+  { !PlayersText TextBox
+    MoveScaled(11,18,31,4)
+    #Public = True
+  }
+  { Label8 Label
+    MoveScaled(42,22,14,4)
+    Alignment = Align.Right
+    Text = ("Installed Size")
+  }
+  { !InstallSizeText TextBox
+    MoveScaled(58,22,19,4)
+    #Public = True
+  }
+  { !ImportBut Button
+    MoveScaled(78,22,11,4)
+    #Public = True
+    Text = ("<-- Import")
+  }
+  { !LicenseCombo ComboBox
+    MoveScaled(11,22,31,4)
+    #Public = True
+    List = [("0 Unknown"), ("1 Commercial"), ("2 Non-Profit"), ("3 Open-source")]
+    Text = ("Unknown")
+  }
+  { Label9 Label
+    MoveScaled(1,22,9,4)
+    Alignment = Align.Right
+    Text = ("License")
+  }
+}

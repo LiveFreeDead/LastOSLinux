@@ -1,0 +1,4 @@
+[Service]
+ExecStart=/LastOS/Scripts/sudo_firstlogon_service.sh
+[Install]
+WantedBy=default.target

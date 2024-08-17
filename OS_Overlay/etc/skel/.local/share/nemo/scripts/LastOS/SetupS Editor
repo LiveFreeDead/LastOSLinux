@@ -1,0 +1,13 @@
+#!/bin/bash
+
+files=$(echo $NEMO_SCRIPT_SELECTED_URIS | sed -e 's/file:\/\///g' -e 's/\%20/\\ /g')
+
+Pat="Z:$files"
+
+echo cd \"$HOME/.wine/dosdevices/c:\" >~/.setups
+echo cd \"Program Files/SetupS.SendTo/ssEditor\" >>~/.setups
+echo "echo Opening with SetupS Editor..." >>~/.setups
+echo wine ./ssEditor.exe \'"$Pat"\' 2\>/dev/null >>~/.setups
+chmod +x ~/.setups
+gnome-terminal -e ~/.setups
+rm ~/.setups

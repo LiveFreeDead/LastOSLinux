@@ -1,0 +1,25 @@
+#!/bin/bash
+
+XCLIP_CMD=/usr/bin/xclip
+
+if [ ! -e $XCLIP_CMD ] ; then
+    if [ -z `which $XCLIP_CMD` ] ; then
+        zenity --error --text="xclip not found!
+
+Please put xclip on your search path, edit XCLIP_CMD in the script:
+$0
+or type in terminal: sudo apt install xclip"
+        exit 1
+    fi
+fi
+
+MM=""
+GG=""
+
+MM=$(echo $NEMO_SCRIPT_CURRENT_URI | sed -e 's/file:\/\///g' -e 's/\%20/\\ /g')
+
+CLIPBOARD_TEXT=$(ls $MM)
+echo "$CLIPBOARD_TEXT" | $XCLIP_CMD -select clipboard
+
+#zenity --error --text="$CLIPBOARD_TEXT"
+

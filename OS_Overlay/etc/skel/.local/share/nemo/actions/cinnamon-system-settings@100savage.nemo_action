@@ -1,0 +1,25 @@
+[Nemo Action]
+Name=System Settings
+Name[bg_BG]=Системни настройки
+Name[ca]=Configuració del sistema
+Name[cs]=Nastavení systému
+Name[da]=Systemindstillinger
+Name[de]=Systemeinstellungen
+Name[es]=Configuración del sistema
+Name[fi]=Järjestelmäasetukset
+Name[fr]=Paramètres système
+Name[hr]=Postavke sustava
+Name[hu]=Rendszerbeállítások
+Name[it]=Impostazioni di sistema
+Name[nl]=Systeeminstellingen
+Name[pt]=Definições do sistema
+Name[pt_BR]=Configurações do Sistema
+Name[ru]=Системные настройки
+Name[sv]=Systeminställningar
+Name[tr]=Sistem Ayarları
+Name[zh_CN]=系统设置
+Exec=cinnamon-settings
+Icon-Name=applications-system-symbolic
+Selection=None
+Extensions=any;
+Conditions=dbus org.Cinnamon;desktop;

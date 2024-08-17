@@ -1,0 +1,37 @@
+' Gambas class file
+
+
+Public Sub Form_Open()
+  Me.Background = &h000000
+  Me.Foreground = &hFFFFFF
+  Status.Foreground = &hFFFFFF
+  Status.Top = Me.Height - Status.Height - 3
+  
+  'Get App's Folder
+  LLM.AppPath = Application.Path ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
+  LLM.HomePath = Application.Env["HOME"]
+  
+  If LLM.AppPath = LLM.HomePath Then LLM.AppPath = "/LastOS/LastOSLinux_Store"
+  If LLM.AppPath = "/LastOS" Then LLM.AppPath &= "/LastOSLinux_Store"
+  If Not Exist(LLM.AppPath) Then LLM.AppPath = "/LastOS/LastOSLinux_Store"
+  
+   'Load Theme.ini
+  Dim hFile As File
+  Dim sLine As String
+  'Message(LLM.AppPath)
+  hFile = Open LLM.AppPath & "/Themes/Theme.ini" For Input
+  Line Input #hFile, sLine
+  hFile.Close
+  LLM.ThemeName = Trim$(sLine)
+      
+  Try Me.Picture = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Loading.png")
+  Timer1.Enabled = True 'Use a timer to open main form so that this Loading form can show ASAP
+End
+
+Public Sub Timer1_Timer()  
+  Timer1.Enabled = False
+  Wait (0.1)'Let Loading Form show ASAP
+  LastOSLinuxStoreMain.Show
+  'LLM.Loaded = True 'Moved this to main form too
+  'Me.Close 'Moved this to the end ofthe Main form loading, so can display up until it it ready
+End

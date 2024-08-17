@@ -1,0 +1,12 @@
+Easy trick for figuring out where some user setting is stored.
+1. Open a terminal and run command touch a to create a file "a", or use whatever name
+2. Change a setting in the program you want to figure this out for
+3. Run command find ~ -type f -newer a which looks for any file in your home directory that was modified more recently than "a" that we created in step 1
+
+If you do that for xed it will likely give you several hits but the important one is the file .config/dconf/user. That is the configuration storage database for most programs. You can install dconf-editor to get a program with which you can browse this database. The dconf command line tool can be used from bash to load/dump blocks of settings in one go or you can use the higher level gsettings command line tool to set/reset individual settings. The command line tools are both available by default and you don't need to install dconf-editor for that.
+
+One approach to your question is the following:
+1. Set up Xed exactly as you want
+2. Use the command dconf dump /org/x/editor/ > editor to dump the Xed settings to the file "editor"
+3. Then on any other user account account where you want to use these same settings, copy the "editor" file and use the command dconf load /org/x/editor/ < editor to load Xed settings from that file
+The contents of "editor" file is plain text so you can also read it.

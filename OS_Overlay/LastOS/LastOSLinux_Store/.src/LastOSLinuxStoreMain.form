@@ -1,0 +1,139 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,91,63)
+  Text = ("LastOSLinux Store")
+  Icon = Picture["Themes/LLOSStore.png"]
+  { Screenshot PictureBox
+    MoveScaled(46.2857,5,43.2857,30)
+    Alignment = Align.Center
+    Border = Border.Plain
+  }
+  { IconPic PictureBox
+    MoveScaled(46.2857,48,13.7143,13.7143)
+  }
+  { StartButton PictureBox
+    MoveScaled(76,48,13.7143,13.7143)
+  }
+  { !Items ListView
+    MoveScaled(16,5,28.7143,55)
+    #Public = True
+    Background = Color.Transparent
+  }
+  { Description TextArea
+    MoveScaled(46.2857,35,43.2857,13)
+    Background = Color.Transparent
+    NoTabFocus = True
+    ReadOnly = True
+    Border = False
+    ScrollBar = Scroll.Vertical
+  }
+  { !Category ListView
+    MoveScaled(1.2857,5,15,55)
+    #Public = True
+    Background = Color.Transparent
+    ScrollBar = Scroll.Vertical
+  }
+  { Title Label
+    MoveScaled(46.2857,0,43,4)
+    Alignment = Align.Center
+  }
+  { Stats Label
+    MoveScaled(1,59,44,4)
+    Alignment = Align.Center
+  }
+  { Categories Label
+    MoveScaled(0,0,16,4)
+    Alignment = Align.Center
+    Text = ("Categories")
+  }
+  { ItemTitle Label
+    MoveScaled(16,0,29,4)
+    Alignment = Align.Center
+    Text = ("Items")
+  }
+  { StartButTab Button
+    MoveScaled(81,53,3,4)
+  }
+  { RunDelay #Timer
+    #MoveScaled(41,-2)
+    Delay = 500
+  }
+  { InstallDelay #Timer
+    #MoveScaled(48,-3)
+    Delay = 500
+  }
+  { WaitJustASecond #Timer
+    #MoveScaled(17,-3)
+  }
+  { URLTit Label
+    MoveScaled(61,48,10,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Item URL:")
+  }
+  { ItemURL Label
+    MoveScaled(71,48,4,3)
+    Visible = False
+    Foreground = Color.White
+    Mouse = Cursor.Pointing
+    Text = ("https://")
+  }
+  { PublisherTit Label
+    MoveScaled(61,54,9,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Publisher:")
+  }
+  { ItemPublisher Label
+    MoveScaled(71,54,4,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Not Specified")
+  }
+  { ReleasedTit Label
+    MoveScaled(61,57,9,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Released:")
+  }
+  { ItemReleased Label
+    MoveScaled(71,57,4,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Not Specified")
+  }
+  { InstallSizeTit Label
+    MoveScaled(61,60,10,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Instal Size:")
+  }
+  { ItemInstallSize Label
+    MoveScaled(71,60,4,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Not Specified")
+  }
+  { CategoryTit Label
+    MoveScaled(61,51,9,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Category:")
+  }
+  { ItemCategory Label
+    MoveScaled(71,51,4,3)
+    Visible = False
+    Foreground = Color.White
+    Text = ("Not Specified")
+  }
+  { MoviePlayer MediaView
+    MoveScaled(45,5,11,9)
+    Visible = False
+    ShowControl = False
+  }
+  { MovieTimer #Timer
+    #MoveScaled(34,-3)
+    Delay = 3000
+  }
+}

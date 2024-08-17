@@ -1,0 +1,9 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,64,64)
+  { !Res IconView
+    MoveScaled(5,2,25,56)
+    #Public = True
+  }
+}

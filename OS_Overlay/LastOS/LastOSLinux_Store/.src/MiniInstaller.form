@@ -1,0 +1,32 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,50,48.5714)
+  Expand = True
+  Text = ("0/0 Installing")
+  Icon = Picture["Themes/LLOSStore.png"]
+  Stacking = Window.Above
+  AutoResize = True
+  { !ButPause Button
+    MoveScaled(3,44,9,4)
+    #Public = True
+    Text = ("Pause")
+  }
+  { !Stats Label
+    MoveScaled(17,43,16,6)
+    #Public = True
+    Visible = False
+    Alignment = Align.Center
+    Text = ("0/0")
+  }
+  { !ButSkip Button
+    MoveScaled(38,44,9,4)
+    #Public = True
+    Visible = False
+    Text = ("Skip")
+  }
+  { !ListInstall ListView
+    MoveScaled(1,1,48,42)
+    #Public = True
+  }
+}

@@ -1,0 +1,58 @@
+' Gambas class file
+
+Public CurrentItem As Integer
+Public Paused As Boolean
+
+Public Sub Form_Close()
+  LLM.ClosedMini = True
+  'Me.Hide
+  'If LastOSLinuxStoreMain.ForceClose = False Then Stop Event 'Cancel Close, we only hide here unless forced
+End
+
+Public Sub Form_Open()
+  'Put in bottom right of screen
+  Me.Left = Screens[0].AvailableWidth - Me.Width
+  Me.Top = Screens[0].AvailableHeight - Me.Height
+  MiniInstaller.Background = Data.Background 
+  MiniInstaller.ListInstall.Background = Data.Background
+  MiniInstaller.ListInstall.Foreground = Data.Items.Foreground
+  
+  
+  LLM.ClosedMini = False
+
+End
+
+Public Sub ButSkip_Click()
+  'If ListInstall.Current <> Null Then 
+  If ListInstall.Row >= 0 Then
+    If ListInstall[ListInstall.Row, 1].Text = "To Install" Then 
+      ListInstall[ListInstall.Row, 1].Text = "Skip"
+    Else  
+      If ListInstall[ListInstall.Row, 1].Text = "Skip" Then ListInstall[ListInstall.Row, 1].Text = "To Install"
+    End If
+  End If
+End
+
+
+Public Sub ButPause_Click()
+
+  If ButPause.Text = "Pause" Then 
+    Paused = True
+    ButPause.Text = "Resume"
+  Else 
+    ButPause.Text = "Pause"
+    Paused = False
+  End If
+
+End
+
+Public Sub Form_Resize()
+
+  ListInstall.Left = 5
+  ListInstall.Top = 5
+  ButPause.Top = Me.height - ButPause.Height - 10
+
+  ListInstall.Width = MiniInstaller.Width - 10
+  ListInstall.Height = ButPause.Top - 5
+  
+End

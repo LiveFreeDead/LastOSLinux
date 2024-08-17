@@ -1,0 +1,67 @@
+' Gambas class file
+
+
+Public Sub Form_Close()
+  Me.Hide
+  If LLApp.ForceClose = False Then Stop Event 'Cancel Close, we only hide here unless forced
+End
+
+'************************ Update Module so can save items
+Public Sub TagsPicks_Change()
+  LLMod.LLTags = Trim(TagsPicks.Text)
+End
+Public Sub PublisherText_Change()
+  LLMod.LLPublisher = Trim(PublisherText.Text)
+End
+Public Sub LanguageText_Change()
+  LLMod.LLLanguage = Trim(LanguageText.Text)
+End
+Public Sub RatingText_Change()
+  LLMod.LLRating = Trim(RatingText.Text)
+End
+Public Sub PlayersText_Change()
+  LLMod.LLPlayers = Trim(PlayersText.Text)
+End
+Public Sub LicenseCombo_Change()
+  LLMod.LLLicense = Trim(LicenseCombo.Text)
+End
+Public Sub ReleaseVersionText_Change()
+  LLMod.LLReleaseVersion = Trim(ReleaseVersionText.Text)
+End
+Public Sub ReleaseDateText_Change()
+  LLMod.LLReleaseDate = Trim(ReleaseDateText.Text)
+End
+Public Sub BuilderText_Change()
+  LLMod.LLBuilder = Trim(BuilderText.Text)
+End
+Public Sub InstallSizeText_Change()
+  LLMod.LLInstalledSize = Trim(InstallSizeText.Text)
+End
+
+
+'***********************************************************
+
+Public Sub ImportBut_Click()
+  Dim TotalSize As String
+  Dim CompFile As String
+  Dim Test As String
+  If LLApp.IncludeFolder.Text <> "" Then 
+    CompFile = LLApp.IncludeFolder.Text & "LLGame.tar.gz"
+    If Not Exist(CompFile) Then CompFile = LLApp.IncludeFolder.Text & "LLApp.tar.gz"
+    If Exist(CompFile) Then       
+      'Get it from inside the tar.gz file if it exists else grab the whole Include Folder
+      Shell "tar tzvf " & CompFile & " | awk '{s+=$3} END{print (s/1024), MB}'" To Test
+      TotalSize = Test
+      InstallSizeText.Text = TotalSize 
+      'Message(Test)
+    Else
+      If Exist(LLApp.IncludeFolder.Text) Then      
+        Shell "du -k " & LLApp.IncludeFolder.Text To TotalSize
+        TotalSize = Trim(Left(TotalSize, InStr(TotalSize, "/") - 2)) ' Takes off file name      
+        'TotalSize = Str(Val(TotalSize) * 1024) 'Convert to Bytes
+        InstallSizeText.Text = TotalSize      
+      End If
+    End If
+  End If
+  
+End

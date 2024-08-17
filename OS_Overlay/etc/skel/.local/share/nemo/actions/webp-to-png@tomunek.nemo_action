@@ -1,0 +1,20 @@
+[Nemo Action]
+Name=Convert to PNG / MP4
+Name[ca]=Converteix a PNG / MP4
+Name[es]=Convertir a PNG / MP4
+Name[fi]=Muunna  PNG / MP4
+Name[hu]=Konvertálás PNG / MP4-be
+Name[it]=Converti in PNG / MP4
+Name[nl]=Converteer naar PNG / MP4
+Comment=Convert selected file to PNG / MP4
+Comment[ca]=Converteix el fitxer seleccionat a PNG / MP4
+Comment[es]=Convertir el archivo seleccionado a PNG / MP4
+Comment[fi]=Muunna valittu tiedosto muotoon PNG / MP4
+Comment[hu]=A kiválasztott fájlok konvertálása PNG / MP4-be
+Comment[it]=Converti il file selezionato in PNG / MP4
+Comment[nl]=Converteer geselecteerd bestand naar PNG / MP4
+Exec=<webp-to-png@tomunek/webp-to-png@tomunek.sh %F>
+Icon-Name=document-properties-symbolic
+Selection=s
+Extensions=webp;webm;
+Dependencies=ffmpeg;

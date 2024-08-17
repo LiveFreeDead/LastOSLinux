@@ -1,0 +1,24 @@
+[Nemo Action]
+Name=GNOME System Monitor
+Name[bg_BG]=Наблюдение на системата
+Name[ca]=Monitor del sistema de GNOME
+Name[cs]=Sledování systému GNOME
+Name[da]=GNOME Systemovervågning
+Name[es]=Monitor del sistema GNOME
+Name[fi]=Järjestelmän valvonta
+Name[fr]=Moniteur système (Gnome System Monitor)
+Name[hr]=GNOME nadgledatelj sustava 
+Name[hu]=GNOME Rendszerfigyelő
+Name[it]=Monitor di sistema di GNOME
+Name[nl]=GNOME Systeemmonitor
+Name[pt]=Monitor de sistemas GNOME
+Name[pt_BR]=Monitor do sistema GNOME
+Name[ru]=Системный Монитор GNOME
+Name[sv]=GNOME Systemövervakare
+Name[tr]=GNOME Sistem Monitörü
+Name[zh_CN]=GNOME系统监视器
+Exec=gnome-system-monitor
+Icon-Name=org.gnome.SystemMonitor-symbolic
+Selection=None
+Extensions=any;
+Conditions=desktop;

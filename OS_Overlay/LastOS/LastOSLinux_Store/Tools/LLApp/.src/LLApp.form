@@ -1,0 +1,311 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,90,68)
+  Text = ("LLAppEditor")
+  Icon = Picture["Tools/LastOS.png"]
+  Resizable = False
+  { File Menu File
+    Name = "File"
+    Text = ("File")
+    { Open Menu File
+      Name = "Open"
+      Text = ("Open")
+    }
+    { Save Menu File
+      Name = "Save"
+      Text = ("Save")
+    }
+    { Menu2 Menu
+    }
+    { Exit Menu File
+      Name = "Exit"
+      Action = "File_Exit"
+      Text = ("Exit")
+    }
+  }
+  { Install Menu Install
+    Name = "Install"
+    Text = ("Install")
+    { InstallPick Menu Install
+      Name = "InstallPick"
+      Text = ("Pick File To Install")
+    }
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(0,0,90,53)
+    Count = 4
+    Index = 0
+    Text = ("General")
+    { Label1 Label
+      MoveScaled(1,1,7,4)
+      Alignment = Align.Right
+      Text = ("Title")
+    }
+    { TitleText TextBox
+      MoveScaled(9,1,44,4)
+    }
+    { Label2 Label
+      MoveScaled(53,1,7,4)
+      Alignment = Align.Right
+      Text = ("Version")
+    }
+    { VersionText TextBox
+      MoveScaled(61,1,28,4)
+    }
+    { Label3 Label
+      MoveScaled(1,5,7,4)
+      Alignment = Align.Right
+      Text = ("URL(s)")
+    }
+    { URLText TextArea
+      MoveScaled(9,6,80,8)
+      Text = ("https://")
+      ScrollBar = Scroll.Vertical
+    }
+    { Label4 Label
+      MoveScaled(-9,15,17,4)
+      Alignment = Align.Right
+      Text = ("Category")
+    }
+    { CatCombo ComboBox
+      MoveScaled(9,15,59,4)
+      Sorted = True
+    }
+    { DescriptionText TextArea
+      MoveScaled(1,26,88,22)
+      Wrap = True
+      ScrollBar = Scroll.Vertical
+    }
+    { MetaBut Button
+      MoveScaled(69,20,20,4)
+      Text = ("Meta-data Editor")
+    }
+    { HideLaunchCheck CheckBox
+      MoveScaled(68,15,21,4)
+      ToolTip = ("Hidden in Launcher, shows on Installer")
+      Text = ("Hide From Launcher")
+    }
+    { Label5 Label
+      MoveScaled(2,22,11,4)
+      Alignment = Align.Left
+      Text = ("Description:")
+    }
+    { BuildTypeCheck CheckBox
+      MoveScaled(9,19,14,4)
+      ToolTip = ("Chnages To Game Build Mode (Not an App)")
+      Text = ("Game Build")
+    }
+    { InternetRequiredCheck CheckBox
+      MoveScaled(23,19,25,4)
+      Text = ("Install Requires Internet")
+    }
+    { PriorityText TextBox
+      MoveScaled(62,20,6,4)
+      Text = ("5")
+    }
+    { Label17 Label
+      MoveScaled(53,20,8,4)
+      ToolTip = ("This is the order of the installations")
+      Alignment = Align.Right
+      Text = ("Priority")
+    }
+    Index = 1
+    Text = ("Install/Links")
+    { MenuCatalogCombo ComboBox
+      MoveScaled(52,20,32,4)
+      ReadOnly = True
+      Sorted = True
+    }
+    { AddMenuBut Button
+      MoveScaled(84,20,5,4)
+      Text = ("Add")
+    }
+    { ShowOnDesktop CheckBox
+      MoveScaled(30,41,20,4)
+      Text = (" Show On Desktop")
+    }
+    { ShowOnPanel CheckBox
+      MoveScaled(51,41,17,4)
+      Text = (" Show On Panel")
+    }
+    { ShowOnFavorites CheckBox
+      MoveScaled(68,41,20,4)
+      Text = (" Show On Favorites")
+    }
+    { Label6 Label
+      MoveScaled(0,1,12,4)
+      Alignment = Align.Right
+      Text = ("Install-to Path")
+    }
+    { InstallToText TextBox
+      MoveScaled(13,1,71,4)
+    }
+    { BrowsePathBut Button
+      MoveScaled(84,1,5,4)
+      Text = ("..")
+    }
+    { Label7 Label
+      MoveScaled(0,10,12,4)
+      ToolTip = ("The Number isn't displayed, it's just the Shortcuts ID")
+      Alignment = Align.Right
+      Text = ("Display Name")
+    }
+    { AddDesktopFileBut Button
+      MoveScaled(73,10,5,4)
+      ToolTip = ("Click here to open a .desktop files to edit/include")
+      Text = ("..")
+    }
+    { DisplayNameCombo ComboBox
+      MoveScaled(13,10,60,4)
+      ReadOnly = True
+    }
+    { Label8 Label
+      MoveScaled(0,20,12,4)
+      Alignment = Align.Right
+      Text = ("Exec")
+    }
+    { ExecText TextBox
+      MoveScaled(13,20,38,4)
+    }
+    { Label9 Label
+      MoveScaled(0,25,12,4)
+      Alignment = Align.Right
+      Text = ("Run in Path")
+    }
+    { RunPathText TextBox
+      MoveScaled(13,25,38,4)
+    }
+    { Label10 Label
+      MoveScaled(0,30,12,4)
+      Alignment = Align.Right
+      Text = ("Icon")
+    }
+    { IconFileText TextBox
+      MoveScaled(13,30,38,4)
+    }
+    { AddLinkBut Button
+      MoveScaled(79,10,5,4)
+      ToolTip = ("Save Current and add empty entry for makeing another")
+      Text = ("+")
+    }
+    { DelLinkBut Button
+      MoveScaled(84,10,5,4)
+      Text = ("-")
+    }
+    { Label11 Label
+      MoveScaled(0,15,12,4)
+      Alignment = Align.Right
+      Text = ("Comment")
+    }
+    { CommentText TextBox
+      MoveScaled(13,15,76,4)
+    }
+    { MenuCatalogText TextArea
+      MoveScaled(52,24,37,10)
+    }
+    { RunInTerminal CheckBox
+      MoveScaled(10,41,18,4)
+      Text = (" Run In Terminal")
+    }
+    { Shortcuts Label
+      MoveScaled(34,6,23,3)
+      Alignment = Align.Center
+    }
+    { NewDisplayName TextBox
+      MoveScaled(13,6,60,4)
+      Visible = False
+    }
+    { Label18 Label
+      MoveScaled(0,35,12,4)
+      Alignment = Align.Right
+      Text = ("File Types")
+    }
+    { FileTypesText TextBox
+      MoveScaled(13,35,38,4)
+    }
+    Index = 2
+    Text = ("Post-Processing")
+    { PostScript TextArea
+      MoveScaled(0,1,89,42)
+      Text = ("#!/bin/bash\n")
+    }
+    { LoadScriptBut Button
+      MoveScaled(76,44,13,4)
+      Text = ("Load Script")
+    }
+    Index = 3
+    Text = ("Graphics")
+    { Fader PictureBox
+      MoveScaled(0,10,36.5714,36.5714)
+      Border = Border.Plain
+    }
+    { Screenshot PictureBox
+      MoveScaled(37,10,53,36)
+      Border = Border.Plain
+    }
+    { Icon PictureBox
+      MoveScaled(80,0,9.1429,9.1429)
+      Border = Border.Plain
+    }
+    { Label12 Label
+      MoveScaled(38,7,10,3)
+      Text = ("Screenshot:")
+    }
+    { Label13 Label
+      MoveScaled(1,7,13,3)
+      Text = ("Fader Picture:")
+    }
+    { Label14 Label
+      MoveScaled(74,0,9,3)
+      Text = ("Icon:")
+    }
+    Index = 0
+  }
+  { BuildBut Button
+    MoveScaled(73,57,16,6)
+    Text = ("Build")
+  }
+  { Label15 Label
+    MoveScaled(1,54,13,4)
+    ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
+    Alignment = Align.Right
+    Text = ("Include Folder")
+  }
+  { !IncludeFolder TextBox
+    MoveScaled(15,54,49,4)
+    #Public = True
+  }
+  { BrowsePathBut2 Button
+    MoveScaled(64,54,5,4)
+    Text = ("..")
+  }
+  { Label16 Label
+    MoveScaled(1,59,13,4)
+    ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
+    Alignment = Align.Right
+    Text = ("Build To Folder")
+  }
+  { BuildToFolder TextBox
+    MoveScaled(15,59,49,4)
+  }
+  { BrowsePathBut3 Button
+    MoveScaled(64,59,5,4)
+    Text = ("..")
+  }
+  { !CompressBuild CheckBox
+    MoveScaled(73,53,16,4)
+    #Public = True
+    ToolTip = ("Tick this if you also want a single tar file and the folder version (Puts in root folder)")
+    Text = ("Compressed")
+  }
+}
+
+# Gambas Action File 3.0
+
+{ Actions
+  { Action File_Exit
+    Text = "Exit"
+    Shortcut = ""
+  }
+}

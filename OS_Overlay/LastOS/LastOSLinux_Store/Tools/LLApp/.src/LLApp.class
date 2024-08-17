@@ -1,0 +1,999 @@
+' Gambas class file
+
+Public GeneratedInstallToPath As String
+Public ForceClose As Boolean = False
+Public AddingFromFile As Boolean
+Public VersIncl As String ' So you can ignore adding the version and underscore if none is specified
+Public LnkNameChange As Boolean = False
+Public PubID As Integer
+Public LineFileIn As String
+Public LineInstall As Boolean
+Public LineBuild As Boolean
+Public LineCompress As Boolean
+Public LineType As String
+Public LineSilent As Boolean
+Public NoLLFileFound As Boolean
+Public CompressIn As Boolean
+Public FileType As String
+Public InstallerType As String
+Public InstallThisApp As String
+Public CurrentPath As String
+
+Public Sub Form_Open()
+  Dim S As String
+  Dim OldLineFileIn As String
+  LLMod.AppPath = LLMod.Slashed(Application.Path) ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
+  If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp/"
+
+  LLMod.HomePath = LLMod.Slashed(Application.Env["HOME"])
+
+  CurrentPath = LLMod.Slashed(Application.Dir)
+  
+  LineInstall = True 'items install by default
+  InstallThisApp = "" 'Make sure the Check is cleared
+  
+  If Args[0] = "LLApp" Then LineInstall = False 'Running in IDE is the only time you get LLApp as the arguments
+  
+  For Each S In Args  'Process Command Line Arguments
+    S = Trim(S) 'Remove any spacing
+    If S <> "" Then 'If Empty then it wont process them
+      If S = "LLApp" Then Break 'Bypass checking this, in IDE anyway
+      If Left(S, 1) = "-" Then
+        If S = "-edit" Or S = "-e" Then
+          LineInstall = False
+          Continue 'Found command, process next argument
+        End If        
+        If S = "-install" Or S = "-i" Then
+          LineInstall = True
+          Continue 'Found command, process next argument
+        End If
+        If S = "-build" Or S = "-b" Then
+          LineBuild = True
+          LineInstall = False
+          Continue 'Found command, process next argument
+        End If        
+        If S = "-compress" Or S = "-c" Then
+          LineCompress = True
+          LineBuild = True 'Set it to try and build, should skip if already detected as built
+          LineInstall = False
+          Continue 'Found command, process next argument
+        If S = "-silent" Or S = "-s" Then
+          LineSilent = True
+        End If
+        End If  
+      End If
+      
+      'Do Pre Checks on the input
+      If S = "/usr/bin/llapp" Then S = CurrentPath 'If the user runs it from a folder, use the folder not the llapp symbolic link
+      If Right(S, 7) = ".gambas" Then Continue 'Right clicking on a folder bacground only passes the name of the ran file, nothing good can come from this.   
+         
+      'Clean Inputs Glenn Testing
+      If Left(S, 2) = "./" Then S = CurrentPath & Right(S, Len(S) - 2) 'Expand dot to PWD
+      If InStr(S, "/", 1) <= 0 Then S = CurrentPath & S 'Parent path only given
+      If InStr(S, "/", 2) <= 0 Then 'If only /
+        If Not Exist(S) Then S = Application.Dir & S 'Parent path only given (Uses App.Dir here due to no Slash given)
+      End If
+      
+      If LLMod.Slashed(S) = LLMod.Slashed(User.Home) Then Continue ' Don't process if only the home dir given, dangerous
+
+      
+      If LLMod.Slashed(S) = LLMod.Slashed(User.Home) & "Desktop/" Then Continue ' Don't process if only the Desktop given, dangerous
+
+      'Message(S)
+      
+      If IsDir(S) Then 'It's a Directory        
+        'Message("Is A Dir")
+        S = LLMod.Slashed(S) 'Make sure it's slashed if it's a folder)
+        'Check what exists in the folder and decide what to do
+        OldLineFileIn = LineFileIn
+        If Exist(S & "LLApp.lla") Then LineFileIn = S & "LLApp.lla"
+        If Exist(S & "LLGame.llg") Then LineFileIn = S & "LLGame.llg"
+        If Exist(S & "ssApp.app") Then
+          LineFileIn = S & "ssApp.app"
+          InstallThisApp = LineFileIn
+        End If
+        If Exist(S & "ppApp.app") Then
+          LineFileIn = S & "ppApp.app"
+          InstallThisApp = LineFileIn
+        End If      
+        If Exist(S & "ppGame.ppg") Then
+          LineFileIn = S & "ppGame.ppg"
+          InstallThisApp = LineFileIn
+        End If
+        If LineFileIn = OldLineFileIn Then 'Dud, no vaild Items found (Remember we don't support compressed items inside a folder from command line)
+          LineInstall = False
+          LineBuild = False
+          LineCompress = False
+          LineFileIn = "" 'Only a folder given, clear it out, just open edit or quit
+        End If
+      Else 'It's a file, check what kind of file here
+        If Trim(S) <> "" Then
+          
+          LineType = Right(S, 4) 'ONLY allow processing known filetypes, I'll not let you right click a png etc to do things
+          Select Case LineType
+          Case ".lla", ".llg"
+            LineFileIn = Trim(S) 'Check the file exist and set it if so            
+          Case ".tar"
+            LineFileIn = Trim(S) 'Check the file exist and set it if so
+            CompressIn = True
+          Case ".app", ".ppg"
+            LineFileIn = Trim(S) 'Check the file exist and set it if so
+            InstallThisApp = LineFileIn            
+          Case ".apz", ".pgz"
+            LineFileIn = Trim(S) 'Check the file exist and set it if so
+            InstallThisApp = LineFileIn
+            CompressIn = True
+          End Select
+        End If
+      End If
+    End If
+  Next
+  
+  'If LineFileIn <> "" Then Message(LineFileIn & " Exists: " & Exist(S) & " Install: " & LineInstall & " Build: " & LineBuild & " Compress: " & LineCompress)
+  'Quit
+
+  If LineInstall = True And InstallThisApp <> "" Then 'If provided a file test if it's a ss or ppApp 'Moved this down so the install line is required, if I installed ssApp instantly I couldn't check to see if the user tried to edit it
+
+    'First Check if supplied a .apz, .pgz, .app or .ppg
+    FileType = Lower(Right(LineFileIn, 4))        
+    Select Case FileType
+    Case ".apz"
+      If LLMod.LoadSSFile(LineFileIn) = True Then
+        If LLMod.LLBuildType = "ssApp" Then 'If it's a ssApp then it needs SetupS for now, so use shell until I add it
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ssApp:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          Shell "wine " & Chr(34) & LineFileIn & Chr(34) Wait 'This just lets system associatiions handle the work             
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        Else 'It's a pp Style app and doesn't need SetupS
+          'Message("Installing " & LineFileIn) 'Glenns
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ppApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          LLMod.InstallppFile(LineFileIn)
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        End If
+      End If
+      Quit 
+    Case ".pgz"
+      If LLMod.LoadSSFile(LineFileIn) = True Then
+        If LLMod.LLBuildType = "ssApp" Then 'If it's a ssApp then it needs SetupS for now, so use shell until I add it
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ssApp:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          Shell "wine " & Chr(34) & LineFileIn & Chr(34) Wait 'This just lets system associatiions handle the work         
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        Else 'It's a pp Style app and doesn't need SetupS
+          LLMod.InstallppFile(LineFileIn)
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        End If
+      End If
+      Quit
+    Case ".app"
+      If LLMod.LoadSSFile(LineFileIn) = True Then
+        If LLMod.LLBuildType = "ssApp" Then 'If it's a ssApp then it needs SetupS for now, so use shell until I add it
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ssApp:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          Shell "wine " & Chr(34) & LineFileIn & Chr(34) Wait 'This just lets system associatiions handle the work          
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        Else 'It's a pp Style app and doesn't need SetupS
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ppApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          LLMod.InstallppFile(LineFileIn)
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+          'Message("Installing ppApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn)
+        End If
+      End If
+      Quit
+    Case ".ppg"
+      If LLMod.LoadSSFile(LineFileIn) = True Then
+        If LLMod.LLBuildType = "ssApp" Then 'If it's a ssApp then it needs SetupS for now, so use shell until I add it
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ssApp:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          Shell "wine " & Chr(34) & LineFileIn & Chr(34) Wait 'This just lets system associatiions handle the work           
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        Else 'It's a pp Style app and doesn't need SetupS
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ppApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+          LLMod.InstallppFile(LineFileIn)
+          If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
+        End If
+      End If
+      Quit 
+    End Select
+
+  End If
+  
+  If Right(LineFileIn, 4) = ".tar" Then CompressIn = True 'Make sure it's set if it is opened as such
+  If CompressIn = True Then LLApp.CompressBuild.Value = True ' Tick the box, so it will know to save the edit as compressed again and not just the llg lla file
+  If Left(LineFileIn, 1) <> "/" Then 'Add Path
+    LineFileIn = Application.Dir & "/" & LineFileIn
+    'Message(Application.Dir)
+    'Message(LineFileIn)
+  End If
+  
+  'Message(LineFileIn)
+  
+  LLMod.LLBuildType = "LLApp" 'Default To App (Before trying to load in one)
+  
+  If CompressIn = True And LineCompress = True Then
+    'Me.Close ' Don't do irrelevant jobs (It's already compressed) 'Didn't work, so I'll just open to edit it.
+    LineBuild = False 'Can't autobuild when it's already compressed, can only edit it
+    LineCompress = False 'Can't autobuild when it's already compressed, can only edit it    
+  End If
+  
+  'Try to load in a file from either the path or the file name
+  'Message("1")
+  If LineFileIn <> "" Then    
+    'Message("2", LineFileIn)
+    LoadFileIn(LineFileIn)'Message(LineFileIn)
+    If LLMod.LLINIPath <> "" Then NoLLFileFound = False ' Found something to load
+  End If
+  
+  
+  'If CompressIn = False Then
+    If NoLLFileFound = True Then 
+      Message("No .lla or .llg Install found in " & LineFileIn & " Make sure to specify a file if more than one item exists or it is a .tar")
+      LineInstall = False
+      LineFileIn = ""
+      LineBuild = False  
+    'Else
+    ' LineBuild = False 'Can't autobuild when it's already compressed, can only edit it
+     ' LineCompress = False 'Can't autobuild when it's already compressed, can only edit it
+    End If  
+  'End If
+  
+   LLMod.LoadCatalogs()
+  
+  'Load it again To make sure it's got the cats set etc
+  If LineFileIn <> "" Then
+    LoadFileIn(LineFileIn)'Message(LineFileIn)
+  End If
+  
+  'Populate Menu Catalog
+  MenuCatalogCombo.List = LLMod.LLCatalogApps
+  CatCombo.List = LLMod.LLCatalogApps
+  
+  If LineInstall = True Then
+    If LLMod.LLTitle <> "" Then 'Only install items with a Title (else it's probably a dud item anyway)
+      If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing LLApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
+      LLMod.InstallLLFile(LineFileIn)
+      If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)    
+    End If
+    Me.Close
+  End If
+  If LineCompress = True Then 'Check if existing .tar.gz (I think I already do this)
+    LineBuild = True 'Make sure it's set to build
+    LLApp.CompressBuild.Value = True ' Tick the box
+  End If
+  
+  
+  If LineBuild = True Then
+    BuildBut_Click()
+    Me.Close
+  End If
+  If CompressIn = True Then ' If loaded a compressed file, only allow editing as it is, can't save elsewhere etc
+    IncludeFolder.Enabled = False
+    BuildToFolder.Enabled = False
+    CompressBuild.Enabled = False
+  Else
+    IncludeFolder.Enabled = True
+    BuildToFolder.Enabled = True
+    CompressBuild.Enabled = True
+  End If
+End
+
+Public Sub MetaBut_Click()
+  Metadata.Show
+End
+
+Public Sub Form_Close()
+  ForceClose = True
+  Metadata.Close
+End
+
+Public Sub File_Click()
+  'Dim bIsButton As Boolean = Last Is Button  
+  Select Last.Name
+    Case "Open"
+      Dialog.Title = "Choose a LLApp or LLGame file"
+      'Dialog.Filter = ["*.lla", "LLApp File", "*.llg", "LLGame File"]
+      Dialog.Filter = ["*.lla *.llg", "LLFile File"]
+      Dialog.Path = User.Home & "/Desktop/LastOS-Important/LLAppsInstalls"
+      Dialog.FilterIndex = 0
+      If Dialog.OpenFile() Then
+        Return ' User pressed Cancel -
+      End If
+      LoadFileIn(Dialog.Path)
+      If LLMod.LLCompressed = True Then
+        CompressIn = True
+      Else
+        CompressIn = False
+      End If
+      If CompressIn = True Then ' If loaded a compressed file, only allow editing as it is, can't save elsewhere etc
+        IncludeFolder.Enabled = False
+        BuildToFolder.Enabled = False
+        CompressBuild.Enabled = False
+      Else
+        IncludeFolder.Enabled = True
+        BuildToFolder.Enabled = True
+        CompressBuild.Enabled = True
+      End If
+  
+    Case "Save"
+      BuildBut_Click() 'Make Save press the Build Button to use same code.
+    Case "Exit" 
+      Me.Close
+  End Select
+End
+
+
+Public Sub LoadFileIn(FileIn As String)
+
+  Dim I As Integer
+  Dim LoadedInOk As Boolean
+  LLMod.ClearLLData 'Erase History
+  DisplayNameCombo.Clear
+  
+  'Can't load in ssTek yet
+  If InstallerType = "ppApp" Or InstallerType = "ppGame" Then
+    InstallerType = ""
+    LoadedInOk = LLMod.LoadSSFile(FileIn) 'It's a ppApp or Game
+    'Message(FileIn)
+  Else ' Linux stuff, can edit or install these
+    LoadedInOk = LLMod.LoadLLFile(FileIn) 
+  Endif
+ 
+  If LoadedInOk = True Then 'True if success
+    'Message("Loaded File in")
+    
+    'Set Include Path and Build to path
+    BuildToFolder.Text = LLMod.LLBuildPath
+    IncludeFolder.Text = LLMod.LLBuildPath
+    
+    If LLMod.LLBuildType = "LLApp" Then 'Do This first so that it re-populates the Categories ComboBox 
+      BuildTypeCheck.Value = False
+    Else 
+      If LLMod.LLBuildType = "LLGame" Then BuildTypeCheck.Value = True 'Is A Game
+    End If
+    
+    If LLMod.LLHideInLaunch = True Then HideLaunchCheck.Value = True Else HideLaunchCheck.Value = False
+    If LLMod.LLInternetRequired = True Then InternetRequiredCheck.Value = True Else InternetRequiredCheck.Value = False
+    
+    TitleText.Text = LLMod.LLTitle
+    VersionText.Text = LLMod.LLVersion
+    DescriptionText.Text = LLMod.LLDescription
+    URLText.Text = LLMod.LLURL
+    CatCombo.Text = LLMod.LLCategory
+    InstallToText.Text = Trim(LLMod.LLAppPath)
+    PriorityText.Text = Trim(LLMod.LLPriority)
+    If PriorityText.Text = "" Then PriorityText.Text = 5
+    
+    Metadata.TagsPicks.Text = LLMod.LLTags
+    Metadata.PublisherText.Text = LLMod.LLPublisher
+    Metadata.LanguageText.Text = LLMod.LLLanguage
+    Metadata.RatingText.Text = LLMod.LLRating
+    Metadata.PlayersText.Text = LLMod.LLPlayers
+    Metadata.LicenseCombo.Text = LLMod.LLLicense
+    Metadata.ReleaseVersionText.Text = LLMod.LLReleaseVersion
+    Metadata.ReleaseDateText.Text = LLMod.LLReleaseDate
+    Metadata.BuilderText.Text = LLMod.LLBuilder
+    Metadata.InstallSizeText.Text = LLMod.LLInstalledSize
+    'If Metadata.InstallSizeText.Text = "" Then ' Does this a build time, that way it'll have the full path size of complete item
+    
+    LLMod.LoadLLFileGraphics()
+    If LLMod.LLIcon <> Null Then Icon.Picture = LLMod.LLIcon.Picture
+    If LLMod.LLFader <> Null Then Fader.Picture = LLMod.LLFader.Picture
+    If LLMod.LLScreenshot <> Null Then Screenshot.Picture = LLMod.LLScreenshot.Picture.Stretch(Screenshot.Width, -1)
+    
+    If LLMod.LLScript <> "" Then
+      PostScript.Text = LLMod.LLScript 'Show Loaded Script
+      PostScript.Pos = 0
+    End If
+    
+    For I = 1 To LLMod.LnkCount
+      DisplayNameCombo.Add(Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing], LLMod.LnkEditing)         
+      If I = 1 Then
+        DisplayNameCombo.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing] 'Show first item only
+        If EditLnk(LLMod.LnkEditing) = True Then
+          'Good
+        End If
+      End If
+    Next
+    
+  Else 
+    'Message("Where da File? " & FileIn)
+  End If
+
+End
+
+Public Function CanItBuild() As Boolean
+'Do main checks here to make sure it can build
+  If Trim(TitleText.Text) = "" Then Return False
+  If Trim(BuildToFolder.Text) = "" Or Exist(BuildToFolder.Text) = False Then Return False
+  If Trim(IncludeFolder.Text) = "" Or Exist(IncludeFolder.Text) = False Then Return False
+  
+  Return True 'All Good, Can Build
+End
+
+
+Public Sub BuildBut_Click()
+  'Message(LLMod.LLBuildType)
+  'Me.Close
+  Dim TotalSize As String
+  Dim FileOut As String
+  Dim OutFile As String
+  Dim InFile As String
+  Dim CompressedFileOut As String
+  Dim RootPath As String
+  Dim CompFile As String
+  Dim Test As String
+  Dim IsLLFile As String
+  
+  If Not Exist(BuildToFolder.Text) Then 
+   Message("Build To folder doesn't exist")
+   Return
+  End If
+  
+  If CanItBuild() = False Then
+    Message("Include folder doesn't exist or incompleted settings!")
+    Return
+  End If
+  
+  If Not Access(BuildToFolder.Text, gb.Write) Then
+    Message("Built To Path is read Only")
+    Return
+  End If
+  
+  BuildBut.Text = "Building"
+  BuildBut.Enabled = False
+  Wait (0.1)
+  
+  If Right(BuildToFolder.Text, 1) <> "/" Then BuildToFolder.Text = BuildToFolder.Text & "/" 'Add slash
+  If Right(IncludeFolder.Text, 1) <> "/" Then IncludeFolder.Text = IncludeFolder.Text & "/" 'Add slash
+  
+  'Message(BuildToFolder.Text)
+  
+  'Get installed size if not manually done prior to build
+  If LLMod.LLInstalledSize = "" Then 'AutoGet Install Size from build path
+    If LLApp.IncludeFolder.Text <> "" Then 
+      CompFile = LLApp.IncludeFolder.Text & "LLGame.tar.gz"
+      If Not Exist(CompFile) Then CompFile = LLApp.IncludeFolder.Text & "LLApp.tar.gz"
+      If Exist(CompFile) Then       
+        'Get it from inside the tar.gz file if it exists else grab the whole Include Folder
+        Shell "tar tzvf " & CompFile & " | awk '{s+=$3} END{print (s/1024), MB}'" To Test
+        TotalSize = Test
+        Metadata.InstallSizeText.Text = TotalSize  
+        LLMod.LLInstalledSize = TotalSize 
+      Else
+        Shell "du -k " & Chr(34) & IncludeFolder.Text & Chr(34) To TotalSize
+        TotalSize = Trim(Left(TotalSize, InStr(TotalSize, "/") - 2)) ' Takes off file name      
+        'TotalSize = Str(Val(TotalSize) * 1024) 'Convert to Bytes
+        Metadata.InstallSizeText.Text = TotalSize  
+        LLMod.LLInstalledSize = TotalSize    
+      End If
+    End If
+  End If
+  
+  If BuildTypeCheck.Value = True Then FileOut = "LLGame.llg" Else FileOut = "LLApp.lla"
+  FileOut = BuildToFolder.Text & FileOut
+  Dim TestBuildWorked As Boolean
+  TestBuildWorked = LLMod.SaveLLFile(FileOut)
+  
+  If TestBuildWorked = True Then 
+    If LLMod.LLCompressed = True Then 'Update this file LLMod.LLFileINI with the new LLFiles directly in the tar
+          
+      If Not Access(LLMod.LLFileINI, gb.Write) Then
+        Message("Built To Path is read Only")     
+        BuildBut.Text = "Build"
+        BuildBut.Enabled = True
+        Return
+      End If
+      
+      If LLMod.LLBuildType = "LLApp" Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".lla" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".lla" & Chr(34) Wait      
+      Else 'Game
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".llg" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".llg" & Chr(34) Wait
+      End If
+      If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".png") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".png" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".png" & Chr(34) Wait
+      End If
+      If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".png") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".jpg" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".jpg" & Chr(34) Wait
+      End If
+      If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".jpg") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".ico" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".ico" & Chr(34) Wait
+      End If
+      If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".svg") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".svg" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".svg" & Chr(34) Wait
+      End If
+      If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".mp4") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".mp4" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".mp4" & Chr(34) Wait
+      End If
+      
+      BuildBut.Text = "Build"
+      BuildBut.Enabled = True
+      If LineBuild = False Then
+        Message("Built Successfully") ' & FileOut) 'Only messages if not command line sent
+        Return 
+      End If
+    End If   
+  End If
+  
+  If TestBuildWorked = True Then 'True if success
+    LLMod.LLBuildPath = BuildToFolder.Text 'Left(Dialog.Path, LLMod.InStrRevSingle(Dialog.Path, "/")) 'Remove File, Keep Output Path
+    OutFile = LLMod.LLBuildPath & LLMod.LLBuildType & ".tar.gz"
+    InFile = IncludeFolder.Text & LLMod.LLBuildType & ".tar.gz"
+    RootPath = Left(LLMod.LLBuildPath, LLMod.InStrRevSingle(LLMod.LLBuildPath, "/") - 1)
+    RootPath = Left(RootPath, LLMod.InStrRevSingle(RootPath, "/")) 'Do Twice to get root (due to trailing slash)
+    
+    If IncludeFolder.Text = BuildToFolder.Text Then
+      If Not Exist(OutFile) Then 'If doesn't have the compressed file make it still
+        If Not Exist(InFile) Then 'If doesn't have the compressed file make it still
+          Shell "cd " & Chr(34) & IncludeFolder.Text & Chr(34) & " && tar " & "--exclude=" & LLMod.LLBuildType & ".* " & "-czf " & Chr(34) & OutFile & Chr(34) & " *" Wait 'Exclude LLFile files
+        Else 'Just copy it
+          If InFile <> OutFile Then 'Don't Copy Self
+            If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 
+            Copy InFile To OutFile 'Grab extension off original source
+          End If
+        End If
+      Else 'Do Nothing so far as it's already existing
+      End If
+    Else 'In Folder is different to build folder so work from in folder instead
+      If Not Exist(InFile) Then 'If doesn't have the compressed file make it still
+        Shell "cd " & Chr(34) & IncludeFolder.Text & Chr(34) & " && tar " & "--exclude=" & LLMod.LLBuildType & ".* " & " -czf " & Chr(34) & OutFile & Chr(34) & " *" Wait
+      Else 'Copy Existing Only
+        If InFile <> OutFile Then 'Don't Copy Self
+            If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 
+            Copy InFile To OutFile 'Grab extension off original source
+          End If
+      End If
+    End If
+    
+    'Check if build path is the same as Source Path and delete original uncompressed files if so
+    If IncludeFolder.Text = BuildToFolder.Text Then
+      
+      If Exist(OutFile) 'Now if compressed file is in tact, remove all other files except LLMod.LLBuildType.* Then
+        For Each IsLLFile In Dir(BuildToFolder.Text, "*")
+          If Left(IsLLFile, 6) <> LLMod.LLBuildType Then
+            'Delete non LLFile from here
+            'Message(BuildToFolder.Text & IsLLFile)
+            Try Shell "rm -r " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait
+          End If
+        Next      
+      End If
+      
+    End If
+    
+    'Now Compress to a single tar if checked;
+    If CompressBuild.Value = True Then 'Tar overwrites existing, so no need to check for it
+      'Make a single tar Title_Version_BuildType.tar
+      VersIncl = ""
+      If Trim(LLMod.LLVersion) <> "" Then VersIncl = Replace(LLMod.LLVersion & "_", " ", ".") 'Make sure the output filename has no spaces, just for uniform results and to upload easier.
+      CompressedFileOut = RootPath & Replace(LLMod.LLTitle, " ", ".") & "_" & VersIncl & LLMod.LLBuildType & ".tar"
+      Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && tar -cf " & Chr(34) & CompressedFileOut & Chr(34) & " *" Wait
+      If Exist(CompressedFileOut) Then 'If Successful, delete the uncompressed version
+        Try Shell "rm -r " & Chr(34) & LLMod.LLBuildPath & Chr(34) Wait
+      End If
+    End If
+    BuildBut.Text = "Build"
+    BuildBut.Enabled = True
+    If LineBuild = False Then 
+      If LineSilent = False Then Message("Built Successfully") ' & FileOut) 'Only messages if not command line sent
+    End If
+  End If
+End
+
+
+'*********************** This Section updates the Modules Variables so they are accessible for the save routines etc
+Public Sub TitleText_Change()
+  LLMod.LLTitle = TitleText.Text
+  'If not set Install To Path then it generates one
+  VersIncl = ""
+  If Trim(LLMod.LLVersion) <> "" Then VersIncl = LLMod.LLVersion & "_"
+  If InstallToText.Text = "" Then GeneratedInstallToPath = "$HOME/" & LLMod.LLTitle & "_" & VersIncl & LLMod.LLBuildType & "/"
+End
+Public Sub VersionText_Change()
+  LLMod.LLVersion = VersionText.Text
+  'If not set Install To Path then it generates one
+  VersIncl = ""
+  If Trim(LLMod.LLVersion) <> "" Then VersIncl = LLMod.LLVersion & "_"
+  If InstallToText.Text = "" Then GeneratedInstallToPath = "$HOME/" & LLMod.LLTitle & "_" & VersIncl & LLMod.LLBuildType & "/"
+End
+Public Sub DescriptionText_Change()
+  LLMod.LLDescription = DescriptionText.Text
+End
+Public Sub URLText_Change()
+  LLMod.LLURL = URLText.Text
+End
+Public Sub CatCombo_Change()
+  LLMod.LLCategory = CatCombo.Text
+End
+
+Public Sub BuildTypeCheck_KeyRelease()
+  If BuildTypeCheck.Value = True Then LLMod.LLBuildType = "LLGame" Else LLMod.LLBuildType = "LLApp"
+  
+  VersIncl = ""
+  If Trim(LLMod.LLVersion) <> "" Then VersIncl = LLMod.LLVersion & "_"
+  If InstallToText.Text = "" Then GeneratedInstallToPath = "$HOME/" & LLMod.LLTitle & "_" & VersIncl & LLMod.LLBuildType & "/"
+  
+  If LLMod.LLBuildType = "LLApp" Then
+    MenuCatalogCombo.List = LLMod.LLCatalogApps
+    CatCombo.List = LLMod.LLCatalogApps
+  Else 
+    MenuCatalogCombo.List = LLMod.LLCatalogGames
+    CatCombo.List = LLMod.LLCatalogGames
+  End If
+End
+
+Public Sub BuildTypeCheck_Click()
+  If BuildTypeCheck.Value = True Then LLMod.LLBuildType = "LLGame" Else LLMod.LLBuildType = "LLApp"
+  
+  VersIncl = ""
+  If Trim(LLMod.LLVersion) <> "" Then VersIncl = LLMod.LLVersion & "_"
+  If InstallToText.Text = "" Then GeneratedInstallToPath = "$HOME/" & LLMod.LLTitle & "_" & VersIncl & LLMod.LLBuildType & "/"
+    
+  If LLMod.LLBuildType = "LLApp" Then
+    MenuCatalogCombo.List = LLMod.LLCatalogApps
+    CatCombo.List = LLMod.LLCatalogApps
+  Else 
+    MenuCatalogCombo.List = LLMod.LLCatalogGames
+    CatCombo.List = LLMod.LLCatalogGames
+  End If
+End
+
+Public Sub HideLaunchCheck_KeyRelease()
+  If HideLaunchCheck.Value = True Then LLMod.LLHideInLaunch = True Else LLMod.LLHideInLaunch = False
+End
+
+Public Sub HideLaunchCheck_Click()
+  If HideLaunchCheck.Value = True Then LLMod.LLHideInLaunch = True Else LLMod.LLHideInLaunch = False
+End
+
+Public Sub InternetRequiredCheck_KeyRelease()
+  If InternetRequiredCheck.Value = True Then LLMod.LLInternetRequired = True Else LLMod.LLInternetRequired = False
+End
+
+Public Sub InternetRequiredCheck_Click()
+  If InternetRequiredCheck.Value = True Then LLMod.LLInternetRequired = True Else LLMod.LLInternetRequired = False
+End
+'*********************************************************************************************************
+
+Public Sub Icon_DblClick()
+
+  Dialog.Title = "Choose a Icon"
+  'Dialog.Filter = ["*.svg", "SVG File", "*.ico", "ICO File"]
+  Dialog.Filter = ["*.svg *.ico", "Icon/SVG File"]
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  LLMod.LLIcon = Image.Load(Dialog.Path)
+  LLMod.LLIconFile = Dialog.Path
+  Icon.Picture = LLMod.LLIcon.Picture
+End
+
+Public Sub Screenshot_MouseDown()
+
+  Dialog.Title = "Choose a Screenshot"
+  Dialog.Filter = ["*.jpg", "JPG File"]
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  LLMod.LLScreenshot = Image.Load(Dialog.Path)
+  LLMod.LLScreenshotFile = Dialog.Path
+  Screenshot.Picture = LLMod.LLScreenshot.Picture.Stretch(Screenshot.Width, -1)
+
+End
+
+Public Sub Fader_MouseDown()
+  Dialog.Title = "Choose a Fader"
+  Dialog.Filter = ["*.png", "PNG File"]
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  LLMod.LLFader = Image.Load(Dialog.Path)
+  LLMod.LLFaderFile = Dialog.Path
+  Fader.Picture = LLMod.LLFader.Picture
+  
+
+End
+
+Public Sub BrowsePathBut2_Click()
+  Dialog.Title = "Choose a Folder"
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.SelectDirectory() Then
+    Return ' User pressed Cancel -
+  Endif
+  IncludeFolder.Text = Dialog.Path
+
+End
+
+Public Sub BrowsePathBut3_Click()
+  Dialog.Title = "Choose a Folder"
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.SelectDirectory() Then
+    Return ' User pressed Cancel -
+  Endif
+  BuildToFolder.Text = Dialog.Path
+  
+End
+
+Public Sub BrowsePathBut_Click()
+Dim RealPath As String
+  Dialog.Title = "Choose a Installs To Folder"
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.SelectDirectory() Then
+    Return ' User pressed Cancel -
+  Endif
+  RealPath = Dialog.Path
+  
+  RealPath = Replace(RealPath, User.Home, "$HOME") ' Convert Home directory To Variable
+  
+  InstallToText.Text = RealPath
+
+End
+
+Public Sub TabStrip1_Click()
+  
+  'Message(TabStrip1.Current.Text)
+  If TabStrip1.Current.Text = "Install/Links" Then '(Changed to 2nd Tab)
+    If InstallToText.Text = "" Then 'Make sure this check is first so it doesn't slow down other clicking
+      If LLMod.LLTitle <> "" Then '(Make A Install To Path)
+      GeneratedInstallToPath = "%" & LLMod.LLBuildType & "s%/" & Replace(LLMod.LLTitle, " ", ".") 'Add The s so we know it's Plural (Main folder)
+      If LLMod.LLVersion <> "" Then GeneratedInstallToPath &= "_" & LLMod.LLVersion
+      GeneratedInstallToPath &= "_" & LLMod.LLBuildType & "/"
+      InstallToText.Text = GeneratedInstallToPath
+      End If    
+    End If
+    
+    If LLMod.LLBuildType = "LLGame" Then 'Make games have default Category
+      If LLMod.LnkCatalog[LLMod.LnkEditing] = "" Then
+        MenuCatalogText.Text = "Game" & Chr(10)
+        LLMod.LnkCatalog[LLMod.LnkEditing] = "Game; " 'Add Game as default for games     
+      End If
+    End If
+    
+  End If
+
+End
+
+Public Sub LoadScriptBut_Click()
+  Dim hFile As File
+  Dialog.Title = "Choose a Script"
+  Dialog.Filter = [""]
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  
+  LLMod.LLScriptFile = Dialog.Path
+  If Exist(LLMod.LLScriptFile) Then 'Load Script    
+    hFile = Open LLMod.LLScriptFile For Input
+    LLMod.LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    hFile.close
+  End If
+
+  PostScript.Text = LLMod.LLScript
+  PostScript.Pos = 0
+
+End
+
+Public Sub PostScript_Change()
+  LLMod.LLScript = Trim(PostScript.Text)
+End
+
+Public Sub AddMenuBut_Click()
+  Dim UsersCats As New String[]
+  Dim I As Integer
+  Dim Found As Boolean = False
+  'MenuCatalogCombo.Text
+  'MenuCatalogText.Text
+  UsersCats = Split(MenuCatalogText.Text, "\n")
+  For I = 0 To UsersCats.Count - 1
+    If Trim(MenuCatalogCombo.Text) = Trim(UsersCats[I]) Then
+      Found = True
+      Break
+    End If
+  Next
+  If Found = False Then
+    MenuCatalogText.Text &= Trim(MenuCatalogCombo.Text) & Chr(10)
+  End If
+End
+
+
+
+Public Sub AddDesktopFileBut_Click()
+  Dim DesktopFile As String
+  
+  Dialog.Title = "Choose a .desktop File to load"
+  Dialog.Filter = ["*.desktop", "Shortcut/Link"]
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  DesktopFile = Dialog.Path
+  If LLMod.LoadDesktopFile(DesktopFile) = True Then 'True is good
+    AddingFromFile = True
+
+    DisplayNameCombo.Add(Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing], LLMod.LnkEditing)         
+    DisplayNameCombo.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing]
+    If EditLnk(LLMod.LnkEditing) = True Then
+      'Good
+    End If
+    AddingFromFile = False
+  End If
+
+End
+
+Public Function EditLnk(EditLnkNum As Integer)
+  LLMod.LnkEditing = EditLnkNum
+  
+  CommentText.Text = LLMod.LnkComment[LLMod.LnkEditing]
+  ExecText.Text = LLMod.LnkExec[LLMod.LnkEditing]
+  RunPathText.Text = LLMod.LnkRunInPath[LLMod.LnkEditing]
+  IconFileText.Text = LLMod.LnkIcon[LLMod.LnkEditing]
+  FileTypesText.Text = LLMod.LnkFileTypes[LLMod.LnkEditing]
+  If LLMod.LnkTerminal[LLMod.LnkEditing] = True Then RunInTerminal.Value = True Else RunInTerminal.Value = False
+  
+  If LLMod.LnkDesktop[LLMod.LnkEditing] = True Then ShowOnDesktop.Value = True Else ShowOnDesktop.Value = False
+  If LLMod.LnkPanel[LLMod.LnkEditing] = True Then ShowOnPanel.Value = True Else ShowOnPanel.Value = False
+  If LLMod.LnkFavorite[LLMod.LnkEditing] = True Then ShowOnFavorites.Value = True Else ShowOnFavorites.Value = False
+
+  If LLMod.LnkCatalog[LLMod.LnkEditing] <> "" Then
+    MenuCatalogText.Text = Trim(Replace(Replace(LLMod.LnkCatalog[LLMod.LnkEditing], "; ", "\n"), ";", "")) & Chr(10) 'Does it twice to remove the leftovers.
+  Else
+    If LLMod.LLBuildType = "LLGame" Then
+      MenuCatalogText.Text = "Game" & Chr(10)
+      LLMod.LnkCatalog[LLMod.LnkEditing] = "Game; " 'Add Game as default for games
+    Else
+      MenuCatalogText.Text = "" 'Make sure to clear it if moving between items when they are empty.
+    End If
+  End If
+End
+
+  
+Public Sub InstallToText_Change()
+  If InStr(InstallToText.Text, User.Home) >= 1 Then InstallToText.Text = Replace(InstallToText.Text, User.Home, "$HOME") ' Convert Home directory To Variable
+  LLMod.LLAppPath = InstallToText.Text
+End
+
+Public Sub CommentText_Change()
+  LLMod.LnkComment[LLMod.LnkEditing] = CommentText.Text
+End
+
+Public Sub ExecText_Change()
+  LLMod.LnkExec[LLMod.LnkEditing] = ExecText.Text
+End
+
+Public Sub RunPathText_Change()
+  LLMod.LnkRunInPath[LLMod.LnkEditing] = RunPathText.Text
+End
+
+Public Sub IconFileText_Change()
+  LLMod.LnkIcon[LLMod.LnkEditing] = IconFileText.Text
+End
+
+Public Sub FileTypesText_Change()
+  LLMod.LnkFileTypes[LLMod.LnkEditing] = FileTypesText.Text
+End
+
+Public Sub AddLinkBut_Click()
+  NewDisplayName.Visible = True ' Make it ask for new Item Name before it allows editing properly
+  NewDisplayName.SetFocus
+End
+
+Public Sub DelLinkBut_Click()
+  Dim ID As Integer
+  ID = Val(Left(DisplayNameCombo.Text, InStr(DisplayNameCombo.Text, ">") - 1))
+  If DisplayNameCombo.Index <> -1 Then
+    DisplayNameCombo.Remove(DisplayNameCombo.Index)
+    LLMod.LnkActive[ID] = False 'Deleting them deactivates them so can process without a GUI
+  End If
+
+End
+
+Public Sub DisplayNameCombo_Click()
+  Dim ID As Integer
+  Dim TestMouse As Boolean
+  ID = Val(Left(DisplayNameCombo.Text, InStr(DisplayNameCombo.Text, ">") - 1))
+  EditLnk(ID) 'Make sure to match the right damn data
+  TestMouse = False
+  Try TestMouse = Mouse.Right
+  If TestMouse = True Then
+    PubID = ID  
+    LnkNameChange = True 'Make it update existing link only (not make new)
+    NewDisplayName.Text = Right(DisplayNameCombo.Text, Len(DisplayNameCombo.Text) - InStr(DisplayNameCombo.Text, ">"))
+    NewDisplayName.Visible = True
+  End If
+End
+
+Public Sub RunInTerminal_Click()
+  If RunInTerminal.Value = True Then LLMod.LnkTerminal[LLMod.LnkEditing] = True Else LLMod.LnkTerminal[LLMod.LnkEditing] = False
+End
+
+Public Sub RunInTerminal_KeyPress()
+  If RunInTerminal.Value = True Then LLMod.LnkTerminal[LLMod.LnkEditing] = True Else LLMod.LnkTerminal[LLMod.LnkEditing] = False
+End
+
+Public Sub ShowOnDesktop_Click()
+  If ShowOnDesktop.Value = True Then LLMod.LnkDesktop[LLMod.LnkEditing] = True Else LLMod.LnkDesktop[LLMod.LnkEditing] = False
+End
+
+Public Sub ShowOnDesktop_KeyPress()
+  If ShowOnDesktop.Value = True Then LLMod.LnkDesktop[LLMod.LnkEditing] = True Else LLMod.LnkDesktop[LLMod.LnkEditing] = False
+End
+
+
+Public Sub ShowOnPanel_Click()
+  If ShowOnPanel.Value = True Then LLMod.LnkPanel[LLMod.LnkEditing] = True Else LLMod.LnkPanel[LLMod.LnkEditing] = False
+End
+
+Public Sub ShowOnPanel_KeyPress()
+  If ShowOnPanel.Value = True Then LLMod.LnkPanel[LLMod.LnkEditing] = True Else LLMod.LnkPanel[LLMod.LnkEditing] = False
+End
+
+
+
+Public Sub ShowOnFavorites_Click()
+  If ShowOnFavorites.Value = True Then LLMod.LnkFavorite[LLMod.LnkEditing] = True Else LLMod.LnkFavorite[LLMod.LnkEditing] = False
+End
+
+Public Sub ShowOnFavorites_KeyPress()
+  If ShowOnFavorites.Value = True Then LLMod.LnkFavorite[LLMod.LnkEditing] = True Else LLMod.LnkFavorite[LLMod.LnkEditing] = False
+End
+
+Public Sub MenuCatalogText_Change()
+  LLMod.LnkCatalog[LLMod.LnkEditing] = Trim(Replace(MenuCatalogText.Text, "\n", "; "))
+End
+
+Public Sub PriorityText_Change()
+  LLMod.LLPriority = Trim(PriorityText.Text)
+End
+
+Public Sub Install_Click()
+  'Message("Clicked " & Last.Name)
+  Select Last.Name
+    Case "InstallPick"    
+    Dialog.Title = "Choose a LLA or LLG File to Install"
+    Dialog.Filter = ["*.lla *.llg *.tar", "LLApp/LLGame File"]
+    Dialog.Path = LLMod.LLBuildPath
+    Dialog.FilterIndex = 0
+    If Dialog.OpenFile() Then
+      Return ' User pressed Cancel -
+    Endif
+    LLMod.InstallLLFile(Dialog.Path)
+  End Select
+End
+
+
+Public Sub NewDisplayName_KeyPress()
+  If Key.Code = Key.Escape Then NewDisplayName.Visible = False
+  If Key.Code = Key.Enter Or Key.Code = Key.Return Then
+    If Trim(NewDisplayName.Text) <> "" Then ' Check if empty-ish
+      If LnkNameChange = False Or LLMod.LnkCount = 0 Then 'If none then add it, if Name Change and double click, then update it
+        LLMod.LnkCount = LLMod.LnkCount + 1
+        LLMod.LnkEditing = LLMod.LnkCount
+        LLMod.LnkActive[LLMod.LnkEditing] = True
+        LLMod.LnkDisplayName[LLMod.LnkEditing] = Trim(NewDisplayName.Text)
+        DisplayNameCombo.Add(Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing], LLMod.LnkEditing)
+        DisplayNameCombo.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing]      
+      Else
+        LLMod.LnkEditing = PubID
+        LLMod.LnkActive[LLMod.LnkEditing] = True
+        LLMod.LnkDisplayName[LLMod.LnkEditing] = Trim(NewDisplayName.Text)
+        DisplayNameCombo.Current.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing]  
+        LnkNameChange = False
+      End If
+      NewDisplayName.Visible = False ' Only hide if you type in it, else it doesn't hurt to hang about
+      NewDisplayName.Text = "" 'Clear it      
+    End If
+  End If
+End

@@ -1,0 +1,8 @@
+---
+region: "Australia"
+zone: "Hobart"
+localeGenPath: "/etc/locale.gen"
+geoip:
+    style: "xml"
+    url:   "https://geoip.ubuntu.com/lookup"
+    selector: "TimeZone"

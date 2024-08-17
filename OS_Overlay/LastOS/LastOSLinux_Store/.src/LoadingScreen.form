@@ -1,0 +1,20 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  Move(0,0,440,200)
+  #Scaled = False
+  Resizable = False
+  Border = False
+  Stacking = Window.Above
+  Centered = True
+  { Timer1 #Timer
+    Delay = 30
+  }
+  { !Status Label
+    Move(0,168,441,35)
+    #Public = True
+    Font = Font["+1"]
+    Alignment = Align.Top
+    Text = ("Loading") & "..."
+  }
+}

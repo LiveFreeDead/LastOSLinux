@@ -1,0 +1,255 @@
+' Gambas class file
+
+Public PrepareDataTable As Boolean = False
+
+Public ItemCount As Integer
+Public IconCount As Integer
+Public HeaderCount As Integer
+
+Public CRefID As Integer
+Public CSelected As Integer
+Public CBuildType As Integer
+Public CCompressed As Integer
+Public CHidden As Integer
+Public CShowAlways As Integer
+Public CShowSetupOnly As Integer
+Public CInstalled As Integer
+Public CArch As Integer
+Public COS As Integer
+Public CTitleName As Integer
+Public CVersion As Integer
+Public CCategories As Integer
+Public CDescription As Integer
+Public CURL As Integer
+Public CPriority As Integer
+Public CPathApp As Integer
+Public CPathINI As Integer
+Public CFileINI As Integer
+Public CFileCompressed As Integer
+Public CFileIcon As Integer
+Public CIconRef As Integer
+Public CFileScreenshot As Integer
+Public CFileFader As Integer
+Public CFileMovie As Integer
+Public CTags As Integer
+Public CPublisher As Integer
+Public CLanguage As Integer
+Public CRating As Integer
+Public CAdditional As Integer
+Public CPlayers As Integer
+Public CLicense As Integer
+Public CReleaseVersion As Integer
+Public CReleaseDate As Integer
+Public CRequiredRuntimes As Integer
+Public CBuilder As Integer
+Public CInstalledSize As Integer
+Public CLnkTitle As Integer
+Public CLnkComment As Integer
+Public CLnkDescription As Integer
+Public CLnkCategories As Integer
+Public CLnkRunPath As Integer
+Public CLnkExec As Integer
+Public CLnkIcon As Integer
+Public CLnkArguments As Integer
+Public CLnkFlags As Integer
+Public CLnkAssociations As Integer
+Public CLnkTerminal As Integer
+Public CLnkMultiple As Integer
+Public CLnkParentRef As Integer
+
+Public Sub Form_Resize()
+Items.Width = Me.W - Items.Left
+Items.Height = Me.H - Items.Top - 60
+
+Icons.Height = Items.Height / 2
+Cats.Top = Icons.Top + Icons.Height
+Cats.Height = Items.Height / 2
+ScanPaths.Top = Cats.Top + Cats.Height
+ScanPaths.Width = Me.W '-10
+
+End
+
+Public Sub Form_Open()
+  'Setup To recieve Data (Declare Headings)
+   If PrepareDataTable = False Then ClearDataFields() 'Only do this once, seems calling the form before you show it doesn't run this, but as soon as you show it, it runs. so be mindful
+  
+  'Center Form with Border
+  Me.Width = Screens[0].Width - 80
+  Me.Height = Screens[0].AvailableHeight - 80
+  Me.Center
+  Me.Top = 10
+
+End
+
+Public Sub Form_Close()
+  Me.Hide
+  If LastOSLinuxStoreMain.ForceClose = False Then Stop Event 'Cancel Close, we only hide here unless forced
+End
+
+Public Sub ClearDataFields()
+
+  'This will also set the fields for the Data
+  'Items.Clear 'This breaks Everything (Just remove all the rows instead)
+  Items.Rows.Count = 0 'This clears it perfectly
+  
+  Icons.Clear 'Clears all known icons (Safe for all but Grids and Tables)
+  
+  Cats.Clear ' Clear out the cats too
+  
+  ItemCount = 0
+  IconCount = 0
+  If PrepareDataTable = False Then 
+    PrepareDataTable = True  
+    HeaderCount = 0  
+    'Populate Data (1 - Left, 2 - Right, 3 - Centered) <- Last Add value per Column
+    Items.AddColumn("RefID", 40, 1)
+    CRefID = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Selected", 25, 1)
+    CSelected = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("BuildType", 60, 1)
+    CBuildType = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Compressed", 20, 1)
+    CCompressed = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Hidden", 20, 1)
+    CHidden = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("ShowAlways", 20, 1)
+    CShowAlways = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("ShowSetupOnly", 20, 1)
+    CShowSetupOnly = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Installed", 20, 1)
+    CInstalled = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Arch", 10, 1)
+    CArch = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("OS", 10, 1)
+    COS = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("TitleName", 60, 1)
+    CTitleName = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Version", 40, 1)
+    CVersion = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Categories", 50, 1)
+    CCategories = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Description", 30, 1)
+    CDescription = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("URL", 30, 1)
+    CURL = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Priority", 20, 1)
+    CPriority = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("PathApp", 60, 1)
+    CPathApp = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("PathINI", 60, 1)
+    CPathINI = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("FileINI", 60, 1)
+    CFileINI = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("FileCompressed", 60, 1)
+    CFileCompressed = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("FileIcon", 60, 1)
+    CFileIcon = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("IconRef", 55, 1)
+    CIconRef = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("FileScreenshot", 60, 1)
+    CFileScreenshot = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("FileFader", 60, 1)
+    CFileFader = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("FileMovie", 40, 1)
+    CFileMovie = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Tags", 40, 1)
+    CTags = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Publisher", 40, 1)
+    CPublisher = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Language", 40, 1)
+    CLanguage = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Rating", 40, 1)
+    CRating = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Additional", 40, 1)
+    CAdditional = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Players", 40, 1)
+    CPlayers = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("License", 40, 1)
+    CLicense = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("ReleaseVersion", 40, 1)
+    CReleaseVersion = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("ReleaseDate", 40, 1)
+    CReleaseDate = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("RequiredRuntimes", 40, 1)
+    CRequiredRuntimes = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("Builder", 40, 1)
+    CBuilder = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("InstalledSize", 60, 1)
+    CInstalledSize = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkTitle", 60, 1)
+    CLnkTitle = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkComment", 60, 1)
+    CLnkComment = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkDescription", 60, 1)
+    CLnkDescription = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkCategories", 60, 1)
+    CLnkCategories = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkRunPath", 60, 1)
+    CLnkRunPath = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkExec", 60, 1)
+    CLnkExec = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkArguments", 60, 1)
+    CLnkArguments = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkFlags", 60, 1)
+    CLnkFlags = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkAssociations", 60, 1)
+    CLnkAssociations = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkTerminal", 60, 1)
+    CLnkTerminal = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkMultiple", 60, 1)
+    CLnkMultiple = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkParentRef", 60, 1)
+    CLnkParentRef = HeaderCount    
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("LnkIcon", 60, 1)
+    CLnkIcon = HeaderCount
+  End If
+End

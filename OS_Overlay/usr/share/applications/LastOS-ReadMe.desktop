@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=LastOSLinux ReadMe
+Comment=Read about LastOSLinux
+Exec=xed /LastOS/ReadMe.txt
+Icon=/LastOS/LastOS.png
+Terminal=false
+Type=Application
+Categories=GTK;Core;Utility;
+StartupNotify=false
+NoDisplay=true
+

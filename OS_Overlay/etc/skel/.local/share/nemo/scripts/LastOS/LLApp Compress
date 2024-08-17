@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas -compress "$NEMO_SCRIPT_SELECTED_FILE_PATHS" 
+

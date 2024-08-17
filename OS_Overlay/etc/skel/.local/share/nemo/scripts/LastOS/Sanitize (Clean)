@@ -1,0 +1,13 @@
+#!/bin/bash
+
+files=$(echo $NEMO_SCRIPT_SELECTED_URIS | sed -e 's/file:\/\///g' -e 's/\%20/\\ /g')
+
+Pat="Z:$files"
+
+echo cd \"/LastOS/Tools/Sanitize\" >~/.sanitize
+echo "echo Opening with Sanitize..." >>~/.sanitize
+echo wine ./Sanitize.exe "$Pat" 2\>/dev/null >>~/.sanitize
+chmod +x ~/.sanitize
+bash ~/.sanitize
+#gnome-terminal -e ~/.sanitize
+rm ~/.sanitize

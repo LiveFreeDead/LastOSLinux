@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=First Logon
+Comment=Removes Itself
+Type=Application
+Exec=/LastOS/Scripts/firstlogon.sh
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+X-GNOME-Autostart-Delay=0

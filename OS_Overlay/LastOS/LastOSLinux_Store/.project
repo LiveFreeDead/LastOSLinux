@@ -1,0 +1,25 @@
+# Gambas Project File 3.0
+Title=LastOSLinux Store
+Startup=LoadingScreen
+Icon=Themes/LLOSStore.png
+Version=1.0.32
+Component=gb.image
+Component=gb.gui.qt
+Component=gb.form
+Component=gb.media
+Component=gb.media.form
+Description="This will enable users to Install and Launch their Linux/WINE Apps and Games."
+Authors="Glenn Chugg"
+TabSize=2
+Language=en_AU
+Maintainer=tester
+Vendor=LastOS
+Address=tester@tester-virtualbox
+License=General Public License
+PackageName=lastoslinux_store-1.0.3
+RuntimeVersion="3.19"
+Packager=1
+Systems=ubuntu
+Menus=ubuntu:"Applications/System/Package Management"
+Categories=ubuntu:"System"
+Groups=ubuntu:"utils"

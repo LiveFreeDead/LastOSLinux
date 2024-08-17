@@ -1,0 +1,33 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,91,66)
+  Foreground = &H202020
+  { !Items TableView
+    MoveScaled(19,0,72,38)
+    #Public = True
+    Foreground = Color.TextForeground
+    Expand = True
+    Header = GridView.Both
+  }
+  { !Cats ListView
+    MoveScaled(0,38,18.2857,16)
+    #Public = True
+    Foreground = Color.TextForeground
+    Expand = True
+    Sorted = True
+  }
+  { !Icons IconView
+    MoveScaled(0,0,18.2857,38)
+    #Public = True
+    Background = Color.Transparent
+    Foreground = Color.TextForeground
+  }
+  { !ScanPaths ListView
+    MoveScaled(0,61,91,5)
+    #Public = True
+    Foreground = Color.TextForeground
+    Expand = True
+    Sorted = True
+  }
+}

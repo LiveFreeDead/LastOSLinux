@@ -1,0 +1,1386 @@
+' Gambas module file
+
+'LastOS v1.0.9 2024-08-17-02
+
+Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
+
+Public RefreshPanel As Boolean = False
+
+
+'Public Win7zPath As String = "/home/tester/.wine/drive_c/Program Files/SetupS.SendTo/Tools/7z.exe"
+'Public Win7zCmd As String = "/home/tester/.wine/drive_c/Program Files/SetupS.SendTo/Tools/7z.exe -mtc -aoa x "
+Public Win7zCmd As String = Chr(34) & "C:" & Chr(92) & "Program Files" & Chr(92) & "SetupS.SendTo" & Chr(92) & "Tools" & Chr(92) & "7z.exe" & Chr(34) & " -mtc -aoa x "
+
+'LLItem Data
+Public LLTitle As String
+Public LLVersion As String
+Public LLDescription As String
+Public LLURL As String
+Public LLCategory As String
+Public LLBuildType As String
+Public LLFlags As String 'This allows Hiding items from Launcher Mode etc
+Public LLPriority As String
+Public LLCompressed As Boolean
+Public LLArch As String 
+Public LLOS As String 
+
+Public LLHideInLaunch As Boolean
+Public LLShowAlways As Boolean
+Public LLShowSetupOnly As Boolean
+Public LLInternetRequired As Boolean
+
+'Meta-data
+Public LLTags As String
+Public LLPublisher As String
+Public LLLanguage As String
+Public LLRating As String
+Public LLPlayers As String
+Public LLLicense As String
+Public LLReleaseVersion As String
+Public LLReleaseDate As String
+Public LLBuilder As String
+Public LLInstalledSize As String
+
+'Install/Links (Max 50 in 1 LLA or LLG file)
+Public LnkCount As Integer
+Public LnkEditing As Integer
+Public MaxLinks As Integer = 255 'This has to be limited else how big could they get :D, Clears/resets between Apps/Games anyway
+Public LLAppPath As String
+Public LnkActive As New Boolean[MaxLinks]
+Public LnkDisplayName As New String[MaxLinks]
+Public LnkComment As New String[MaxLinks]
+Public LnkDescription As New String[MaxLinks]
+Public LnkExec As New String[MaxLinks]
+Public LnkRunInPath As New String[MaxLinks]
+Public LnkIcon As New String[MaxLinks]
+Public LnkCatalog As New String[MaxLinks]
+Public LnkTerminal As New Boolean[MaxLinks]
+Public LnkDesktop As New Boolean[MaxLinks]
+Public LnkPanel As New Boolean[MaxLinks]
+Public LnkFavorite As New Boolean[MaxLinks]
+Public LnkFileTypes As New String[MaxLinks]
+
+'Graphics
+Public LLIconFile As String
+Public LLIcon As Image
+Public LLFaderFile As String
+Public LLFader As Image
+Public LLMovieFile As String
+Public LLScreenshotFile As String
+Public LLScreenshot As Image
+
+'Post Install Script
+Public LLScript As String 'Post Processing Script
+Public LLScriptFile As String
+
+'Others
+Public LLBuildPath As String 'Default folder offered to save LLApp.lla file etc
+Public LLBuildFile As String
+Public LLINIPath As String
+Public LLFileINI As String
+Public LLInstalled As String
+
+Public AppPath As String
+Public HomePath As String
+
+'Catalogs
+Public LLCatalogApps As New String[]
+Public LLCatalogGames As New String[]
+
+Public Sub LoadCatalogs()
+  'Load Catalogs
+  Dim hFile As File
+  Dim FileIn As String
+
+  FileIn = AppPath & "Tools/MenuCatalogApps.ini"
+  If Exist(FileIn) = True Then
+    hFile = Open FileIn For Input
+    LLCatalogApps = Split(hFile.Load(FileIn), "\n")
+    hFile.Close
+  End If
+   FileIn = AppPath & "Tools/MenuCatalogGames.ini"
+   If Exist(FileIn) = True Then
+    hFile = Open FileIn For Input
+    LLCatalogGames = Split(hFile.Load(FileIn), "\n")
+    hFile.Close
+  End If
+End
+
+
+Public Sub ClearLLData()
+  Dim I As Integer
+  LoadCatalogs()
+'LLItem Data
+  LLTitle = ""
+  LLVersion = ""
+  LLDescription = ""
+  LLURL = ""
+  LLCategory = ""
+  LLBuildType = ""
+  LLFlags = "" 'This allows Hiding items from Launcher Mode etc
+  LLPriority = "5"
+  LLCompressed = ""
+  LLHideInLaunch = False
+  LLShowAlways = False
+  LLShowSetupOnly = False
+  LLArch = ""
+  LLOS = ""
+
+'Meta-data
+  LLTags = ""
+  LLPublisher = ""
+  LLLanguage = ""
+  LLRating = ""
+  LLPlayers = ""
+  LLLicense = ""
+  LLReleaseVersion = ""
+  LLReleaseDate = ""
+  LLBuilder = ""
+  LLInstalledSize = ""
+
+'Install/Links (Max 50 in 1 LLA or LLG file)
+  LnkCount = 0
+  LnkEditing = 0
+  LLAppPath = ""
+  LLFileINI = ""
+  For I = 0 To MaxLinks - 1
+    LnkActive[I] = False
+    LnkDisplayName[I] = ""
+    LnkComment[I] = ""
+    LnkDescription[I] = ""
+    LnkExec[I] = ""
+    LnkRunInPath[I] = ""
+    LnkIcon[I] = ""
+    LnkCatalog[I] = ""
+    LnkTerminal[I] = False
+    LnkDesktop[I] = False
+    LnkPanel[I] = False
+    LnkFavorite[I] = False
+    LnkFileTypes[I] = ""
+  Next
+
+'Graphics
+  LLIconFile = ""
+  LLIcon = Null
+  LLFaderFile = ""
+  LLFader = Null
+  LLScreenshotFile = ""
+  LLScreenshot = Null
+  
+  LLMovieFile = ""
+  
+'Post Install Script
+  LLScript = ""
+  LLScriptFile = ""
+  
+'Other
+  LLInstalled = "F"
+  
+End
+
+Public Function LoadSSFile(FileIn As String) As Boolean
+  Dim DirIn As String
+  Dim OriginalFileIn As String
+  Dim hFile As File
+  Dim WholeFile As String
+  Dim I As Integer
+  Dim TL As String
+  Dim TLLC As String
+  Dim TmpPath As String
+  Dim ReadMode As Integer
+  Dim WinPath As String
+  
+  If Not Exist(FileIn) Then Return False 'No point if file doesn't exist
+  
+  'Clear Any Existing Data
+  ClearLLData()
+  
+  'Check if a apz pgz file and set compressed mode
+  If Right(FileIn, 4) = ".apz" Or Right(FileIn, 4) = ".pgz" Then LLCompressed = True Else LLCompressed = False  
+  
+  '(Extract apz/pgz to folder and load from that (need to add screeshots to temp location or make it extract each time you click it)
+  OriginalFileIn = ""
+  If LLCompressed = True Then
+    Randomize
+    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
+    If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
+    If Exist(TmpPath) Then Shell "chmod 775 " & Chr(34) & TmpPath & Chr(34) Wait
+    'Shell "7z -mtc -aoa e " & Chr(34) & FileIn & Chr(34) & " -o" & Chr(34) & TmpPath & Chr(34) & " *.app *.ppg *App.jpg *App.png *App.ico *Game.jpg *Game.png *Game.ico" Wait
+    Extract(FileIn, TmpPath, " *.app *.ppg *App*.jpg *App.png *App.ico *Game*.jpg *Game.png *Game.ico *Game.mp4 *App.mp4")
+
+    OriginalFileIn = FileIn
+    FileIn = TmpPath 'Make it load below like normal, just need to deal with screenshot loading now
+    If Exist(FileIn & "ppGame.ppg") = True Then 
+      FileIn &= "ppGame.ppg"
+    Else
+      If Exist(FileIn & "ppApp.app") = True Then 
+        FileIn &= "ppApp.app"
+      Else
+        If Exist(FileIn & "ssApp.app") = True Then 
+        FileIn &= "ssApp.app"
+        Else
+          'Not Found, Delete Temp Folder
+          If Exist(TmpPath) Then Shell "rm -r " & Chr(34) & TmpPath & Chr(34) Wait
+          Return 'Non LLA File inside the 7z file
+        End If
+      End If
+    End If
+  End If
+  
+  DirIn = Left(FileIn, LLMod.InStrRevSingle(FileIn, "/")) 'Has Slash at end (So don't have to add it each use)  
+  LLBuildPath = DirIn
+  LLINIPath = DirIn
+  
+  If OriginalFileIn <> "" Then
+    LLINIPath = OriginalFileIn    
+  End If
+
+  'Get Game assets first and replace if App ones exist (I just do ok)
+  'Get Movie Files     
+  If Exist(DirIn & "ppGame.mp4") = True Then
+    LLMovieFile = DirIn & "ppGame.mp4"  
+  End If
+  If Exist(DirIn & "ppApp.mp4") = True Then
+    LLMovieFile = DirIn & "ppApp.mp4"  
+  End If
+  If Exist(DirIn & "ssApp.mp4") = True Then
+    LLMovieFile = DirIn & "ssApp.mp4"  
+  End If 
+  
+  
+  'Get Icon File
+  If Exist(DirIn & "ppGame.png") = True Then
+    LLIconFile = DirIn & "ppGame.png"                        'SVG IconFile (Use Best first)
+  Else
+    If Exist(DirIn & "ppGame.ico") = True Then
+      LLIconFile = DirIn & "ppGame.ico"                     'ICO IconFile    
+    End If
+  End If
+    
+   'Get Fader
+   If Exist(DirIn & "ppGame.png") = True Then
+     LLFaderFile = DirIn & "ppGame.png"  
+   End If 
+   
+  'Get Screenshot File
+  If Exist(DirIn & "ppGame.jpg") = True Then LLScreenshotFile = DirIn & "ppGame.jpg"
+
+  'Get Icon File
+  If Exist(DirIn & "ppApp.png") = True Then
+    LLIconFile = DirIn & "ppApp.png"                        'SVG IconFile (Use Best first)
+  Else
+    If Exist(DirIn & "ppApp.ico") = True Then
+      LLIconFile = DirIn & "ppApp.ico"                     'ICO IconFile
+    End If
+  End If
+    
+   'Get Fader
+   If Exist(DirIn & "ppApp.png") = True Then
+     LLFaderFile = DirIn & "ppApp.png"  
+   End If 
+   
+  'Get Screenshot File
+  If Exist(DirIn & "ppApp.jpg") = True Then LLScreenshotFile = DirIn & "ppApp.jpg"
+  
+    'Get Icon File
+  If Exist(DirIn & "ssApp.png") = True Then
+    LLIconFile = DirIn & "ssApp.png"                        'SVG IconFile (Use Best first)
+  Else
+    If Exist(DirIn & "ssApp.ico") = True Then
+      LLIconFile = DirIn & "ssApp.ico"                     'ICO IconFile
+    End If
+  End If
+    
+   'Get Fader
+   If Exist(DirIn & "ssApp.png") = True Then
+     LLFaderFile = DirIn & "ssApp.png"  
+   End If 
+   
+  'Get Screenshot File
+  If Exist(DirIn & "ssApp.jpg") = True Then LLScreenshotFile = DirIn & "ssApp.jpg"
+  
+  'Get Script File
+  If Exist(DirIn & "ppGame.cmd") = True Then 
+    LLScriptFile = DirIn & "ppGame.cmd"
+    hFile = Open LLMod.LLScriptFile For Input
+    LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    hFile.close
+  End If
+  If Exist(DirIn & "ppApp.cmd") = True Then 
+    LLScriptFile = DirIn & "ppApp.cmd"
+    hFile = Open LLMod.LLScriptFile For Input
+    LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    hFile.close
+  End If
+  If Exist(DirIn & "ssApp.cmd") = True Then 
+    LLScriptFile = DirIn & "ssApp.cmd"
+    hFile = Open LLMod.LLScriptFile For Input
+    LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    hFile.close
+  End If
+
+  'Load whole file and Split it into individual Lines      
+  Dim LLFile As String[]
+  Dim LineID, LineData As String
+  hFile = Open FileIn For Input
+  WholeFile = hFile.Load(FileIn)
+  WholeFile = Replace(WholeFile, Chr(10), Chr(13)) ' Convert end of line to return (CRLF)
+  LLFile = Split(WholeFile, Chr(13))' "\n")
+  hFile.Close
+  If OriginalFileIn <> "" Then
+    LLFileINI = OriginalFileIn
+  Else
+    LLFileINI = FileIn 'Store INI File Path and name
+  End If
+
+  LLDescription = ""
+  ReadMode = 0
+ 
+  'Check ssFile is a compatible ini      
+  If Trim(Lower(LLFile[0])) = "[setups]" Then                 
+    For I = 1 To LLFile.Count - 1
+      LineID = "" 'Clear these before moving to the next line
+      LineData = ""
+      If InStr(LLFile[I], "=") >= 2 Then 
+        LineID = Left(LLFile[I], InStr(LLFile[I], "="))
+        LineData = Trim(Right(LLFile[I], Len(LLFile[I]) - Len(LineID)))
+        LineID = Lower(Left(LineID, Len(LineID) - 1))
+      End If
+      If LineID = "title" Then 'Get Title and only fill it once (check if Empty)
+        
+        LLTitle = LineData
+        If LLTitle = "" Then Return False 'Dud item
+      End If
+      
+      If LineID = "version" Then LLVersion = LineData          
+      If LineID = "description" And LLDescription = "" Then 
+        LLDescription = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back    
+      End If
+      If LineID = "apppath" Then 
+        LLAppPath = Trim(LineData)
+        'Check if Installed, If either of them are true then it probablly is installed
+        If Exist(ExpPath(LLAppPath)) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
+        WinPath = ExpWinPath(LLAppPath)
+        WinPath = Replace(WinPath, Chr(92), "/")
+        WinPath = Replace(WinPath, "C:", User.Home & "/.wine/drive_c", gb.IgnoreCase)
+        'If InStr(WinPath, "View", 1) >= 1 Then Message(WinPath)
+        If Exist(WinPath) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
+      End If
+      If LineID = "url" Then LLURL = Replace(LineData, "|", Chr(13))
+      If LineID = "category" Then 
+        LLCategory = Replace(LineData, "|", "; ") 'Pipe is changed to the same as Linux Categories to make working with them easier and Linux hates Pipes being used
+        LLCategory = Replace(LLCategory, "Games" & Chr(92), "")
+        LLCategory = Replace(LLCategory, "Gamess", "Games")
+      End If
+      If LineID = "buildtype" Then LLBuildType = LineData
+      If LineID = "flags" Then LLFlags = Lower(LineData)
+      
+      If LineID = "priority" Then LLPriority = Trim(LineData)
+      If LineID = "priorityorder" Then LLPriority = Trim(LineData)
+      
+      If InStr(LLFlags, "hidden") Then LLHideInLaunch = True Else LLHideInLaunch = False
+      If InStr(LLFlags, "internetrequired") Then LLInternetRequired = True Else LLInternetRequired = False
+      
+      If LineID = "tags" Then LLTags = LineData
+      If LineID = "publisher" Then LLPublisher = LineData
+      If LineID = "language" Then LLLanguage = LineData
+      If LineID = "rating" Then LLRating = LineData
+      If LineID = "players" Then LLPlayers = LineData
+      If LineID = "license" Then LLLicense = Left(Trim(LineData), 1)
+      If LineID = "licensetype" Then LLLicense = Left(Trim(LineData), 1)
+      If LineID = "releaseversion" Then LLReleaseVersion = LineData
+      If LineID = "releasedate" Then LLReleaseDate = LineData
+      If LineID = "builder" Then LLBuilder = LineData
+      If LineID = "installedsize" Then LLInstalledSize = LineData
+      
+      'Get the .desktop section of the LLApp.lla and LLGame.llg
+      TL = Trim(LLFile[I])
+      TLLC = Lower(TL)
+      
+      'Check if a category is given and if not grab it from the main item
+       If LnkCatalog[LnkEditing] = "" Then LnkCatalog[LnkEditing] = LLCategory 'Better to have any category and replace it if one is given below
+                    
+      If Right(TLLC, 5) = ".lnk]" Then 'Found Shortcut        
+        LnkCount = LnkCount + 1
+        LnkEditing = LnkCount
+        LnkDisplayName[LnkEditing] = Mid(TL, 2, Len(TL) - 6)
+        LnkActive[LnkEditing] = True
+        ReadMode = 1
+      End If
+      
+      If LnkRunInPath[LnkEditing] = "" Then LnkRunInPath[LnkEditing] = LLAppPath 'LLINIPath - Use LLAppPath not ini path as it's wrong
+      If ReadMode = 1 Then  ' Only Allow reading link lines when past the first .lnk file
+        If LineID = "target" Then LnkExec[LnkEditing] = LineData
+        If LineID = "comment" Then LnkComment[LnkEditing] = LineData
+        If LineID = "description" Then 
+          LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
+        End If
+        If LineID = "icon" Then LnkIcon[LnkEditing] = LineData
+        If LineID = "categories" Then LnkCatalog[LnkEditing] = LineData
+        If LineID = "extensions" Then LnkFileTypes[LnkEditing] = LineData
+        If LineID = "terminal" Then 
+          If LineData = "True" Then LnkTerminal[LnkEditing] = True Else LnkTerminal[LnkEditing] = False
+        End If
+        If LineID = "showon" Then         
+          If InStr(TLLC, "desktop") Then LnkDesktop[LnkEditing] = True Else LnkDesktop[LnkEditing] = False
+          If InStr(TLLC, "panel") Then LnkPanel[LnkEditing] = True Else LnkPanel[LnkEditing] = False
+          If InStr(TLLC, "favorite") Then LnkFavorite[LnkEditing] = True Else LnkFavorite[LnkEditing] = False
+        End If
+      End If
+    Next
+    If StoreMode = 1 And LnkCount = 0 Then 'Dud Launcher Item, remove      
+      ClearLLData()
+      Return False    
+    End If 
+   End If
+  'Clean Up
+  'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded
+  'If Exist(TmpPath) Then Shell "rm -r " & Chr(34) & TmpPath & Chr(34) Wait
+  
+  Return True
+End
+
+
+Public Function LoadLLFile(FileIn As String) As Boolean
+  Dim DirIn As String
+  Dim OriginalFileIn As String
+  Dim hFile As File
+  Dim WholeFile As String
+  Dim I As Integer
+  Dim TL As String
+  Dim TLLC As String
+  Dim TmpPath As String
+  Dim ReadMode As Integer
+  
+  If Not Exist(FileIn) Then Return False 'No point if file doesn't exist
+  If IsDir(FileIn) Then Return False 'It's only a directory, get out of here
+  
+  'Clear Any Existing Data
+  ClearLLData()
+  
+  'Check if a tar file and set compressed mode
+  If Right(FileIn, 4) = ".tar" Then LLCompressed = True Else LLCompressed = False  
+  
+  '(extract tar to folder and load from that (need to add screeshots to temp location or make it extract each time you click it)
+  OriginalFileIn = ""
+  If LLCompressed = True Then
+    Randomize
+    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
+    If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
+    If Exist(TmpPath) Then Shell "chmod 775 " & Chr(34) & TmpPath & Chr(34) Wait
+    'Shell "tar -xf " & Chr(34) & FileIn & Chr(34) & " -C " & Chr(34) & TmpPath & Chr(34) & " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz" Wait
+    Extract(FileIn, TmpPath, " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz")    
+
+    OriginalFileIn = FileIn
+    FileIn = TmpPath 'Make it load below like normal, just need to deal with screenshot loading now
+    If Exist(FileIn & "LLGame.llg") = True Then 
+      FileIn &= "LLGame.llg"
+      LLBuildType = "LLGame"
+    Else
+      If Exist(FileIn & "LLApp.lla") = True Then 
+        FileIn &= "LLApp.lla"
+        LLBuildType = "LLApp"
+      Else
+        'Not Found, Delete Temp Folder
+        If Exist(TmpPath) Then Shell "rm -r " & Chr(34) & TmpPath & Chr(34) Wait
+        Return 'Non LLA File inside the tar
+      End If
+    End If
+  End If
+  
+  DirIn = Left(FileIn, LLMod.InStrRevSingle(FileIn, "/")) 'Has Slash at end (So don't have to add it each use)  
+  LLBuildPath = DirIn
+  LLINIPath = DirIn
+  
+  If OriginalFileIn <> "" Then
+    LLINIPath = OriginalFileIn    
+  End If
+
+  'Get Game assets first and replace if App ones exist (I just do ok)
+  'Get Movie Files     
+  If Exist(DirIn & "LLGame.mp4") = True Then
+    LLMovieFile = DirIn & "LLGame.mp4"  
+  End If
+  If Exist(DirIn & "LLApp.mp4") = True Then
+    LLMovieFile = DirIn & "LLApp.mp4"  
+  End If
+  
+  'Get Icon File
+  If Exist(DirIn & "LLGame.svg") = True Then
+    LLIconFile = DirIn & "LLGame.svg"                        'SVG IconFile (Use Best first)
+  Else
+    If Exist(DirIn & "LLGame.ico") = True Then
+      LLIconFile = DirIn & "LLGame.ico"                     'ICO IconFile
+    Else 
+      If Exist(DirIn & "LLGame.png") = True Then
+        LLIconFile = DirIn & "LLGame.png"  
+      End If  
+    End If
+  End If
+    
+   'Get Fader
+   If Exist(DirIn & "LLGame.png") = True Then
+     LLFaderFile = DirIn & "LLGame.png"  
+   End If 
+   
+  'Get Screenshot File
+  If Exist(DirIn & "LLGame.jpg") = True Then LLScreenshotFile = DirIn & "LLGame.jpg"
+
+  'Get Icon File
+  If Exist(DirIn & "LLApp.svg") = True Then
+    LLIconFile = DirIn & "LLApp.svg"                        'SVG IconFile (Use Best first)
+  Else
+    If Exist(DirIn & "LLApp.ico") = True Then
+      LLIconFile = DirIn & "LLApp.ico"                     'ICO IconFile
+    Else 
+      If Exist(DirIn & "LLApp.png") = True Then
+        LLIconFile = DirIn & "LLApp.png"  
+      End If  
+    End If
+  End If
+    
+   'Get Fader
+   If Exist(DirIn & "LLApp.png") = True Then
+     LLFaderFile = DirIn & "LLApp.png"  
+   End If 
+   
+  'Get Screenshot File
+  If Exist(DirIn & "LLApp.jpg") = True Then LLScreenshotFile = DirIn & "LLApp.jpg"
+  
+  'Get Script File
+  If Exist(DirIn & "LLScript.sh") = True Then 
+    LLScriptFile = DirIn & "LLScript.sh"
+    hFile = Open LLMod.LLScriptFile For Input
+    LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    hFile.close
+  End If
+
+  'Load whole file and Split it into individual Lines      
+  Dim LLFile As String[]
+  Dim LineID, LineData As String  
+  
+  hFile = Open FileIn For Input
+  WholeFile = hFile.Load(FileIn)
+  WholeFile = Replace(WholeFile, Chr(10), Chr(13)) ' Convert end of line to return (CRLF)
+  LLFile = Split(WholeFile, Chr(13))' "\n")
+  hFile.Close
+  If OriginalFileIn <> "" Then
+    LLFileINI = OriginalFileIn
+  Else
+    LLFileINI = FileIn 'Store INI File Path and name
+  End If
+  LLDescription = ""
+  ReadMode = 0
+ 
+  'Check LLA File is a LLA compatible ini      
+  If Trim(Lower(LLFile[0])) = "[llfile]" Then                 
+    For I = 1 To LLFile.Count - 1
+      
+      LineID = "" 'Clear these before moving to the next line
+      LineData = ""
+      
+      If InStr(LLFile[I], "=") >= 2 Then 
+        LineID = Left(LLFile[I], InStr(LLFile[I], "="))
+        LineData = Trim(Right(LLFile[I], Len(LLFile[I]) - Len(LineID)))
+        LineID = Lower(Left(LineID, Len(LineID) - 1))
+      End If
+      If LineID = "title" Then 'Get Title and only fill it once (check if Empty)
+        LLTitle = LineData
+        If LLTitle = "" Then Return False 'Dud item
+      End If
+      
+      If LineID = "version" Then LLVersion = LineData
+      If LineID = "description" And LLDescription = "" Then
+        LLDescription = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
+      End If
+      If LineID = "apppath" Then 
+        LLAppPath = Trim(ExpPath(LineData)) 'Glenn 2024 - See if expanding the path here is a good thing
+        'If Exist(ExpPath(LLAppPath)) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
+        If Exist(LLAppPath) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options ' Using expanded path from above
+      End If
+      If LineID = "url" Then LLURL = Replace(LineData, "|", Chr(13))
+      If LineID = "category" Then 
+        LLCategory = Replace(LineData, "|", " ")'Chr(13)) 'Wont use Pipe's in Linux ones, just need to fix if ever add WINE support and ssApps, Will just list with Game Category and remove Game from Launcher Mode as it doesn't launch apps anyway.
+        LLCategory = Replace(LLCategory, "Games" & Chr(92), "")
+        LLCategory = Replace(LLCategory, "Gamess", "Games")
+      End If
+      If LineID = "buildtype" Then LLBuildType = LineData
+      If LineID = "flags" Then LLFlags = Lower(LineData)
+      
+      If LineID = "priority" Then LLPriority = Trim(LineData)
+      If LineID = "priorityorder" Then LLPriority = Trim(LineData)
+      
+      If InStr(LLFlags, "hidden") Then LLHideInLaunch = True Else LLHideInLaunch = False
+      If InStr(LLFlags, "internetrequired") Then LLInternetRequired = True Else LLInternetRequired = False
+      
+      If LineID = "tags" Then LLTags = LineData
+      If LineID = "publisher" Then LLPublisher = LineData
+      If LineID = "language" Then LLLanguage = LineData
+      If LineID = "rating" Then LLRating = LineData
+      If LineID = "players" Then LLPlayers = LineData
+      If LineID = "license" Then LLLicense = Left(Trim(LineData), 1)
+      If LineID = "licensetype" Then LLLicense = Left(Trim(LineData), 1)
+      If LineID = "releaseversion" Then LLReleaseVersion = LineData
+      If LineID = "releasedate" Then LLReleaseDate = LineData
+      If LineID = "builder" Then LLBuilder = LineData
+      If LineID = "installedsize" Then LLInstalledSize = LineData
+      
+      'Get the .desktop section of the LLApp.lla and LLGame.llg
+      TL = Trim(LLFile[I])
+      TLLC = Lower(TL)
+      'Check if a category is given and if not grab it from the main item
+      If LnkCatalog[LnkEditing] = "" Then LnkCatalog[LnkEditing] = LLCategory 'Better to have any category and replace it if one is given below
+      If Right(TLLC, 9) = ".desktop]" Then 'Found Shortcut
+        LnkCount = LnkCount + 1
+        LnkEditing = LnkCount
+        LnkDisplayName[LnkEditing] = Mid(TL, 2, Len(TL) - 10)
+        LnkActive[LnkEditing] = True
+        ReadMode = 1
+      End If
+      If ReadMode = 1 Then
+        If LineID = "exec" Then
+          LnkExec[LnkEditing] = Trim(ExpPath(LineData)) 'Glenn 2024 Check Path
+          If LnkExec[LnkEditing] <> "" Then 
+            If Exist(Slashed(LLAppPath) & LnkExec[LnkEditing]) Then
+              LnkExec[LnkEditing] = Slashed(LLAppPath) & LnkExec[LnkEditing]
+              
+            End If
+          End If
+        End If
+        If LineID = "comment" Then LnkComment[LnkEditing] = LineData
+        If LineID = "description" Then 
+          LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
+        End If
+        If LineID = "path" Then
+          LnkRunInPath[LnkEditing] = Trim(ExpPath(LineData)) 'Glenn 2024 Check Path ' LineData
+          If LnkRunInPath[LnkEditing] = "" Then LnkRunInPath[LnkEditing] = Slashed(LLAppPath)
+        End If
+        If LineID = "icon" Then
+          LnkIcon[LnkEditing] = Trim(ExpPath(LineData)) 'Glenn 2024 Check Path 'LineData
+          If LnkIcon[LnkEditing] = "" Then LnkIcon[LnkEditing] = Slashed(LLAppPath) & LLBuildType & ".png"
+        End If
+        If LineID = "categories" Then LnkCatalog[LnkEditing] = LineData
+        If LineID = "extensions" Then LnkFileTypes[LnkEditing] = LineData
+        If LineID = "terminal" Then 
+          If LineData = "True" Then LnkTerminal[LnkEditing] = True Else LnkTerminal[LnkEditing] = False
+        End If
+        If LineID = "showon" Then         
+          If InStr(TLLC, "desktop") Then LnkDesktop[LnkEditing] = True Else LnkDesktop[LnkEditing] = False
+          If InStr(TLLC, "panel") Then LnkPanel[LnkEditing] = True Else LnkPanel[LnkEditing] = False
+          If InStr(TLLC, "favorite") Then LnkFavorite[LnkEditing] = True Else LnkFavorite[LnkEditing] = False
+        End If
+      End If
+    Next
+  Endif
+  'Clean Up
+  'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded
+  'If Exist(TmpPath) Then Shell "rm -r " & Chr(34) & TmpPath & Chr(34) Wait
+  Return True
+End
+
+Public Function Slashed(InPath As String) As String
+  If InPath <> "" Then
+    If Right(InPath, 1) <> "/" Then 
+      If Right(InPath, 1) <> Chr(34) Then 'Only add if not in Quotes
+        InPath &= "/"
+      Else
+        If Left(InPath, 1) = Chr(34) Then
+          'Not sure what to do yet, leave it
+        End If
+      End If
+    End If
+  End If
+  Return InPath
+End
+
+
+Public Function LoadLLFileGraphics() As Boolean
+  If LLScreenshotFile <> "" Then Try LLScreenshot = Image.Load(LLScreenshotFile)
+  If LLFaderFile <> "" Then Try LLFader = Image.Load(LLFaderFile)
+  If LLIconFile <> "" Then Try LLIcon = Image.Load(LLIconFile)
+End
+
+
+Public Function InStrRevSingle(InS As String, Pat As String) As Integer
+  Dim I As Integer
+  For I = Len(InS) To 1 Step -1
+    If Mid(InS, I, 1) = Pat Then Return I
+  Next
+  Return -1
+End
+
+
+Public Function SaveLLFile(FileOut As String) As Boolean
+  
+  Dim DirIn As String  
+  Dim I As Integer
+  Dim LLFileContent As String
+  Dim TL As String
+
+  DirIn = Left(FileOut, LLMod.InStrRevSingle(FileOut, "/")) 'Has Slash at end (So don't have to add it each use)  
+  LLBuildPath = DirIn
+  If DirIn = LLBuildPath Then 'Building in same path as source
+  End If  
+  LLFileContent = "[LLFile]" & Chr(10)
+  LLFileContent &= "Title=" & Trim(LLTitle) & Chr(10)
+  If LLVersion <> "" Then LLFileContent &= "Version=" & Trim(LLVersion) & Chr(10)
+  LLFileContent &= "Description=" & Trim(Replace(LLDescription, Chr(10), Chr(30))) & Chr(10) 'Text Area uses Chr 10 not 13 for CR, drops LF
+  LLFileContent &= "URL=" & Trim(Replace(LLURL, Chr(10), "|")) & Chr(10)
+  LLFileContent &= "Category=" & Trim(LLCategory) & Chr(10)  
+  LLFileContent &= "BuildType=" & Trim(LLBuildType) & Chr(10)
+  LLFlags = "" 'Clear it in case
+  If LLHideInLaunch = True Then LLFlags = "Hidden " 'First Flags clears the lot
+  If LLInternetRequired = True Then LLFlags &= "InternetRequired " 
+  If Trim(LLFlags) <> "" Then LLFileContent &= "Flags=" & Trim(LLFlags) & Chr(10) 'Only add if not Empty
+  
+  LLAppPath = Replace(LLAppPath, User.Home, "$HOME") ' Convert Home directory To Variable
+  If LLAppPath <> "" Then LLFileContent &= "AppPath=" & Trim(LLAppPath) & Chr(10)
+  
+  LLFileContent &= "Priority=" & Trim(LLPriority) & Chr(10)  
+  
+  LLFileContent &= "[Meta]" & Chr(10)
+  If LLTags <> "" Then LLFileContent &= "Tags=" & Trim(LLTags) & Chr(10)
+  If LLPublisher <> "" Then LLFileContent &= "Publisher=" & Trim(LLPublisher) & Chr(10)
+  If LLLanguage <> "" Then LLFileContent &= "Language=" & Trim(LLLanguage) & Chr(10)
+  If LLRating <> "" Then LLFileContent &= "Rating=" & Trim(LLRating) & Chr(10)
+  If LLPlayers <> "" Then LLFileContent &= "Players=" & Trim(LLPlayers) & Chr(10)
+  If LLLicense <> "" Then LLFileContent &= "License=" & Trim(LLLicense) & Chr(10)
+  If LLReleaseVersion <> "" Then LLFileContent &= "Releaseversion=" & Trim(LLReleaseVersion) & Chr(10)
+  If LLReleaseDate <> "" Then LLFileContent &= "Releasedate=" & Trim(LLReleaseDate) & Chr(10)
+  If LLBuilder <> "" Then LLFileContent &= "Builder=" & Trim(LLBuilder) & Chr(10)
+  
+  If LLInstalledSize <> "" Then LLFileContent &= "Installedsize=" & Trim(LLInstalledSize) & Chr(10)
+  
+  For I = 1 To LLMod.LnkCount
+    If LnkActive[I] = True Then        
+      LLFileContent &= "[" & LnkDisplayName[I] & ".desktop]" & Chr(10)
+      LLFileContent &= "Exec=" & LnkExec[I] & Chr(10)
+      LLFileContent &= "Comment=" & LnkComment[I] & Chr(10)
+      LLFileContent &= "Path=" & LnkRunInPath[I] & Chr(10)
+      LLFileContent &= "Icon=" & LnkIcon[I] & Chr(10)
+      LLFileContent &= "Categories=" & LnkCatalog[I] & Chr(10)
+      
+      LLFileContent &= "Extensions=" & LnkFileTypes[I] & Chr(10)      
+      
+      TL = "Terminal=False"
+      If LnkTerminal[I] = True Then TL = "Terminal=True"        
+      LLFileContent &= TL & Chr(10)
+      TL = "ShowOn="
+      If LnkDesktop[I] = True Then TL &= "Desktop "
+      If LnkPanel[I] = True Then TL &= "Panel "
+      If LnkFavorite[I] = True Then TL &= "Favorite "
+      If TL <> "ShowOn=" Then LLFileContent &= TL & Chr(10) 'Only add it if it's got a setting
+    End If
+  Next
+
+  Dim OutFile As String
+  OutFile = LLBuildPath & LLBuildType & Right(LLIconFile, 4) 'Grab extension off original source
+  If LLIconFile <> "" And Exist(LLIconFile) Then
+    If LLIconFile <> OutFile Then 'Don't Copy Self
+      If OutFile <> "/" And Exist(OutFile) Then 
+        If Message.Delete("Delete Existing Icon?", "Yes", "No") = 1 Then 
+          Kill OutFile  'Remove existing Icon if found
+          Copy LLIconFile To OutFile 
+        End If
+      Else
+        Copy LLIconFile To OutFile 'Doesn't Exist so copy it anyway
+      End If      
+    End If
+  End If
+  OutFile = LLBuildPath & LLBuildType & Right(LLFaderFile, 4) 'Grab extension off original source
+  If LLFaderFile <> "" And Exist(LLFaderFile) Then
+    If LLFaderFile <> OutFile Then 'Don't Copy Self
+      If OutFile <> "/" And Exist(OutFile) Then 
+        If Message.Delete("Delete Existing Fader?", "Yes", "No") = 1 Then 
+          Kill OutFile 'Remove existing Fader if found
+          Copy LLFaderFile To OutFile
+        End If
+      Else
+        Copy LLFaderFile To OutFile
+      End If      
+    End If
+  End If
+  OutFile = LLBuildPath & LLBuildType & Right(LLScreenshotFile, 4) 'Grab extension off original source
+  If LLScreenshotFile <> "" And Exist(LLScreenshotFile) Then
+    If LLScreenshotFile <> OutFile Then 'Don't Copy Self
+      If OutFile <> "/" And Exist(OutFile) Then 
+        If Message.Delete("Delete Existing Screenshot?", "Yes", "No") = 1 Then 
+          Kill OutFile 'Remove existing Screenshot if found
+          Copy LLScreenshotFile To OutFile
+        End If
+      Else
+        Copy LLScreenshotFile To OutFile
+      End If      
+    End If
+  End If
+  If LLScript <> "" And LLScript <> "#!/bin/bash" Then
+    OutFile = LLBuildPath & "LLScript.sh" 'Do Scipt  
+    If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 'Remove existing Script if found (Always will, you can only protect users so much without it being annoying for power users)
+    File.Save(OutFile, LLScript)
+  End If
+  File.Save(FileOut, LLFileContent)
+  Return True 'If made it this far, it worked
+End
+
+Public Function LoadDesktopFile(DesktopFile As String) As Boolean
+  
+  
+  Dim hFile As File
+  Dim sLine As String
+  Dim LineID, LineData As String
+  hFile = Open DesktopFile For Input
+  Line Input #hFile, sLine
+  If Trim(Lower(sLine)) = "[desktop entry]" Then
+    LnkCount = LnkCount + 1
+    LnkEditing = LnkCount
+    LnkActive[LnkEditing] = True
+    While Not hFile.EndOfFile
+      Line Input #hFile, sLine
+      If InStr(sLine, "=") >= 2 Then 
+        LineID = Left(sLine, InStr(sLine, "="))
+        LineData = Trim(Right(sLine, Len(sLine) - Len(LineID)))
+        LineID = Lower(Left(LineID, Len(LineID) - 1))
+      End If
+      If LineID = "name" Then 'Got Name
+        LnkDisplayName[LnkEditing] = LineData        
+      End If
+      
+      If LineID = "comment" Then LnkComment[LnkEditing] = LineData
+      If LineID = "exec" Then LnkExec[LnkEditing] = LineData 'This needs quotes for it to function properly sometimes, the others dont or they break.
+      If LineID = "path" Then LnkRunInPath[LnkEditing] = LineData
+      If LineID = "icon" Then LnkIcon[LnkEditing] = LineData
+      If LineID = "categories" Then LnkCatalog[LnkEditing] = LineData
+      If LineID = "terminal" Then 
+        If LineData = True Then 
+          LnkTerminal[LnkEditing] = True
+        Else 
+          LnkTerminal[LnkEditing] = False
+        End If
+      End If
+      
+    Wend
+  End If
+  hFile.Close
+  Return True 'Succeded
+End
+
+Public Function InstallLLFile(LLAFile As String) As Boolean
+  Dim I As Integer
+  Dim InstallToPath As String
+  Dim DesktopContent As String
+  Dim DesktopFile As String
+  Dim DesktopOutPath As String = User.Home & "/.local/share/applications/"
+  Dim TmpPath As String
+  Dim PanelPath As String
+  
+  'If tar (compressed) Then extract it to temp and install it
+  If Right(LLAFile, 4) = ".tar" Then LLCompressed = True Else LLCompressed = False  
+  If LLCompressed = True Then
+    Randomize
+    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
+    'If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
+    'Shell "tar -xf " & Chr(34) & LLAFile & Chr(34) & " -C " & Chr(34) & TmpPath & Chr(34) Wait
+    Extract(LLAFile, TmpPath, "")
+    
+    'Get Temp path AND File to install from
+    LLAFile = TmpPath
+    If Exist(LLAFile & "LLGame.llg") = True Then 
+      LLAFile &= "LLGame.llg"
+    Else
+      If Exist(LLAFile & "LLApp.lla") = True Then 
+        LLAFile &= "LLApp.lla"
+      End If
+    End If
+  End If
+  
+  If LoadLLFile(LLAFile) = True Then 'Loaded good, get to installing it
+    InstallToPath = Replace(LLAppPath, "$HOME", User.Home)
+    
+    'Make install to folder and copy LLApp files accross
+    If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
+    If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+    If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
+    If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
+    If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+    
+    'Extract Archive to the Install Folder
+    If LLBuildType = "LLApp" Then 
+      'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+      Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
+    End If
+    If LLBuildType = "LLGame" Then 
+      'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+      Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
+    End If
+    
+    'Below is done in Extract Routine, not needed here
+    'If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+    
+    'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
+    If Exist(InstallToPath & "LLScript.sh") Then
+      'Message(InstallToPath & "LLScript.sh")
+      ExpandScript(InstallToPath & "LLScript.sh")          
+      Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+      Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) 'Wait  'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+      'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+    End If  
+    If LnkCount > 0 Then
+      For I = 1 To LnkCount
+        DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"
+        DesktopContent = "[Desktop Entry]" & Chr(10)
+        DesktopContent &= "Type=Application" & Chr(10)
+        DesktopContent &= "Version=1.0" & Chr(10)
+        DesktopContent &= "Name=" & LnkDisplayName[I] & Chr(10)
+        DesktopContent &= "Exec=" & Replace(LnkExec[I], "$HOME", User.Home) & Chr(10)
+        DesktopContent &= "Path=" & Replace(LnkRunInPath[I], "$HOME", User.Home) & Chr(10)
+        DesktopContent &= "Comment=" & LnkComment[I] & Chr(10)
+        DesktopContent &= "Icon=" & Replace(LnkIcon[I], "$HOME", User.Home) & Chr(10)
+        DesktopContent &= "Categories=" & LnkCatalog[I] & Chr(10)
+        DesktopContent &= "Terminal=" & Str(LnkTerminal[I]) & Chr(10)
+        ''''If LLBuildType = "LLGame" Then DesktopContent &= "PrefersNonDefaultGPU=true" & Chr(10) 'Make games use the GPU, it's a Mint Thing, but I don't think it'll cause issues. * I think this is an old trick, when you have the correct drivers setup, this isn't needed, so don't include it as on default.
+        File.Save(DesktopOutPath & DesktopFile, DesktopContent)        
+        Chmod DesktopOutPath & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
+        If LnkPanel[I] = True Then 'Make it on panel too (Default cinnamon Panel Only so far) Glenn
+          '~/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json
+          PanelPath = User.Home & "/.config/cinnamon/spices/grouped-window-list@cinnamon.org/"
+          Shell "jq '." & Chr(34) & "pinned-apps" & Chr(34) & "[" & Chr(34) & "value" & Chr(34) & "] += [" & Chr(34) & DesktopFile & Chr(34) & "]' " & PanelPath & "2.json > " & PanelPath & "2.tmp && mv " & PanelPath & "2.tmp " & PanelPath & "2.json" '& " && cinnamon --replace" 'Replacing the panel is the only way to show Panel icons, Moved to only do once per MiniInstaller
+          RefreshPanel = True
+        End If
+        
+        If LnkDesktop[I] = True Then 'Make it on Desktop too
+          File.Save(User.Home & "/Desktop/" & DesktopFile, DesktopContent)        
+          Chmod User.Home & "/Desktop/" & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
+        End If
+        'Add ability to LLApp Associate Filetypes (Glenn 2024 - testing)
+        If LnkFileTypes[I] <> "" Then
+          MakeFileType(LnkDisplayName[I], LnkFileTypes[I], LnkComment[I], LLMod.ExpPath(LnkExec[I]), LLMod.ExpPath(LnkRunInPath[I]), LnkIcon[I])
+        End If
+      Next      
+    End If
+  End If
+  If TmpPath <> "" Then Try Kill (TmpPath & "/*.tar") ' Clean up after itself (Just the big stuff)
+  If TmpPath <> "" Then Try Kill (TmpPath & "/*.tar.gz") ' Clean up after itself (Just the big stuff)
+  Return True 'No Problems
+End
+
+Public Function InstallppFile(PPFile As String) As Boolean
+  Dim I As Integer
+  Dim InstallToPath As String
+  Dim DesktopContent As String
+  Dim DesktopFile As String
+  Dim DesktopOutPath As String = User.Home & "/.local/share/applications/"
+  'Dim FileIn As String
+  Dim TmpPath As String
+  Dim CategoryFix As String
+  Dim IconFix As String
+  
+  'If apz, pgz (compressed) Then extract it to temp and install it
+  If Right(PPFile, 4) = ".apz" Or Right(PPFile, 4) = ".pgz" Then LLCompressed = True Else LLCompressed = False   
+  If LLCompressed = True Then
+    Randomize
+    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
+    'If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
+    'Shell "7z -mtc -aoa x " & Chr(34) & PPFile & Chr(34) & " -o" & Chr(34) & TmpPath & Chr(34) Wait '& " *.app *.ppg *App.jpg *App.png 
+    Extract(ppFile, TmpPath, "")
+    
+    'Get Temp path AND File to install from
+    PPFile = TmpPath
+    If Exist(PPFile & "ppGame.ppg") = True Then 
+      PPFile &= "ppGame.ppg"
+    Else
+      If Exist(PPFile & "ppApp.app") = True Then 
+        PPFile &= "ppApp.app"
+      End If
+    End If
+  End If
+  
+  If LoadSSFile(PPFile) = True Then 'Loaded good, get to installing it
+    InstallToPath = LLMod.ExpPath(LLAppPath)
+    
+    'Make install to folder and copy LLApp files accross
+    If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
+    If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+    If LLBuildType = "ppApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=*.7z" Wait
+    If LLBuildType = "ppGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=*.7z" Wait
+    If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+    
+    'Extract Archive to the Install Folder
+    If LLBuildType = "ppApp" Then 
+      'Shell "7z -mtc -aoa x " & Chr(34) & LLINIPath & Chr(34) & "ppApp.7z -o" & Chr(34) & InstallToPath & Chr(34) Wait
+      Extract(LLINIPath & "ppGame.7z", InstallToPath, "")
+      Extract(LLINIPath & "ppApp.7z", InstallToPath, "")
+    End If
+    If LLBuildType = "ppGame" Then 
+      'Shell "7z -mtc -aoa x " & Chr(34) & LLINIPath & Chr(34) & "ppGame.7z -o" & Chr(34) & InstallToPath & Chr(34) Wait
+      Extract(LLINIPath & "ppApp.7z", InstallToPath, "")
+      Extract(LLINIPath & "ppGame.7z", InstallToPath, "")
+    End If
+    
+    'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
+    If Exist(InstallToPath & "/ppApp.cmd") Then 
+      'Message(InstallToPath & "/ppApp.cmd")
+      ExpandWinScript(InstallToPath & "/ppApp.cmd")  
+        
+      'Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine " & Chr(34) & InstallToPath & "/ppApp.cmd" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
+      Execute("wine " & Chr(34) & InstallToPath & "/ppApp.cmd" & Chr(34), InstallToPath)
+    End If 
+    If Exist(InstallToPath & "/ppGame.cmd") Then          
+      ExpandWinScript(InstallToPath & "/ppGame.cmd")
+      '***** Just need to disable shell and use Execute function
+      'Execute("cd " & Chr(34) & InstallToPath & Chr(34) & " && wine " & Chr(34) & InstallToPath & "/ppGame.cmd" & Chr(34))
+      Execute("wine " & Chr(34) & InstallToPath & "/ppGame.cmd" & Chr(34), InstallToPath)
+      'Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine " & Chr(34) & InstallToPath & "/ppGame.cmd" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
+    End If
+    
+    'Do Registry
+    If Exist(InstallToPath & "/ppGame.reg") Then
+      Execute("wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppGame.reg" & Chr(34), InstallToPath)
+      'Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppGame.reg" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
+    End If  
+    
+    'Make Shortcuts here
+    If LnkCount > 0 Then
+      For I = 1 To LnkCount
+        DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"
+        
+        CategoryFix = LnkCatalog[I] 'Remove Games and convert to Game; 
+        If LLBuildType = "ppGame" Then
+          If InStr(CategoryFix, "Games; ", 0) >= 1 Then CategoryFix = Replace(CategoryFix, "Games; ", "")         
+          If InStr(CategoryFix, "; Games", 0) >= 1 Then CategoryFix = Replace(CategoryFix, "; Games", "")
+          CategoryFix = "Game; " & CategoryFix
+        End If
+        
+        IconFix = Trim(LLMod.ExpPath(LnkIcon[I]))
+        If IconFix = "" And Exist(InstallToPath & "/ppGame.png") Then IconFix = InstallToPath & "/ppGame.png"
+        If IconFix = "" And Exist(InstallToPath & "/ppApp.png") Then IconFix = InstallToPath & "/ppApp.png"
+        If Trim(LLMod.ExpPath(LnkIcon[I])) = "" Then LnkIcon[I] = IconFix 'Give it something
+        
+        DesktopContent = "[Desktop Entry]" & Chr(10)
+        DesktopContent &= "Type=Application" & Chr(10)
+        DesktopContent &= "Version=1.0" & Chr(10)
+        DesktopContent &= "Name=" & LnkDisplayName[I] & Chr(10)
+        DesktopContent &= "Exec=" & "wine " & Chr(34) & LLMod.ExpPath(LnkExec[I]) & Chr(34) & Chr(10)
+        DesktopContent &= "Path=" & LLMod.ExpPath(LnkRunInPath[I]) & Chr(10)
+        DesktopContent &= "Comment=" & LnkComment[I] & Chr(10)
+        DesktopContent &= "Icon=" & IconFix & Chr(10)
+        DesktopContent &= "Categories=" & CategoryFix & Chr(10)
+        DesktopContent &= "Terminal=" & Str(LnkTerminal[I]) & Chr(10)
+        ''''If LLBuildType = "LLGame" Then DesktopContent &= "PrefersNonDefaultGPU=true" & Chr(10) 'Make games use the GPU, it's a Mint Thing, but I don't think it'll cause issues. * I think this is an old trick, when you have the correct drivers setup, this isn't needed, so don't include it as on default.
+        File.Save(DesktopOutPath & DesktopFile, DesktopContent)
+        Chmod DesktopOutPath & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
+        If LnkDesktop[I] = True Then 'Make it on Desktop too
+          File.Save(User.Home & "/Desktop/" & DesktopFile, DesktopContent)        
+          Chmod User.Home & "/Desktop/" & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
+        End If
+        'Add ability to Associate Filetypes (Glenn 2024 - testing)
+        If LnkFileTypes[I] <> "" Then
+          MakeFileType(LnkDisplayName[I], LnkFileTypes[I], LnkComment[I], "wine " & LLMod.ExpPath(LnkExec[I]), LLMod.ExpPath(LnkRunInPath[I]), LnkIcon[I])
+        End If
+      Next
+      
+    End If
+  End If
+  
+   If TmpPath <> "" Then Try Kill (TmpPath & "/*.7z") ' Clean up after itself (Just the big stuff)
+  Return True 'No Problems
+End
+
+Public Function Extract(Archive As String, OutPath As String, ExcludesIncludes As String) As Boolean
+  If Not Exist(Archive) Then Return False
+  'If Lower(Right(Archive, 4)) = ".tar" Then 'tar
+  '  If Not Exist(OutPath) Then Shell "mkdir -p " & Chr(34) & OutPath & Chr(34) Wait
+  '  Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+  'Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
+  '  If Not Exist(OutPath) Then Shell "mkdir -p " & Chr(34) & OutPath & Chr(34) Wait
+  '  Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+  'Else 'use 7z for all but tar and tar.gz
+  '  If Not Exist(OutPath) Then Shell "mkdir -p " & Chr(34) & OutPath & Chr(34) Wait
+  '  Shell "7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+  'End If
+  
+  
+  If Lower(Right(Archive, 4)) = ".tar" Then 'tar
+    If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
+   Execute("tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
+  Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
+    If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
+    Execute("tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
+  Else 'use 7z for all but tar and tar.gz
+    If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
+    Execute("7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
+  End If
+  If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait
+  Return True ' Success
+End
+
+Public Sub Execute(ShellString As String, PathIn As String)
+  '"cd " & Chr(34) & PathIn & Chr(34) & " && " &
+  PathIn = ExpPath(PathIn)
+  'Message(PathIn)  
+  Dim Environ As New String[1]
+  Dim TheProcess As Process
+  Dim Test As String
+  'Below is to change the Working Directory (The remarked out are things that don't work)
+  'ChDir(PathIn)
+  'Application.Dir = PathIn
+  'TheProcess = Shell "cd " & Chr(34) & PathIn & Chr(34)
+  If PathIn <> "" Then
+    'Environ[0] = "PWD=" & PathIn
+    Environ[0] = "PWD=" & PathIn
+    'Try Wait (0.01)
+    'Sleep (0.09)
+    TheProcess = Shell ShellString With Environ
+  Else
+    TheProcess = Shell ShellString
+  End If
+  'Dim I As Integer
+  Do
+    'I = I + 1
+    Try Wait (0.4)    
+    Shell "ps -p " & TheProcess.ID To Test 'This is the tool that checks the ID external to Gambas
+    'Sleep (0.01)
+    'If I >= 5 Then      
+      'I = 0       
+            
+      'Print Test
+      'Print Len(Test)
+      
+      'Print "Handle " & TheProcess.Handle
+      'Print "ID " & TheProcess.ID
+      'Print "Signaled " & TheProcess.Signaled
+      'Print "Stopped " & TheProcess.Stopped
+      'Print "Value " & TheProcess.Value
+      'Print "IsTerm " & TheProcess.IsTerm
+      'Print "State " & TheProcess.State
+    'Endif
+  Loop Until TheProcess.State = 0 Or Len(Test) <= 40  'I check the PID externally as Gambas does a bad job of it
+ 
+  'Shell "ps -p " & TheProcess.ID To Test
+      'Print Test
+      'Print Len(Test)
+  
+  'Loop Until TheProcess.State <> 1
+  'TheProcess.Kill
+  'TheProcess = Null
+  'Print "State " & TheProcess.State
+  
+End
+
+
+Public Function ExpPath(PathIn As String) As String
+  Dim IniPath As String
+  Dim Homes As String = User.Home
+  PathIn = Replace(PathIn, Chr(92), "/") 'Convert Backslashes to forward slashes so can check wine paths, may be an issue if backslashes used in path?  
+  PathIn = Replace(PathIn, "%ppApps%", Homes & "/.wine/drive_c/ppApps", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ppGames%", Homes & "/.wine/drive_c/ppGames", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ppAppsDrive%", Homes & "/.wine/drive_c", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ppGamesDrive%", Homes & "/.wine/drive_c", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%AppPath%", LLAppPath, gb.IgnoreCase)  
+  
+  'For now this will be windows only, will use C:\Prog path etc
+  PathIn = Replace(PathIn, "%Extract%", Win7zCmd, gb.IgnoreCase)
+  
+  IniPath = LLINIPath 'Make sure the ini Path is usable
+  If Right(IniPath, 1) <> "/" Then IniPath = Left(IniPath, InStrRevSingle(IniPath, "/") - 1)  
+  PathIn = Replace(PathIn, "%INIPath%", IniPath, gb.IgnoreCase)
+  
+  PathIn = Replace(PathIn, "%LLApps%", Homes & "/LLApps", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%LLGames%", Homes & "/LLGames", gb.IgnoreCase)
+
+  PathIn = Replace(PathIn, "$HOME", Homes, gb.IgnoreCase) ' Do this last, so others longer have time to expand
+
+  'Message(LLAppPath)
+  
+  Return PathIn
+End
+
+Public Function ExpWinPath(PathIn As String) As String
+  Dim Homes As String = User.Home
+  Dim IniPath As String
+  Dim OtherPath As String
+  PathIn = Replace(PathIn, "/", Chr(92)) 'Convert forward slashes to Backslashes so can check wine paths
+  PathIn = Replace(PathIn, "%ppApps%", "C:" & Chr(92) & "ppApps", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ppGames%", "C:" & Chr(92) & "ppGames", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ppAppsDrive%", "C:", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ppGamesDrive%", "C:", gb.IgnoreCase)
+  
+  IniPath = LLINIPath 'Make sure the ini Path is usable
+  If Right(IniPath, 1) <> "/" Then IniPath = Left(IniPath, InStrRevSingle(IniPath, "/") - 1)
+  IniPath = "z:" & Replace(IniPath, "/", Chr(92))
+  PathIn = Replace(PathIn, "%INIPath%", IniPath, gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%AppPath%", LLAppPath, gb.IgnoreCase)  
+  'For now this will be windows only, will use C:\Prog path etc
+  PathIn = Replace(PathIn, "%Extract%", Win7zCmd, gb.IgnoreCase)
+  
+  OtherPath = Homes & "/LLApps"
+  OtherPath = "z:" & Replace(OtherPath, "/", Chr(92))
+  PathIn = Replace(PathIn, "%LLApps%", OtherPath, gb.IgnoreCase)
+  
+  OtherPath = Homes & "/LLGames"
+  OtherPath = "z:" & Replace(OtherPath, "/", Chr(92))
+  PathIn = Replace(PathIn, "%LLGames%", OtherPath, gb.IgnoreCase)
+  
+  'Test if adding these breaks anything
+  PathIn = Replace(PathIn, "%ProgramFiles%", "C:" & Chr(92) & "Program Files", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%SystemRoot%", "C:" & Chr(92) & "Windows", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%SystemDrive%", "C:", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%WinDir%", "C:" & Chr(92) & "Windows", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ProgramFiles(x86)%", "C:" & Chr(92) & "Program Files (x86)", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ProgramData%", "C:" & Chr(92) & "ProgramData", gb.IgnoreCase)
+  
+  'Message(LLAppPath)
+  
+  Return PathIn
+End
+
+
+
+Public Sub ExpandWinScript(ScriptIn As String)
+  LLAppPath = ExpWinPath(LLAppPath)  
+
+  Dim I As Integer
+  
+  If Not Exist(ScriptIn) Then Return 'Failed
+  Dim ScriptOrigContent As String
+  Dim ScriptOrigContentSP As String[]
+  Dim ScriptOut As String
+  Dim WS As String
+  Try ScriptOrigContent = File.Load(ScriptIn)
+  ScriptOrigContent = Replace(ScriptOrigContent, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+  ScriptOrigContentSP = Split(ScriptOrigContent, Chr(10))
+  For I = 0 To ScriptOrigContentSP.Count - 1
+    WS = Trim(ScriptOrigContentSP[I])
+    If WS <> "" Then
+      
+      WS = ExpWinPath(WS)
+      ScriptOut &= WS & Chr(10)
+    End If
+  Next
+  'Need to write the script somewhere to run it, may be off ISO so non writable
+  'Message(ScriptOut)
+  Try File.Save(ScriptIn, ScriptOut) 'If the path isn't writable this will fail.
+  
+End
+
+Public Sub ExpandScript(ScriptIn As String)
+  LLAppPath = ExpWinPath(LLAppPath)  
+
+  Dim I As Integer
+  
+  If Not Exist(ScriptIn) Then Return 'Failed
+  Dim ScriptOrigContent As String
+  Dim ScriptOrigContentSP As String[]
+  Dim ScriptOut As String
+  Dim WS As String
+  Try ScriptOrigContent = File.Load(ScriptIn)
+  ScriptOrigContent = Replace(ScriptOrigContent, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+  ScriptOrigContentSP = Split(ScriptOrigContent, Chr(10))
+  For I = 0 To ScriptOrigContentSP.Count - 1
+    WS = Trim(ScriptOrigContentSP[I])
+    If WS <> "" Then
+      
+      WS = ExpPath(WS)
+      ScriptOut &= WS & Chr(10)
+    End If
+  Next
+  'Need to write the script somewhere to run it, may be off ISO so non writable
+  'Message(ScriptOut)
+  Try File.Save(ScriptIn, ScriptOut) 'If the path isn't writable this will fail.
+  
+End
+
+
+Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU As String, PathIn As String, LOGO As String)
+  Dim OrigAppName As String
+  Dim FileOut As String
+  Dim FileContent As String
+  Dim Typs As New String[]
+  Dim J As Integer
+  
+  'Shell LLMod.AppPath & "Tools/MakeFileType.sh " & Chr(34) & APP & Chr(34) & " " & Chr(34) & EXT & Chr(34) & " " & Chr(34) & COMMENT & Chr(34) & " " & Chr(34) & EXEC & Chr(34) & " " & Chr(34) & LOGO & Chr(34) Wait
+  'Message("All: " & EXT)
+  'Typs = Split(EXT, " ")
+  'If Typs.Count >= 1 Then
+  '  For J = 0 To Typs.Count - 1
+  '    Message(Typs[J])
+  '  Next
+  'End If
+  
+  'Return 'Temp just print file types split for now
+  OrigAppName = APP
+  APP = Replace(APP, " (Linux)", "") 'Remove Bracketed Linux
+  APP = Replace(APP, "(", "") 'Remove Brackets
+  APP = Lower(Trim(Replace(APP, ")", ""))) 'Remove Brackets
+  APP = Replace(APP, " ", ".") 'Remove Spaces
+  
+  'MIME Type
+  Print "MIME Output"
+  Shell "xdg-icon-resource install --context mimetypes --size 48 " & LOGO & " application-x-" & APP Wait
+  FileOut = "/tmp/" & APP & "-mime.xml"
+  FileContent = "<?xml version=" & Chr(34) & "1.0" & Chr(34) & " encoding=" & Chr(34) & "UTF-8" & Chr(34) & "?>" & Chr(10)
+  FileContent &= "<mime-info xmlns=" & Chr(34) & "http://www.freedesktop.org/standards/shared-mime-info" & Chr(34) & ">" & Chr(10)
+  FileContent &= "    <mime-type type=" & Chr(34) & "application/x-" & APP & Chr(34) & ">" & Chr(10)
+  FileContent &= "        <comment>" & COMMENT & "</comment>" & Chr(10)
+  FileContent &= "        <icon name=" & Chr(34) & "application-x-" & APP & Chr(34) & "/>" & Chr(10)
+  Typs = Split(EXT, " ")
+  If Typs.Count >= 1 Then
+    For J = 0 To Typs.Count - 1
+      'Message(Typs[J])
+      FileContent &= "        <glob pattern=" & Chr(34) & "*." & Typs[J] & Chr(34) & "/>" & Chr(10)
+    Next
+  Else
+    FileContent &= "        <glob pattern=" & Chr(34) & "*.nonegiven" & Chr(34) & "/>" & Chr(10)
+  End If
+  'FileContent &= "        <glob pattern=" & Chr(34) & "*." & EXT & Chr(34) & "/>" & Chr(10)  
+  FileContent &= "    </mime-type>" & Chr(10)
+  FileContent &= "</mime-info>" & Chr(10)
+  File.Save(FileOut, FileContent)
+  Shell "xdg-mime install " & FileOut Wait
+  Shell " rm " & FileOut Wait
+  Shell "update-mime-database $HOME/.local/share/mime" Wait
+  
+  'If Left(EXECU, "5") = "wine " Then
+  '  EXECU = "wine " & Chr(34) & Right(EXECU, Len(EXECU) - 5) & Chr(34)
+  'End If
+  
+  If Left(EXECU, "5") = "wine " Then
+    EXECU = "python3 /LastOS/Scripts-Wine/wine-launcher.py " & Chr(34) & Right(EXECU, Len(EXECU) - 5) & Chr(34) & " %f" 'Works Perfect
+    'EXECU = "wine " & Chr(34) & Right(EXECU, Len(EXECU) - 5) & Chr(34) 'Works ok
+  Else 'Linux one
+    EXECU &= " %U"
+  End If
+  
+  'Exec=python /LastOS/Scripts-Wine/wine-launcher.py App.exe %F
+  'Exec=python ~/wine-launcher.py "program.exe" %F
+  
+  
+  'EXECU &= " %U" <-Put this back if switch to Linux only
+  
+  If Right(PathIn, 1) = "/" Then PathIn = Left(PathIn, Len(PathIn) - 1) 'Remove Slash
+  
+  Print "Desktop Output"
+  'Desktop Association
+  FileOut = "/tmp/" & APP & ".desktop"
+  FileContent = "[Desktop Entry]" & Chr(10)
+  FileContent &= "Name=" & OrigAppName & Chr(10)
+  FileContent &= "Exec=" & EXECU & Chr(10)
+  FileContent &= "Path=" & PathIn & Chr(10)
+  FileContent &= "MimeType=application/x-" & APP & Chr(10)
+  FileContent &= "Icon=application-x-" & APP & Chr(10)
+  FileContent &= "Terminal=false" & Chr(10)
+  FileContent &= "NoDisplay=true" & Chr(10)
+  FileContent &= "Type=Application" & Chr(10)
+  FileContent &= "Categories=" & Chr(10)
+  FileContent &= "Comment=" & COMMENT & Chr(10)
+  File.Save(FileOut, FileContent)
+  Shell "desktop-file-install --dir=$HOME/.local/share/applications " & FileOut Wait
+  Shell " rm " & FileOut Wait
+  Shell "update-desktop-database $HOME/.local/share/applications" Wait
+  Shell "xdg-mime default " & APP & ".desktop application/x-" & APP Wait
+  Shell "update-icon-caches $HOME/.local/share/icons/*" Wait
+  Print "MIME Done"
+End
+

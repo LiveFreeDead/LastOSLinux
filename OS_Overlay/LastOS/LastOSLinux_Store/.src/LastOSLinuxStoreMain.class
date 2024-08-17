@@ -1,0 +1,2000 @@
+' Gambas class file
+
+'Public LLMod.StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode (moved to LLMod now)
+
+Public Favorites[1001] As String '1001 games should be enough?
+Public FavCount As Integer
+
+Public ManualLocation[100] As String
+Public ManualLocationCount As Integer
+
+Public ScreenShotCounter As Integer
+
+Public TitleCol As Integer = &hFFFFFF
+Public CategoryCol As Integer = &hFFFFFF
+Public DescriptionCol As Integer = &hFFFFFF
+Public ItemCol As Integer = &hFFFFFF
+
+Public ItemColssApp As Integer = &hFFFFFF
+Public ItemColppApp As Integer = &hFFFF50
+Public ItemColppGame As Integer = &hAAFF40
+Public ItemColLLApp As Integer = &hAAFFAA
+Public ItemColLLGame As Integer = &h88FF20
+
+Public BGCol As Integer = &h202020
+Public FGCol As Integer = &hFFFFFF
+
+
+Public CtrlPressed As Boolean
+
+Public RunningItemKey As Integer
+
+Public WaitASec As Boolean = False
+
+Public InstallingItem As Boolean = False
+
+Public TmpImage As Image
+Public ForceClose As Boolean = False
+Public DudItem As Boolean = False
+Public ItemIcon As Picture
+Public CurrentItemKey As Integer = -1
+Public CurrentItem As String
+Public CurrentCat As String
+Public ScaleItems As Integer
+Public IconSize As Integer
+Public SelectedItems As Integer = 0
+Public FirstRun As Boolean = True
+Public AutoSelect As Boolean = False
+
+Public RunDelayExec As String
+
+Public MouseRight As Boolean
+
+Public ContextMenu As Menu
+
+Public SortMethod As Integer = 0
+Public HideInstalled As Boolean
+Public HideWindows As Boolean
+Public HideLinux As Boolean
+Public HideApps As Boolean
+Public HideGames As Boolean
+Public HidePaid As Boolean
+
+
+'LLM = Last Linux Module
+Public Sub Form_Open()
+  'Process Arguments passed from terminal  
+  Dim S As String
+  
+  For Each S In Args
+    'Message(S)
+    If S = "-launcher" Then LLMod.StoreMode = 1
+    If S = "-l" Then LLMod.StoreMode = 1
+  Next
+  
+  'Set Title
+  Title.Text = "LastOSLinux Store v" & Application.Version
+  Title.Font.Bold = True
+  Title.Font.Size = 12
+  Title.Foreground = TitleCol
+  
+  Categories.Font.Bold = True
+  Categories.Font.Size = 12
+  Categories.Foreground = TitleCol
+  
+  ItemTitle.Font.Bold = True
+  ItemTitle.Font.Size = 12
+  ItemTitle.Foreground = TitleCol
+  
+  Stats.Foreground = TitleCol
+  
+  Category.Foreground = CategoryCol
+  Description.Foreground = DescriptionCol
+  
+  Data.Background = BGCol
+  Data.Items.Background = BGCol
+  Data.Items.Foreground = FGCol
+  
+  MiniInstaller.Background = Data.Background 
+  MiniInstaller.ListInstall.Background = Data.Background
+  MiniInstaller.ListInstall.Foreground = Data.Items.Foreground
+  
+  
+  Data.Cats.Background = BGCol
+  Data.Cats.Foreground = FGCol
+  
+  Data.ScanPaths.Background = BGCol
+  Data.ScanPaths.Foreground = FGCol
+  
+  ScaleItems = Items.Font.Size + 1 '(Makes it 10 Default)
+  Items.Font.Size = ScaleItems
+  Items.Foreground = ItemCol
+  Category.Font.Size = ScaleItems
+  Description.Font.Size = 11
+  
+  LoadFavorites
+  
+  'Get default positions to scale with
+  LLM.OrigFormWidth = LastOSLinuxStoreMain.W
+  LLM.OrigFormHeight = LastOSLinuxStoreMain.H
+  
+  LLM.OrigCatLeft = Category.Left
+  LLM.OrigCatWidth = Category.Width
+  LLM.OrigCatTop = Category.Top
+  LLM.OrigCatHeight = Category.Height
+  
+  LLM.OrigItemLeft = Items.Left
+  LLM.OrigItemWidth = Items.Width
+  LLM.OrigItemTop = Items.Top
+  LLM.OrigItemHeight = Items.Height
+  
+  LLM.OrigScreenLeft = Screenshot.Left
+  LLM.OrigScreenWidth = Screenshot.Width
+  LLM.OrigScreenTop = Screenshot.Top
+  LLM.OrigScreenHeight = Screenshot.Height
+
+  'Center Form with Border
+  Me.Width = Screens[0].AvailableWidth - 60
+  Me.Height = Screens[0].AvailableHeight - 60
+  Me.Center
+  Me.Top = 15
+  
+  'Make StartButton a Tab Stop
+  StartButton.NoTabFocus = False
+  
+  ContextMenu = New Menu(Me, True)
+  
+  'Load Theme here (Moved getting theme.ini to loading form)
+  LoadTheme()
+  
+  Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+  
+  Wait (0.01) 'Lets loading screen show
+  GetItemPaths()
+  Wait (0.01) 'Lets loading screen show
+  'ReDraw Form
+  RedrawTheme()
+  
+  'Generate Categories
+  GenerateCategoryList()
+  
+  'Generate Main List on form from Data Form
+  GenerateMainList()
+    
+  'FirstRun.Enabled = True
+  FirstRun = False
+  LLM.Loaded = True 'Make LoadingScreen not called from the other functions
+  LoadingScreen.Close 'Can close it now we've got the main form
+End
+
+Public Sub LoadFavorites()  
+  Dim I As Integer
+  'Load in Favorites if exists
+  FavCount = 0
+  Dim InFavs As String
+  Dim InFavSp As String[]
+  If LLMod.StoreMode = 1 Then
+    If Exist(LLM.AppPath & "/Favorites.ini") Then
+      Try InFavs = File.Load(LLM.AppPath & "/Favorites.ini")
+      InFavs = Replace(InFavs, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+      InFavSp = Split(InFavs, Chr(10))
+      For I = 0 To InFavSp.Count - 1
+        If Trim(InFavSp[I]) <> "" Then
+          Favorites[FavCount] = Trim(InFavSp[I])
+          FavCount = FavCount + 1
+        End If
+      Next
+    End If
+  End If
+End
+
+
+
+Public Sub GetItemPaths()
+  Dim DirToCheck As String
+  Dim DirInPath As String
+  Dim DirInSubPath As String
+  
+  'Clear checked locations
+  Data.ScanPaths.Clear
+  Dim I As Integer
+  
+  'Add Manual Locations to scan first
+  LoadManualLocations()
+  If ManualLocationCount >= 1 Then
+    For I = 0 To ManualLocationCount - 1
+      GetItemsInPath(ManualLocation[I]) 'Scan items in location and any Subfolders of interest
+      'GetItemsFromPath(ManualLocation[I]) ' Scan in the actual supplied path for items too' This happens anyway
+    Next
+  End If
+  
+  'Check the locations for items and Add them to the Data Form
+  If LLMod.StoreMode = 0 Then 'Get Installable items
+    DirToCheck = Left(LLM.AppPath, LLMod.InStrRevSingle(LLM.AppPath, "/")) ' Checks up one level from the LastOSLinux Store    
+    GetItemsInPath(DirToCheck)
+    
+    'GetWineItemsFromPath("/LastOS/") 'for testing, Scans the root of the app path, so if working from /LastOS/LastOS_Store it'll already do it
+    
+    For Each DirInPath In Dir("/media", "[^.]*", gb.Directory) ' Check all mounted and sub mounts Media also
+      If Access("/media/" & DirInPath) = True Then ' Only do ones with access to them
+        GetItemsInPath("/media/" & DirInPath)
+        If Access("/media/" & DirInPath) = True Then ' Only do ones you have access to
+          For Each DirInSubPath In Dir("/media/" & DirInPath, "[^.]*", gb.Directory) ' Check all sub mounted
+            GetItemsInPath("/media/" & DirInPath & "/" & DirInSubPath)
+          Next
+        End If
+      End If
+    Next
+    
+  End If
+  If LLMod.StoreMode = 1 Then 'Get Launchable Game Items
+    'GetItemsFromPath(User.Home & "/LLGames/")
+    GetItemsInPath(User.Home & "/LLGames/") ' Changed to using GetItemsIn so form updates status
+    'GetWineItemsFromPath(User.Home & "/.wine/drive_c/ppGames/")
+    GetItemsInPath(User.Home & "/.wine/drive_c/ppGames/")' Changed to using GetItemsIn so form updates status
+  End If
+End
+
+Public Sub GetItemsInPath(DirToCheck As String)
+ 
+    If Not LLM.Loaded Then
+      LoadingScreen.Status.Text = "Load: " & DirToCheck
+      'Wait (0.01) 'Redraw loading screen, it needs a little time to redraw
+    End If
+    Dim I As Integer
+    If Right(DirToCheck, 1) <> "/" Then DirToCheck &= "/" ' Add Slash
+    If Data.ScanPaths.Count > 0 Then
+      For I = 0 To Data.ScanPaths.Count - 1
+        If DirToCheck = Data.ScanPaths[I].Text Then Return 'Already Scanned this path
+      Next
+    End If
+    Data.ScanPaths.Add(Data.ScanPaths.Count, DirToCheck)    
+    GetItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
+    GetWineItemsFromPath(DirToCheck) 'Same as above
+    If LLMod.StoreMode = 0 Then
+      GetItemsFromPath(DirToCheck & "LLAppsInstalls/")
+      GetItemsFromPath(DirToCheck & "LLGamesInstalls/")
+      GetItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
+      GetItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
+      
+      GetWineItemsFromPath(DirToCheck & "ssAppsInstalls/")
+      GetWineItemsFromPath(DirToCheck & "ppAppsInstalls/")
+      GetWineItemsFromPath(DirToCheck & "ppGamesInstalls/")
+      GetWineItemsFromPath(DirToCheck & "ppAppsLive/")    
+      GetWineItemsFromPath(DirToCheck & "ssTek/ssAppsInstalls/")
+      GetWineItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
+      GetWineItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
+    Else 'Launcher Mode
+      GetItemsFromPath(DirToCheck & "LLGames/")
+      GetWineItemsFromPath(DirToCheck & "LLGames/")
+      GetItemsFromPath(DirToCheck & "ppGames/")
+      GetWineItemsFromPath(DirToCheck & "ppGames/")
+    End If
+End
+
+
+Public Sub GetItemsFromPath(InPath As String)
+  If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
+  If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  
+  'Get Folders then files
+  Dim DirInPath As String
+  Dim FileIn As String  
+'Compressed ones first, only check the root folders for them though
+  If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
+    For Each FileIn In Dir(InPath & "/", "*.tar")
+       If LLMod.LoadLLFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/"
+         AddItem()
+       End If
+    Next
+  End If
+'Uncompressed items now
+'Print ("HERE: " & InPath)
+  For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
+    'Get Files:
+    For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
+      If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
+        If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
+         AddItem()
+        End If        
+      End If
+    Next 
+  Next
+End
+
+
+Public Sub GetWineItemsFromPath(InPath As String)
+  If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
+  If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  
+  'Get Folders then files
+  Dim DirInPath As String
+  Dim FileIn As String  
+'Compressed ones first, only check the root folders for them though
+  If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
+    For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
+       If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
+        AddItem()
+       End If
+    Next
+  End If
+'Uncompressed items now
+'Print ("HERE: " & InPath)
+  For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
+    'Print ("HERE2: " & DirInPath)
+    'Get Files:
+    For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
+      If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
+        If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
+          AddItem()
+        End If
+      End If
+    Next 
+  Next
+End
+
+Public Sub AddItem()
+  Dim LoadedIcon As Image
+  Dim DRows As Integer  
+  Dim ParentRefID As Integer
+  Dim ParentDRow As Integer
+  Dim I, J As Integer
+  
+  If LLMod.StoreMode = 1 And LLMod.LLTitle = "Games Launcher" Then Return ' Hide Games Launcher from Launcher
+  
+  If Data.Items.Rows.Count >= 1 Then 'Check if Existing Item
+    For I = 0 To Data.Items.Rows.Count - 1
+      If Data.Items[I, Data.CTitleName].Text & Data.Items[I, Data.CVersion].Text = LLMod.LLTitle & LLMod.LLVersion Then Return 'Skip Duplicated Items (Adds different versions though)
+    Next
+  End If
+  
+  Data.Items.Rows.Count = Data.Items.Rows.Count + 1 'Always Add a row before starting
+  DRows = Data.Items.Rows.Count - 1
+  LLM.DataItemsRows = DRows
+
+  Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
+
+  'Load Icon ready to add here
+  If LLMod.LLIconFile <> "" And Exist(LLMod.LLIconFile) Then LoadedIcon = Image.Load(LLMod.LLIconFile)
+  
+  'Add Icon and add ReferenceID       
+  If LoadedIcon <> Null Then
+    Data.IconCount = Data.IconCount + 1
+    Data.Icons.Add(Data.IconCount, Data.IconCount, LoadedIcon.Picture)
+  End If
+  Data.Items[DRows, Data.CIconRef].Text = Str(Data.IconCount)
+  Data.Items[DRows, Data.CSelected].Text = "F"
+  Data.Items[DRows, Data.CBuildType].Text = LLMod.LLBuildType
+  
+  If LLMod.LLCompressed = True Then
+    Data.Items[DRows, Data.CCompressed].Text = "T"
+    Data.Items[DRows, Data.CFileCompressed].Text = LLMod.LLFileINI
+  Else
+    Data.Items[DRows, Data.CCompressed].Text = "F"
+    Data.Items[DRows, Data.CFileCompressed].Text = ""
+  End If
+  
+  If LLMod.LLHideInLaunch = True Then Data.Items[DRows, Data.CHidden].Text = "T" Else Data.Items[DRows, Data.CHidden].Text = "F"
+  If LLMod.LLShowAlways = True Then Data.Items[DRows, Data.CShowAlways].Text = "T" Else Data.Items[DRows, Data.CShowAlways].Text = "F"
+  If LLMod.LLShowSetupOnly = True Then Data.Items[DRows, Data.CShowSetupOnly].Text = "T" Else Data.Items[DRows, Data.CShowSetupOnly].Text = "F"
+  Data.Items[DRows, Data.CInstalled].Text = LLMod.LLInstalled ' Checks if installed
+  Data.Items[DRows, Data.CArch].Text = LLMod.LLArch 'Arch not yet added
+  Data.Items[DRows, Data.COS].Text = LLMod.LLOS 'Arch not yet added
+  Data.Items[DRows, Data.CTitleName].Text = LLMod.LLTitle
+  Data.Items[DRows, Data.CVersion].Text = LLMod.LLVersion
+  
+  If LLMod.LLCategory <> "Game" And LLMod.LLCategory <> "Games" Then
+    If LLMod.StoreMode = 1 Then 'If Launcher Mode, Drop Game, Games and Games\ from all items categories        
+      LLMod.LLCategory = Replace(LLMod.LLCategory, "Games" & Chr(92), "")
+      LLMod.LLCategory = Replace(LLMod.LLCategory, "Games", "")
+      LLMod.LLCategory = Replace(LLMod.LLCategory, "Game", "")
+    Else 'InstallMode
+      LLMod.LLCategory = Replace(LLMod.LLCategory, "Games" & Chr(92), "")
+      If InStr(LLMod.LLCategory, "Gamer") <= 0 And InStr(LLMod.LLCategory, "Games") <= 0 Then
+        LLMod.LLCategory = Replace(LLMod.LLCategory, "Game", "; Games") ' Make Linux games go into the Games Category
+      End If
+      'LLMod.LLCategory = Replace(LLMod.LLCategory, "Games", "")
+    End If
+  Else 'Only has Game as the category, we need to keep atlest that
+    LLMod.LLCategory = Replace(LLMod.LLCategory, "Game", "Games") 'But convert to Games instead
+  End If
+  LLMod.LLCategory = Replace(LLMod.LLCategory, "Gamess", "Games")
+  Data.Items[DRows, Data.CCategories].Text = LLMod.LLCategory
+  Data.Items[DRows, Data.CDescription].Text = LLMod.LLDescription
+  Data.Items[DRows, Data.CURL].Text = LLMod.LLURL
+  Data.Items[DRows, Data.CPriority].Text = LLMod.LLPriority
+  Data.Items[DRows, Data.CPathApp].Text = LLMod.LLAppPath
+  Data.Items[DRows, Data.CPathINI].Text = LLMod.LLINIPath
+  Data.Items[DRows, Data.CFileINI].Text = LLMod.LLFileINI
+  Data.Items[DRows, Data.CFileIcon].Text = LLMod.LLIconFile
+  Data.Items[DRows, Data.CFileScreenshot].Text = LLMod.LLScreenshotFile
+  Data.Items[DRows, Data.CFileFader].Text = LLMod.LLFaderFile
+  Data.Items[DRows, Data.CFileMovie].Text = LLMod.LLMovieFile 'Skipped for now
+  Data.Items[DRows, Data.CTags].Text = LLMod.LLTags
+  Data.Items[DRows, Data.CPublisher].Text = LLMod.LLPublisher
+  Data.Items[DRows, Data.CLanguage].Text = LLMod.LLLanguage
+  Data.Items[DRows, Data.CRating].Text = LLMod.LLRating
+  ' Data.Items[DRows, Data.CAdditional].Text = LLMod.LL 'Need to add this
+  Data.Items[DRows, Data.CPlayers].Text = LLMod.LLPlayers
+  Data.Items[DRows, Data.CLicense].Text = LLMod.LLLicense
+  Data.Items[DRows, Data.CReleaseVersion].Text = LLMod.LLReleaseVersion
+  Data.Items[DRows, Data.CReleaseDate].Text = LLMod.LLReleaseDate
+  'Data.Items[DRows, Data.CRequiredRuntimes].Text = LLMod.LLRe 'Missing
+  Data.Items[DRows, Data.CBuilder].Text = LLMod.LLBuilder
+  Data.Items[DRows, Data.CInstalledSize].Text = LLMod.LLInstalledSize
+  
+  ''Process MultiLinks here:-
+  'If LLMod.LnkCount = 1 Or LLMod.StoreMode = 0 Then 'Only has one or install mode, no need for Multiples
+  'Always add first item to parent item, all others can be onlyadded in launcher mode and when more than one
+  If LLMod.StoreMode = 1 Then Data.Items[DRows, Data.CTitleName].Text = LLMod.LnkDisplayName[1] 'Use only shortcut names and not the Installer Title Name
+  Data.Items[DRows, Data.CLnkTitle].Text = LLMod.LnkDisplayName[1]
+  Data.Items[DRows, Data.CLnkComment].Text = LLMod.LnkComment[1]
+  Data.Items[DRows, Data.CLnkDescription].Text = LLMod.LnkDescription[1]
+  Data.Items[DRows, Data.CLnkCategories].Text = LLMod.LnkCatalog[1]
+  
+  'If Launcher mode Then make sure Each Link has a category If Not given In .lnk
+  If LLMod.StoreMode = 1 Then 
+    If Data.Items[DRows, Data.CLnkCategories].Text = "" Then Data.Items[DRows, Data.CLnkCategories].Text = Data.Items[DRows, Data.CCategories].Text
+  End If
+  'Make sure to get a category from the Link if it was empty
+  If Data.Items[DRows, Data.CCategories].Text = "" Then Data.Items[DRows, Data.CCategories].Text = Data.Items[DRows, Data.CLnkCategories].Text
+  
+  Data.Items[DRows, Data.CLnkRunPath].Text = LLMod.LnkRunInPath[1]
+  Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[1]
+  'Data.Items[DRows, Data.CLnkArguments].Text = LLMod.LnkArguments[1] 'Doesn't Exist yet
+  Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[1]
+  'Data.Items[DRows, Data.CLnkFlags].Text = LLMod.LnkFlags[1] 'Doesn't Exist yet
+  'Data.Items[DRows, Data.CLnkAssociations].Text = LLMod.LnkAssociations[1] ' Doesn't exist yet
+  Data.Items[DRows, Data.CLnkTerminal].Text = LLMod.LnkTerminal[1]
+  'Data.Items[DRows, Data.CLnkMultiple].Text = LLMod.LnkMultiple[1]
+  'Data.Items[DRows, Data.CLnkParentRef].Text = LLMod.LnkParentRef[1] ' Doesn't Exist Yet
+  ParentDRow = DRows
+  ParentRefID = Data.Items[DRows, Data.CRefID].Text
+   If LLMod.LnkCount > 1 And LLMod.StoreMode = 1 Then 'Multi Link, need to duplicate items etc
+    For I = 2 To LLMod.LnkCount 'Skip first one as it's added above to the parent item
+      'Add Shortcut Item, copy partent item so it has all the data it can
+      Data.Items.Rows.Count = Data.Items.Rows.Count + 1 'Always Add a row before starting
+      DRows = Data.Items.Rows.Count - 1
+      LLM.DataItemsRows = DRows    
+      Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use Next RefID instead of the built in one which loses positions
+      
+      'clone from parent ID's Data here 
+      For J = 1 To Data.Items.Columns.Count - 1
+        Data.Items[DRows, J].Text = Data.Items[ParentDRow, J].Text
+      Next
+      
+      Data.Items[DRows, Data.CTitleName].Text = LLMod.LnkDisplayName[I] 'Replaces Title text with Link Name here
+      
+      Data.Items[DRows, Data.CLnkTitle].Text = LLMod.LnkDisplayName[I]
+      Data.Items[DRows, Data.CLnkDescription].Text = LLMod.LnkDescription[I]
+      Data.Items[DRows, Data.CLnkComment].Text = LLMod.LnkComment[I]
+      Data.Items[DRows, Data.CLnkCategories].Text = LLMod.LnkCatalog[I]
+      Data.Items[DRows, Data.CLnkRunPath].Text = LLMod.LnkRunInPath[I]
+      Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[I]
+      'Data.Items[DRows, Data.CLnkArguments].Text = LLMod.LnkArguments[I] 'Doesn't Exist yet
+      Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[I]
+      Data.Items[DRows, Data.CLnkIcon].Text = LLMod.LnkIcon[I]
+      'Data.Items[DRows, Data.CLnkFlags].Text = LLMod.LnkFlags[I] 'Doesn't Exist yet
+      'Data.Items[DRows, Data.CLnkAssociations].Text = LLMod.LnkAssociations[I] ' Doesn't exist yet
+      Data.Items[DRows, Data.CLnkTerminal].Text = LLMod.LnkTerminal[I]
+      Data.Items[DRows, Data.CLnkMultiple].Text = "T" 'LLMod.LnkMultiple[I]
+      Data.Items[DRows, Data.CLnkParentRef].Text = ParentRefID 'Doesn't Exist Yet
+    Next   
+  End If
+  
+End
+
+
+
+
+Public Sub GenerateCategoryList()
+  Dim I, J, K As Integer
+  Dim FoundCat As Boolean
+  Dim CatSp As String[]
+  Dim CatTesting As String
+  'Generate Categories
+  Category.Clear  ' - NEVER use clear except for ListViews  
+  
+  Dim LastAddedDataCat As Integer = 0
+  
+  Dim LastAddedCat As Integer = 0
+  Category.Add(LastAddedCat, "All")
+  LastAddedCat = LastAddedCat + 1
+  If LLMod.StoreMode = 1 Then 'If Launcher mode add Favorites Category
+    Category.Add(LastAddedCat, "Favorites")
+    Category.Item.Foreground = &h00FF00
+    LastAddedCat = LastAddedCat + 1
+  End If
+  'Add To Data form so can sort
+  If LLM.DataItemsRows >= 0 Then
+    For I = 1 To LLM.DataItemsRows      
+      'Check if existing Category and Add it otherwise, no empties
+      If Trim(Data.Items[I, Data.CCategories].Text) <> "" Then 'Don't add Empties       
+        CatSp = Split(Data.Items[I, Data.CCategories].Text, ";")
+        FoundCat = False
+        For K = 0 To CatSp.Count - 1
+          CatTesting = Trim(Replace(CatSp[K], ";", ""))
+          If CatTesting <> "" Then 'Don't Add Empties here either
+            If LastAddedDataCat > 0 Then
+              For J = 1 To LastAddedDataCat
+                If Data.Cats[J].Text = CatTesting Then
+                  FoundCat = True
+                  Break 'Found, don't scan rest
+                End If
+              Next
+            End If
+            If FoundCat = False Then
+              LastAddedDataCat = LastAddedDataCat + 1
+              Data.Cats.Add(LastAddedDataCat, CatTesting)
+            End If
+          End If
+        Next 'K
+      End If
+    Next
+    'Now add Categories to main form from Sorted List
+    Data.Cats.MoveFirst
+    For I = 1 To Data.Cats.Count 'This now reads the sorted order from Data.Cats
+      Category.Add(LastAddedCat, Data.Cats.Item.Text)
+      Data.Cats.MoveNext
+      LastAddedCat = LastAddedCat + 1
+    Next
+  End If
+End
+
+'******************************************* Generate Main List Here*******************************************
+
+Public Sub GenerateMainList()
+  Dim I As Integer
+  Dim ListIconSize As Integer
+  Dim FoundItem As Boolean = False
+  Dim FirstItem As Integer
+  Dim CatFound As Integer
+  Dim K As Integer
+  
+  Items.Clear() 'Safe for ListView (Not Tables)  
+  SelectedItems = 0
+  
+  'Sort List here
+  If SortMethod = 0 Then Items.Sorted = True ' Alphabetical
+  If SortMethod = 1 Then Items.Sorted = False 'UnSorted
+  
+  If LLM.DataItemsRows >= 0 Then ' Must have 1 item
+    FirstItem = 0
+    For I = 0 To LLM.DataItemsRows
+      Try CatFound = InStr(Data.Items[I, Data.CCategories].Text, CurrentCat, gb.IgnoreCase)
+      If CurrentCat = "Favorites" And FavCount >= 1 Then 'Favorites doesn't exist in Install Mode, so will never do this anyway
+        For K = 0 To FavCount - 1
+          If Lower(Data.Items[I, Data.CTitleName].Text) = Lower(Favorites[K]) Then
+            CatFound = 7 ' Found the Category if it's a favorite
+            Break ' Stop the for as it's found
+          End If
+        Next
+      End If
+      If CurrentCat = "" Or CurrentCat = "All" Or CatFound >= 1 Then  'Only add if in the cat
+        If Data.Items[I, Data.CTitleName].Text = "" Then Continue 'Don't show dead items, even if the data is in tact and error may occur
+        If HideInstalled = True And Data.Items[I, Data.CInstalled].Text = "T" Then Continue 'Jumps to Next For
+        If LLMod.StoreMode = 1 And Data.Items[I, Data.CHidden].Text = "T" Then Continue 'Skip hidden Items in Launcher Mode
+        If HideWindows = True And Lower(Left(Data.Items[I, Data.CBuildType].Text, 2)) <> "ll" Then Continue 'Hide Windows Items
+        If HideLinux = True And Lower(Left(Data.Items[I, Data.CBuildType].Text, 2)) = "ll" Then Continue 'Hide Windows Items
+        
+        If HideApps = True And Lower(Data.Items[I, Data.CBuildType].Text) = "llapp" Then Continue 'Hide App Items
+        If HideApps = True And Lower(Data.Items[I, Data.CBuildType].Text) = "ssapp" Then Continue 'Hide App Items
+        If HideApps = True And Lower(Data.Items[I, Data.CBuildType].Text) = "ppapp" Then Continue 'Hide App Items
+        If HideGames = True And Lower(Data.Items[I, Data.CBuildType].Text) = "llgame" Then Continue 'Hide Game Items        
+        If HideGames = True And Lower(Data.Items[I, Data.CBuildType].Text) = "ppgame" Then Continue 'Hide Game Items
+        
+        If HidePaid = True And Left(Data.Items[I, Data.CLicense].Text, 1) = "1" Then Continue 'Hide Paid Items
+         
+        ListIconSize = ScaleItems + (ScaleItems / 2) + 2
+        If FirstItem = 0 Then FirstItem = Val(Data.Items[I, Data.CRefID].Text) 'Keeps the ID of the first added item so we can jump to it on the list
+        'Add Item
+        If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Then 'If ok
+          Items.Add(Val(Data.Items[I, Data.CRefID].Text), Data.Items[I, Data.CTitleName].Text, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            'Hide icon while I add tar support
+        Else 'If Broken/missing Icon
+          Items.Add(Val(Data.Items[I, Data.CRefID].Text), Data.Items[I, Data.CTitleName].Text, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
+          
+        End If
+        
+        'Item font color
+        If LLMod.StoreMode = 0 Then 'Only show colours for Installer
+          Select Case Lower(Data.Items[I, Data.CBuildType].Text)
+          Case "ssapp"
+            Items[Data.Items[I, 0].Text].Foreground = ItemColssApp
+          Case "ppapp"
+            Items[Data.Items[I, 0].Text].Foreground = ItemColppApp
+          Case "ppgame"
+            Items[Data.Items[I, 0].Text].Foreground = ItemColppGame
+          Case "llapp"
+            Items[Data.Items[I, 0].Text].Foreground = ItemColLLApp
+          Case "llgame"
+            Items[Data.Items[I, 0].Text].Foreground = ItemColLLGame
+          End Select
+        End If
+        'Select if set to selected
+        If Data.Items[I, Data.CSelected].Text = "T" Then
+          Items[Data.Items[I, 0].Text].Background = &h664411 'Highlight Selected
+          SelectedItems = SelectedItems + 1
+        End If
+        'Reselect Previous item if loading a new Category and it exists
+        If Data.Items[I, Data.CTitleName].Text <> "" And CurrentItem = Data.Items[I, Data.CTitleName].Text Then '(Same item that was selcted, Reselect it)            
+          If AutoSelect = False Then Try Items[CurrentItemKey].Selected = True 'Try will stop error if not found
+          FoundItem = True                      
+          
+        End If
+      End If      
+    Next
+  End If
+ 
+ 
+  If FoundItem = False 'Not found item in new list Then Then
+    If FirstRun = False Then 'Only select the first item when not FirstRun
+      Items.MoveFirst()
+     'Move Cursor to current item
+      Try Items.Item.Selected = True
+      Try Items_Click() 'Load data and screenshot etc
+    End If
+  End If     
+  
+  'Update Stats  
+  If SelectedItems > 0 Then 
+    Stats.Text = Str(SelectedItems) & "/" & Str(Items.Count) & " Items"
+  Else 
+    Stats.Text = Str(Items.Count) & " Items"
+  End If
+
+End
+
+
+Public Sub RedrawTheme()
+  'If RanOnce = False Then Return
+  LLM.ScaleX = LastOSLinuxStoreMain.W / LLM.OrigFormWidth
+  LLM.ScaleY = LastOSLinuxStoreMain.H / LLM.OrigFormHeight
+  
+  Items.Left = LLM.OrigItemLeft * LLM.ScaleX
+  Items.Top = LLM.OrigItemTop * LLM.ScaleY
+  Items.Width = LLM.OrigItemWidth * LLM.ScaleX
+  Items.Height = LLM.OrigItemHeight * LLM.ScaleY
+  
+  'Category.Left = LLM.OrigCatLeft * LLM.ScaleX
+  'Category.Top = LLM.OrigCatTop * LLM.ScaleY
+  'Category.Width = LLM.OrigCatWidth * LLM.ScaleX
+  'Category.Height = LLM.OrigCatHeight * LLM.ScaleY
+  Category.Left = LLM.OrigCatLeft * LLM.ScaleX
+  Category.Top = Items.Top
+  Category.Width = Items.Left - Category.Left + 1 'Add one so the border is single line over the items border
+  Category.Height = Items.Height
+  
+  Stats.Left = Category.Left
+  Stats.Width = (Items.Left + Items.Width) - Category.Left
+  Stats.Top = Category.Top + Category.Height - 3 'Move as High as I can, to get most room
+  
+  Screenshot.Left = LLM.OrigScreenLeft * LLM.ScaleX
+  Screenshot.Top = LLM.OrigScreenTop * LLM.ScaleY
+  Screenshot.Width = LLM.OrigScreenWidth * LLM.ScaleX
+  Screenshot.Height = LLM.OrigScreenHeight * LLM.ScaleY
+  
+  MoviePlayer.Left = Screenshot.Left
+  MoviePlayer.Top = Screenshot.Top
+  MoviePlayer.Width = Screenshot.Width
+  MoviePlayer.Height = Screenshot.Height
+  
+  Title.Left = Screenshot.Left
+  Title.Width = Screenshot.Width
+  Title.Height = Screenshot.Top
+  
+  Categories.Left = Category.Left
+  Categories.Width = Category.Width
+  Categories.Height = Screenshot.Top
+  
+  ItemTitle.Left = Items.Left
+  ItemTitle.Width = Items.Width
+  ItemTitle.Height = Screenshot.Top
+  
+  StartButton.Left = Screenshot.Left + Screenshot.Width - StartButton.Width
+  StartButton.Top = Category.Top + Category.Height - StartButton.Height + 10 'Shift down 10 pixels for optimal space
+  
+  StartButTab.Left = 1 - (StartButTab.Width)'Off Screen (Just want it's tab stop)
+  StartButTab.Top = 1 - (StartButTab.Height)
+
+  IconPic.Left = Screenshot.Left
+  IconPic.Top = Category.Top + Category.Height - IconPic.Height + 10 'Shift down 10 pixels for optimal space
+
+  Try LastOSLinuxStoreMain.Picture = LLM.Wallpaper.Stretch(LastOSLinuxStoreMain.W, LastOSLinuxStoreMain.H)
+  
+  'Screenshot.Picture = LLM.Screenshot.Stretch(Screenshot.W, Screenshot.H)
+  'Try scaling the screenshot here
+  Try TmpImage = LLM.Screenshot.Image
+  Try TmpImage = TmpImage.Stretch(-1, Screenshot.Height)
+  Try Screenshot.Picture = TmpImage.Picture
+  
+  If LLM.Icon = Null Then LLM.Icon = Picture.Load("/LastOS/LastOS.png")
+  Try IconPic.Picture = LLM.Icon.Stretch(IconPic.W, IconPic.H)
+  If LLM.StartButton = Null Then LLM.StartButton = Picture.Load("/LastOS/LastOS.png")
+  Try StartButton.Picture = LLM.StartButton.Stretch(StartButton.W, StartButton.H)
+  
+  'Move/Size Description
+  Description.Left = Screenshot.Left + 5  'Padding for text
+  Description.Width = Screenshot.Width - 5
+  Description.Top = Screenshot.Top + Screenshot.Height + 5 'Add Padding
+  Description.Height = IconPic.Top - Description.Top - 5
+  
+  'MetaData
+  Dim FH As Integer
+  FH = URLTit.Font.H
+  
+  CategoryTit.Left = IconPic.Left + IconPic.Width + 5
+  CategoryTit.Top = IconPic.Top
+  ItemCategory.Left = CategoryTit.Left + CategoryTit.Width + 2
+  ItemCategory.Width = StartButton.Left - ItemCategory.Left - 2
+  ItemCategory.Top = IconPic.Top
+  
+  URLTit.Left = IconPic.Left + IconPic.Width + 5
+  URLTit.Top = CategoryTit.Top + (FH * 1)
+  ItemURL.Left = URLTit.Left + URLTit.Width + 2
+  ItemURL.Width = StartButton.Left - ItemURL.Left - 2
+  ItemURL.Top = URLTit.Top
+  
+  
+  PublisherTit.Left = URLTit.Left
+  ItemPublisher.Left = ItemURL.Left
+  PublisherTit.Top = URLTit.Top + (FH * 2)
+  ItemPublisher.Top = URLTit.Top + (FH * 2)
+  ItemPublisher.Width = StartButton.Left - ItemPublisher.Left - 2
+  
+  ReleasedTit.Left = URLTit.Left
+  ItemReleased.Left = ItemURL.Left
+  ReleasedTit.Top = URLTit.Top + (FH * 3)
+  ItemReleased.Top = URLTit.Top + (FH * 3)
+  ItemReleased.Width = StartButton.Left - ItemReleased.Left - 2
+  
+  InstallSizeTit.Left = URLTit.Left
+  ItemInstallSize.Left = ItemURL.Left
+  InstallSizeTit.Top = URLTit.Top + (FH * 4)
+  ItemInstallSize.Top = URLTit.Top + (FH * 4)
+  ItemInstallSize.Width = StartButton.Left - ItemInstallSize.Left - 2
+  
+  
+End
+
+
+Public Sub Form_Resize()
+  RedrawTheme()
+End
+
+Public Sub IconPic_MouseDown()
+  If CtrlPressed Then
+    'Data.Items.Columns.Width = -1 ' Make all columns the width they need to be, not good with long descriptions
+    'Data.Items.Columns.Width = 60
+    Data.Show
+  End If
+  CtrlPressed = False
+End
+
+
+Public Sub Items_Click()
+  Try MoviePlayer.Stop ' Stop Any Movies
+  MovieTimer.Enabled = False
+  Screenshot.Visible = True
+  MoviePlayer.Visible = False
+  If MouseRight Then 'Right clicked
+    'Return 'Don't do anything here -Doesn't update the screen but changed the index, bad idea, would have to reverted to last user selected item if we want this in the future
+  End If
+  Dim BT As String
+  Dim InstSize As Integer
+  Dim InstSizeText As String
+  Dim RefsID As Integer 'Uses RefID instead of having to remember to put -1 on all the keys
+  If Items.Current = Null Then Return 'Don't do anything if no/null items clicked on
+
+  ScreenShotCounter = 0
+  
+  CurrentItemKey = Items.Current.Key 'Val(Data.Items[Items.Current.Key - 1, Data.CRefID].Text) '-1 because the list is 0 based
+  RefsID = CurrentItemKey - 1
+  CurrentItem = Items.Current.Text
+
+  'Change Icon to current
+  'LLM.Icon = Data.Icons[CurrentItemKey].Picture.Stretch(IconPic.W, IconPic.H) 'Old Method, get from file as it's the fader not the icon shown
+  If Exist(Data.Items[RefsID, Data.CFileFader].Text) Then LLM.Icon = Picture.Load(Data.Items[RefsID, Data.CFileFader].Text).Stretch(IconPic.W, IconPic.H)
+  IconPic.Picture = LLM.Icon
+  
+  Title.Text = Data.Items[RefsID, Data.CTitleName].Text
+  
+  'Change Screenshot to current
+  If Exist(Data.Items[RefsID, Data.CFileScreenshot].Text) Then
+    LLM.Screenshot = Picture.Load(Data.Items[RefsID, Data.CFileScreenshot].Text) 'Don't Resize Screenshot stored in ram ' It's not fix it
+  Else ' Use Theme Picture
+    Try LLM.Screenshot = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Screenshot.jpg")
+  End If
+  
+  'Try Movie here
+  If Exist(Data.Items[RefsID, Data.CFileMovie].Text) Then
+    Try MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text ' Load the movie in case the users starts it    
+    Try MoviePlayer.Play
+    Wait (0.01) ' Let it do a quick play so it caches
+    Try MoviePlayer.Stop
+    MovieTimer.Restart
+    MovieTimer.Enabled = True
+  Else
+    Screenshot.Visible = True
+    MoviePlayer.Visible = False
+    MoviePlayer.Stop ' Just In Case
+    MovieTimer.Enabled = False 'Just in case
+  End If
+ 
+  'Screenshot.Picture = LLM.Screenshot.Stretch(Screenshot.W, Screenshot.H) 'Only resize the displayed picture, we want full res for Windows resizing
+  TmpImage = LLM.Screenshot.Image
+  TmpImage = TmpImage.Stretch(-1, Screenshot.Height)
+  Screenshot.Picture = TmpImage.Picture
+
+  'Change Description to current
+  Description.Text = ""  'Start Blank
+  
+  'Rating
+  If Data.Items[RefsID, Data.CRating].Text <> "" Then Description.Text &= "Rating: " & Data.Items[RefsID, Data.CRating].Text & "   "
+  
+  'License 3 Open Source, 2-Free, 1-Paid, 0 Unknown  
+  If Left(Trim(Data.Items[RefsID, Data.CLicense].Text)) = "0" Then Description.Text &= "License: Unknown" & "   "
+  If Left(Trim(Data.Items[RefsID, Data.CLicense].Text)) = "1" Then Description.Text &= "License: Paid" & "   "
+  If Left(Trim(Data.Items[RefsID, Data.CLicense].Text)) = "2" Then Description.Text &= "License: Free" & "   "
+  If Left(Trim(Data.Items[RefsID, Data.CLicense].Text)) = "3" Then Description.Text &= "License: Open" & "   "
+
+  'Shorter to use variable
+  BT = Data.Items[RefsID, Data.CBuildType].Text
+  
+  'OS (Linux or Windows)
+  Select Case Lower(BT)
+  Case "ssapp"
+    Description.Text &= "OS: Win" & "   " 
+  Case "ppapp"
+    Description.Text &= "OS: Win" & "   "
+  Case "ppgame"
+    Description.Text &= "OS: Win" & "   "
+  Case "llapp"
+    Description.Text &= "OS: Linux" & "   "
+  Case "llgame"
+    Description.Text &= "OS: Linux" & "   "
+  End Select
+
+  ''Categories (Moved to Meta Data)
+  'Description.Text &= "Category: " & Data.Items[RefsID, Data.CCategories].Text & "   "
+  
+  'Installed:
+  If LLMod.StoreMode = 0 Then ' Only do this in install mode
+    If Data.Items[RefsID, Data.CInstalled].Text = "T" Then Description.Text &= " Installed: Yes  "
+    If Data.Items[RefsID, Data.CInstalled].Text = "F" Then Description.Text &= " Installed: No  "
+  End If
+  
+  'Location
+  If LLMod.StoreMode = 1 Then 
+    Description.Text &= Chr(10) & "Location: " & LLMod.ExpPath(Data.Items[RefsID, Data.CPathINI].Text) & "   " 'CPathApp
+  Else
+    Description.Text &= Chr(10) & "Location: " & LLMod.ExpPath(Data.Items[RefsID, Data.CPathINI].Text) & "   "
+  End If
+  
+  Description.Text &= Chr(10) & Chr(10) & Replace(Data.Items[RefsID, Data.CDescription].Text, Chr(30), Chr(13)) 'Change RS to CRLF
+  Description.Pos = 0
+  Description.Wrap = True
+  
+  Dim MetaTop As Integer = IconPic.Top + 14 'Pixels down to make it more centered and to make the description not blend with it
+  
+  'Category
+  If Trim(Data.Items[RefsID, Data.CCategories].Text) <> "" Then
+    ItemCategory.Text = Data.Items[RefsID, Data.CCategories].Text
+    CategoryTit.Top = MetaTop
+    ItemCategory.Top = MetaTop
+    MetaTop = MetaTop + URLTit.Font.H
+    ItemCategory.Visible = True
+    CategoryTit.Visible = True
+  Else
+    ItemCategory.Text = ""
+    ItemCategory.Visible = False
+    CategoryTit.Visible = False
+  End If
+  
+  'URL Links
+  If Trim(Data.Items[RefsID, Data.CURL].Text) <> "" Then
+    ItemURL.Text = Replace(Data.Items[RefsID, Data.CURL].Text, "|", " ") 
+    URLTit.Top = MetaTop
+    ItemURL.Top = MetaTop
+    MetaTop = MetaTop + URLTit.Font.H
+    ItemURL.Visible = True
+    URLTit.Visible = True
+  Else
+    ItemURL.Text = ""
+    ItemURL.Visible = False
+    URLTit.Visible = False
+  End If
+  
+  'Publisher
+  If Trim(Data.Items[RefsID, Data.CPublisher].Text) <> "" Then
+    ItemPublisher.Text = Data.Items[RefsID, Data.CPublisher].Text
+    PublisherTit.Top = MetaTop
+    ItemPublisher.Top = MetaTop
+    MetaTop = MetaTop + URLTit.Font.H
+    ItemPublisher.Visible = True
+    PublisherTit.Visible = True
+  Else
+    ItemPublisher.Text = ""
+    ItemPublisher.Visible = False
+    PublisherTit.Visible = False
+  End If
+  
+  'Released
+  If Trim(Data.Items[RefsID, Data.CReleaseDate].Text) <> "" Then
+    ItemReleased.Text = Data.Items[RefsID, Data.CReleaseDate].Text
+    ReleasedTit.Top = MetaTop
+    ItemReleased.Top = MetaTop
+    MetaTop = MetaTop + URLTit.Font.H
+    ItemReleased.Visible = True
+    ReleasedTit.Visible = True
+  Else
+    ItemReleased.Text = ""
+    ItemReleased.Visible = False
+    ReleasedTit.Visible = False
+  End If
+  
+  'InstallSize
+    'Size
+  InstSize = 0
+  If Left(BT, 2) = "LL" Then
+    Try InstSize = Val(Data.Items[RefsID, Data.CInstalledSize].Text)
+    InstSize = InstSize / 1000
+  Else
+    Try InstSize = Val(Data.Items[RefsID, Data.CInstalledSize].Text)
+    InstSize = InstSize / 1000000 '(Convert To MB)
+  End If
+  
+  InstSizeText = Str(InstSize) & " MB"
+  
+  If InstSize > 0 Then
+    ItemInstallSize.Text = InstSizeText
+    InstallSizeTit.Top = MetaTop
+    ItemInstallSize.Top = MetaTop
+    MetaTop = MetaTop + URLTit.Font.H
+    ItemInstallSize.Visible = True
+    InstallSizeTit.Visible = True
+  Else
+    ItemInstallSize.Text = ""
+    ItemInstallSize.Visible = False
+    InstallSizeTit.Visible = False
+  End If
+  
+End
+
+Public Sub Form_Close()
+  'It cleans up it's own mess, no need to delete temp folders
+  'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded
+  'Shell "rm -r " & Chr(34) & Temp$("LLTmp*") & Chr(34) Wait  
+  ForceClose = True
+  Data.Close
+  Theme.Close
+  MiniInstaller.Close
+  LoadingScreen.Close
+End
+
+Public Sub Form_BeforeArrange()
+  Dim Done As Boolean = False
+  If LastOSLinuxStoreMain.Width < 400 Then
+    LastOSLinuxStoreMain.Width = 400
+    Done = True
+  End If
+  If LastOSLinuxStoreMain.Height < 280 Then
+    LastOSLinuxStoreMain.Height = 280
+    Done = True
+  End If  
+  If Done = True Then Stop Event
+End
+
+Public Sub StartButton_Enter()
+  Try StartButton.Picture = Theme.Res[4].Picture.Stretch(StartButton.Width, StartButton.Height)
+End
+
+Public Sub StartButton_Leave()
+  Try StartButton.Picture = Theme.Res[3].Picture.Stretch(StartButton.Width, StartButton.Height)
+End
+
+Public Sub StartButton_MouseDown()
+
+  StartButton.Top = StartButton.Top + 1
+  StartButton.Left = StartButton.Left + 1
+
+End
+
+Public Sub Category_Click()
+  If Category.Current <> Null Then CurrentCat = Category.Current.Text 'Error protection done right
+  GenerateMainList()
+  'Items_Click() 'Click Item
+End
+
+Public Sub Items_MouseWheel()
+  If CtrlPressed Then
+    'Title.Text = Str(ScaleItems)  
+    If Mouse.Delta > 0 Then
+      ScaleItems = ScaleItems + 1
+    Else If Mouse.Delta < 0 Then
+      ScaleItems = ScaleItems - 1
+    End If
+    If ScaleItems > 20 Then ScaleItems = 20
+    If ScaleItems < 5 Then ScaleItems = 5
+    
+    Items.Font.Size = ScaleItems
+    Category.Font.Size = ScaleItems   
+    
+    GenerateMainList() 'Needed to update icons
+    Stop Event
+  
+  End If
+
+End
+
+Public Sub Form_KeyPress()
+  If Key.Control Then
+    CtrlPressed = True
+  End If  
+End
+
+Public Sub Form_KeyRelease()
+    CtrlPressed = False  
+End
+
+Public Sub Category_KeyRelease()
+  Category_Click() 'Click Category
+    
+  If LLMod.StoreMode = 0 And Key.Code = Key["A"] And Key.Control Then SelectAll()
+  If LLMod.StoreMode = 0 And Key.Code = Key["N"] And Key.Control Then SelectNone()
+  If LLMod.StoreMode = 0 And Key.Code = Key["I"] And Key.Control Then SelectInvert()
+End
+
+Public Sub Items_KeyRelease()
+  Items_Click() 'Click Item
+  If LLMod.StoreMode = 0 And Key.Code = Key.Space Then Items_DblClick()   
+  If LLMod.StoreMode = 1 And Key.Code = Key.Return Then Items_DblClick() 'Pressing Enter on an item in Launch mode will launch it
+    
+  If LLMod.StoreMode = 0 And Key.Code = Key["A"] And Key.Control Then SelectAll()
+  If LLMod.StoreMode = 0 And Key.Code = Key["N"] And Key.Control Then SelectNone()
+  If LLMod.StoreMode = 0 And Key.Code = Key["I"] And Key.Control Then SelectInvert()
+  
+  If LLMod.StoreMode = 1 And Key.Code = Key["F"] And Key.Control Then AddFavorite
+  
+End
+
+Public Sub SelectAll()
+  Items.MoveFirst()
+  Items.Item.Selected = True
+  CurrentItemKey = Items.Item.Key
+  Dim I As Integer  
+  Dim IK As Integer
+  AutoSelect = True
+  IK = CurrentItemKey
+  For I = 0 To Items.Count - 1 ' Need to add refID instead of using I below for both subs    
+    'Message(Items.Keys[I])
+    'Message(Data.Items[Items.Keys[I] - 1, Data.CRefID].Text) '-1 because 0 based
+    Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "T" 'Because I copy the key from the main db I can use the list's key for the 
+    GenerateMainList() ' Draw Selection
+    CurrentItemKey = IK
+    If CurrentItemKey >= 0 Then Items[CurrentItemKey].Selected = True     
+  Next  
+  AutoSelect = False
+End
+Public Sub SelectNone()
+  Dim I As Integer
+  Dim IK As Integer
+  AutoSelect = True
+  IK = CurrentItemKey
+  For I = 0 To Items.Count - 1    
+    Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "F" 'Because I copy the key from the main db I can use the list's key for the 
+    GenerateMainList() ' Draw Selection
+    CurrentItemKey = IK
+    If CurrentItemKey >= 0 Then Items[CurrentItemKey].Selected = True     
+  Next
+  AutoSelect = False
+End
+
+Public Sub SelectInvert()
+  Items.MoveFirst()
+  Items.Item.Selected = True
+  CurrentItemKey = Items.Item.Key
+  Dim I As Integer  
+  Dim IK As Integer
+  AutoSelect = True
+  IK = CurrentItemKey
+  For I = 0 To Items.Count - 1 ' Need to add refID instead of using I below for both subs        
+    If Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "T" Then
+      Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "F" 
+    Else
+      Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "T"
+    End If
+    GenerateMainList() ' Draw Selection
+    CurrentItemKey = IK
+    If CurrentItemKey >= 0 Then Items[CurrentItemKey].Selected = True     
+  Next  
+  AutoSelect = False
+End
+
+
+Public Sub StartButTab_GotFocus()
+  Try StartButton.Picture = Theme.Res[4].Picture.Stretch(StartButton.Width, StartButton.Height)
+End
+
+Public Sub StartButTab_LostFocus()
+  Try StartButton.Picture = Theme.Res[3].Picture.Stretch(StartButton.Width, StartButton.Height)
+End
+
+Public Sub StartButTab_Click()
+  StartButton_MouseUp()
+End
+
+Public Sub LoadTheme()
+  'Load Theme.ini
+  Dim hFile As File
+  Dim sLine As String
+  hFile = Open LLM.AppPath & "/Themes/Theme.ini" For Input
+  Line Input #hFile, sLine
+  hFile.Close
+  LLM.ThemeName = Trim$(sLine)
+  
+  'Load Theme
+  Screenshot.Border = 0
+  
+  Try LLM.Wallpaper = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Wallpaper.jpg")
+  Try LLM.Screenshot = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Screenshot.jpg")
+  Try LLM.Icon = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Icon.png")
+  Try LLM.StartButton = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/StartButton.png")
+  
+  Description.Text = "Welcome to LastOSLinux Store, it can be used as an installer or a launcher.\n\nEnjoy"
+  
+  'Store Theme files in a hidden form
+  Theme.Res.Clear 'NEVER use clear???
+  
+  Theme.ResCount = 0
+  Theme.Res.Add(Theme.ResCount, Theme.ResCount, LLM.Wallpaper)
+  Theme.ResCount = Theme.ResCount + 1
+  Theme.Res.Add(Theme.ResCount, Theme.ResCount, LLM.Icon)
+  Theme.ResCount = Theme.ResCount + 1
+  Theme.Res.Add(Theme.ResCount, Theme.ResCount, LLM.Screenshot)
+  Theme.ResCount = Theme.ResCount + 1
+  Theme.Res.Add(Theme.ResCount, Theme.ResCount, LLM.StartButton)
+  
+  'Start Button Hover
+  Try TmpImage = Image.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/StartButtonHover.png")
+  
+  Theme.ResCount = Theme.ResCount + 1
+  Try Theme.Res.Add(Theme.ResCount, Theme.ResCount, TmpImage.Picture)
+End
+
+Public Sub AddFavorite()
+  Dim I As Integer  
+  If CurrentCat = "Favorites" Then Return' Don't need to add it twice
+  If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+  For I = 0 To FavCount - 1
+    If Lower(Favorites[I]) = Lower(Items[Items.Current.Key].Text) Then Return 'Don't add Existing
+  Next  
+  Favorites[FavCount] = Trim(Items[Items.Current.Key].Text)
+  FavCount = FavCount + 1
+  SaveFavorites
+End
+
+Public Sub RemoveFavorite()
+  Dim I As Integer  
+  If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+  For I = 0 To FavCount - 1
+    If Lower(Favorites[I]) = Lower(Items[Items.Current.Key].Text) Then
+      Favorites[I] = "" ' Remove from Favorites
+      If CurrentCat = "Favorites" Then GenerateMainList 'Make sure to remove from favorites displayed
+      SaveFavorites
+      Return 'Only need to remove one
+    End If
+  Next
+  SaveFavorites      
+End
+
+
+Public Sub SaveFavorites()
+  Dim I As Integer
+  Dim FavOut As String = ""
+  If Exist(LLM.AppPath & "/Favorites.ini") Then Try Kill (LLM.AppPath & "/Favorites.ini")
+  For I = 0 To FavCount - 1
+    If Favorites[I] <> "" Then FavOut &= Favorites[I] & Chr(10)
+  Next
+  Try File.Save(LLM.AppPath & "/Favorites.ini", FavOut)        
+End
+
+
+
+Public Sub LoadPreset()
+  Dim I, J As Integer
+  Dim FileIn As String
+  Dim InPreset As String
+  Dim Itm As String[]
+  Dim BuildTypeStr As String
+
+  Dialog.Title = "Choose a Preset ini file"
+  Dialog.Filter = ["*.ini", "Preset File"]  
+  If Exist(User.Home & "/Desktop") Then Dialog.Path = User.Home & "/Desktop"
+  If Exist(LLM.AppPath) Then Dialog.Path = LLM.AppPath
+  If Exist(LLM.AppPath & "/Presets") Then Dialog.Path = LLM.AppPath & "/Presets"
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  FileIn = Dialog.Path
+  If Not Exist(FileIn) Then Return
+  Try InPreset = File.Load(FileIn)
+  
+  InPreset = Replace(InPreset, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+  
+  Itm = Split(InPreset, Chr(10))
+  
+  'Unselect everything
+  For I = 0 To LLM.DataItemsRows
+    Data.Items[I, Data.CSelected].Text = "F"
+  Next
+  
+  For J = 0 To Itm.Count - 1
+    If Trim(Itm[j]) = "" Then Continue 'Skip Empty lines
+    
+    If Left(Itm[J], 1) = 1 Then BuildTypeStr = "ssApp"
+    If Left(Itm[J], 1) = 2 Then BuildTypeStr = "ppApp"
+    If Left(Itm[J], 1) = 3 Then BuildTypeStr = "ppGame"
+    If Left(Itm[J], 1) = 4 Then BuildTypeStr = "LLApp"
+    If Left(Itm[J], 1) = 5 Then BuildTypeStr = "LLGame"    
+    For I = 0 To LLM.DataItemsRows
+      If Data.Items[I, Data.CBuildType].Text = BuildTypeStr Then 'Correct Build Type
+        If Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "")) = Right(Itm[J], Len(Itm[J]) - 2) Then ' Reduced Name matches
+          'Select Item
+          Data.Items[I, Data.CSelected].Text = "T"
+          Break 'Only select one for now, will make it pick the newest versions later on Glenn
+        End If
+      End If
+    Next  
+  Next 
+  GenerateMainList() ' Draw Selection
+End
+
+
+Public Sub SavePreset()
+  Dim FileOut As String
+  Dim OutPreset As String
+  Dim I As Integer
+  Dim BuildTypeNum As Integer
+  OutPreset = ""
+  If LLM.DataItemsRows < 0 Then Return
+  For I = 0 To LLM.DataItemsRows
+    If Data.Items[I, Data.CSelected].Text = "T" Then
+      If Data.Items[I, Data.CBuildType].Text = "ssApp" Then BuildTypeNum = 1
+      If Data.Items[I, Data.CBuildType].Text = "ppApp" Then BuildTypeNum = 2
+      If Data.Items[I, Data.CBuildType].Text = "ppGame" Then BuildTypeNum = 3
+      If Data.Items[I, Data.CBuildType].Text = "LLApp" Then BuildTypeNum = 4
+      If Data.Items[I, Data.CBuildType].Text = "LLGame" Then BuildTypeNum = 5
+      OutPreset &= Str(BuildTypeNum) & "|" & Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "")) & Chr(10) 'Make Lower and remove spaces
+    End If
+  Next
+  Dialog.Title = "Save a Preset ini file"
+  Dialog.Filter = ["*.ini", "Preset File"]  
+  If Exist(User.Home & "/Desktop") Then Dialog.Path = User.Home & "/Desktop/MyPreset.ini"
+  If Exist(LLM.AppPath) Then Dialog.Path = LLM.AppPath & "/MyPreset.ini"
+  If Exist(LLM.AppPath & "/Presets") Then Dialog.Path = LLM.AppPath & "/Presets/MyPreset.ini"
+  Dialog.FilterIndex = 0
+  If Dialog.SaveFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  FileOut = Dialog.Path
+  Try File.Save(FileOut, OutPreset)
+End
+
+
+Public Sub SaveCurrentList()
+  Dim I As Integer
+  Dim OutputList As String
+  Dim FileOut As String
+  Dim IK As Integer
+  AutoSelect = True
+  IK = CurrentItemKey
+  OutputList = ""
+  Items.MoveFirst()
+  For I = 1 To Items.Count 'This is the only way to access them in order as shown, so doesn't use ref keys
+    OutputList &= Items.Item.Text & Chr(10)    
+    Items.MoveNext()
+
+  Next
+  CurrentItemKey = IK
+  FileOut = User.Home & "/Desktop/MyList.txt"
+  Try File.Save(FileOut, OutputList)
+  AutoSelect = False
+End
+
+Public Sub Items_MouseDown()  
+  If Mouse.Right Then
+    MouseRight = True    
+  Else
+    MouseRight = False
+  Endif
+End
+
+
+Public Sub Items_MouseUp() 'Resets mouse checks
+  If MouseRight = True Then 'Show Context Menu here
+    DoContextMenu() 'Move to mouse up so item changes first so context menu for items work as expected
+  End If
+  MouseRight = False
+End
+
+Public Sub WaitJustASecond_Timer()
+  WaitJustASecond.Enabled = False
+  WaitASec = False
+End
+
+
+Public Sub Items_KeyPress()
+  If Key.Control Then Return 'Skip any presses with Ctrl Held in
+  Dim I As Integer
+  '48 to 57 = 0,1...9
+  '65 to 90 = a to z
+  If (Key.code >= 48 And Key.code <= 57) Or (Key.code >= 65 And Key.code <= 90) Then 'Allow pressing the first letter to cycle through items with that as first letter
+    If Items.Count >= 1 Then 
+      If Items.Item <> Null Then
+        If Left(Items.Item.Text, 1) <> Chr(Key.Code) Then
+          Items.MoveFirst 'If pressed a key thats same as current item, move to next one
+        Else
+          Items.MoveNext
+        End If
+      End If
+      For I = 0 To Items.Count - 1
+        If Items.Item <> Null Then
+          If Left(Items.Item.Text, 1) = Chr(Key.Code) Then
+            Items.Item.Selected = True
+            Break          
+          End If
+          Items.MoveNext
+        End If
+        If Items.Item = Null Then Items.MoveFirst ' Jump back to top if gone off the deep end
+      Next 
+    End If
+  End If
+End
+
+Public Sub Category_KeyPress()
+  If Key.Control Then Return 'SKip any presses with Ctrl Held in
+  Dim I As Integer
+  '48 to 57 = 0,1...9
+  '65 to 90 = a to z
+  If (Key.code >= 48 And Key.code <= 57) Or (Key.code >= 65 And Key.code <= 90) Then 'Allow pressing the first letter to cycle through items with that as first letter
+    If Category.Count >= 1 Then 
+      If Category.Item <> Null Then
+        If Left(Category.Item.Text, 1) <> Chr(Key.Code) Then
+          Category.MoveFirst 'If pressed a key thats same as current item, move to next one
+        Else
+          Category.MoveNext
+        End If
+      End If
+      For I = 0 To Category.Count - 1
+        If Category.Item <> Null Then
+          If Left(Category.Item.Text, 1) = Chr(Key.Code) Then
+            Category.Item.Selected = True
+            Break          
+          End If
+          Category.MoveNext
+        End If
+        If Category.Item = Null Then Category.MoveFirst ' Jump back to top if gone off the deep end
+      Next 
+    End If
+  End If
+End
+
+Public Sub MakeDesktop(RefID As Integer) 'This only gets used by Launcher mode so multi shortcuts are per item anyway
+  Dim DesktopFile As String
+  Dim DesktopContent As String
+  Dim DesktopOutPath As String = User.Home & "/Desktop/"
+  
+  DesktopFile = Replace(Data.Items[RefID, Data.CLnkTitle].Text, " ", " ") & ".desktop" ' I did have it replced with ., Works fine with spaces though
+  
+  DesktopContent = "[Desktop Entry]" & Chr(10)
+  DesktopContent &= "Type=Application" & Chr(10)
+  DesktopContent &= "Version=1.0" & Chr(10)
+  DesktopContent &= "Name=" & Data.Items[RefID, Data.CLnkTitle].Text & Chr(10)
+  If Lower(Data.Items[RefID, Data.CBuildType].Text) = "llapp" Or Lower(Data.Items[RefID, Data.CBuildType].Text) = "llgame" Then
+    DesktopContent &= "Exec=" & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(10)
+  Else 'Windows item
+    DesktopContent &= "Exec=wine " & Chr(34) & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(34) & Chr(10)
+  End If
+  DesktopContent &= "Path=" & LLMod.ExpPath(Data.Items[RefID, Data.CLnkRunPath].Text) & Chr(10)
+  DesktopContent &= "Comment=" & Data.Items[RefID, Data.CLnkComment].Text & Chr(10)
+  If LLMod.ExpPath(Data.Items[RefID, Data.CLnkIcon].Text) <> "" Then 
+    DesktopContent &= "Icon=" & LLMod.ExpPath(Data.Items[RefID, Data.CLnkIcon].Text) & Chr(10) 'Use Lnk icon if provided
+  Else
+    DesktopContent &= "Icon=" & LLMod.ExpPath(Data.Items[RefID, Data.CFileIcon].Text) & Chr(10) ' Else use Store Icon
+  End If
+  DesktopContent &= "Categories=" & Data.Items[RefID, Data.CLnkCategories].Text & Chr(10)
+  DesktopContent &= "Terminal=" & Data.Items[RefID, Data.CLnkTerminal].Text & Chr(10)
+  ''''If LLBuildType = "LLGame" Then DesktopContent &= "PrefersNonDefaultGPU=true" & Chr(10) 'Make games use the GPU, it's a Mint Thing, but I don't think it'll cause issues. * I think this is an old trick, when you have the correct drivers setup, this isn't needed, so don't include it as on default.
+  File.Save(DesktopOutPath & DesktopFile, DesktopContent)
+  Chmod DesktopOutPath & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
+  
+  Message("Shortcut created on desktop for:" & Chr(10) & Chr(10) & Data.Items[RefID, Data.CTitleName].Text)  
+End
+
+'************************************************* CONTEXT MENU STUFF ******************************************
+
+Public Sub DoContextMenu()
+  Dim hMenu As Menu
+  Dim SelectMenu As Menu
+  Dim SortMenu As Menu
+  Dim HideMenu As Menu
+  
+  ContextMenu.Children.Clear
+  
+'Select Menu
+  If LLMod.StoreMode = 0 Then 'Install Mode only
+    SelectMenu = New Menu(ContextMenu, False)
+    SelectMenu.Text = "Select"
+    
+    hMenu = New Menu(SelectMenu) As "POP"
+    hMenu.Name = "Select1"
+    hMenu.Text = "Select All"
+    'hMenu.Shortcut = "Ctrl+A" ' No need for hotkeys listing, makes it ugly.
+    hMenu = New Menu(SelectMenu) As "POP"
+    hMenu.Name = "Select2"
+    hMenu.Text = "Select None"
+    hMenu = New Menu(SelectMenu) As "POP"
+    hMenu.Name = "Select3"
+    hMenu.Text = "Invert Selection"
+    hMenu = New Menu(ContextMenu) As "POP"
+  End If
+  
+'Sorting  
+  SortMenu = New Menu(ContextMenu, False)
+  SortMenu.Text = "Sort"
+  
+  hMenu = New Menu(SortMenu) As "POP"
+  hMenu.Name = "SortAlphabetical"
+  hMenu.Text = "Alphabetical"
+  If SortMethod = 0 Then hMenu.Checked = True
+  hMenu = New Menu(SortMenu) As "POP"
+  hMenu.Name = "SortUnsorted"
+  hMenu.Text = "Unsorted"
+  If SortMethod = 1 Then hMenu.Checked = True
+  hMenu = New Menu(SortMenu) As "POP"
+
+'Hide Items Menu  
+  HideMenu = New Menu(ContextMenu, False)
+  HideMenu.Text = "Hide"
+  hMenu = New Menu(HideMenu) As "POP"
+  If LLMod.StoreMode = 0 Then 'Install Mode only
+    hMenu.Name = "HideInstalled"
+    hMenu.Text = "Installed"
+    If HideInstalled = True Then hMenu.Checked = True
+    hMenu = New Menu(HideMenu) As "POP"
+  End If
+  
+  hMenu.Name = "HidePaid"
+  hMenu.Text = "Paid Items"
+  If HidePaid = True Then hMenu.Checked = True
+  hMenu = New Menu(HideMenu) As "POP"
+  
+  hMenu.Name = "HideWindows"
+  hMenu.Text = "Windows Items"
+  If HideWindows = True Then hMenu.Checked = True
+  hMenu = New Menu(HideMenu) As "POP"
+  hMenu.Name = "HideLinux"
+  hMenu.Text = "Linux Items"
+  If HideLinux = True Then hMenu.Checked = True
+  hMenu = New Menu(HideMenu) As "POP"
+  If LLMod.StoreMode = 0 Then 'Install Mode only
+    hMenu = New Menu(HideMenu) As "POP" 'Spacer
+    hMenu.Name = "HideApps"
+    hMenu.Text = "Apps"
+    If HideApps = True Then hMenu.Checked = True
+    hMenu = New Menu(HideMenu) As "POP"
+    hMenu.Name = "HideGames"
+    hMenu.Text = "Games"
+    If HideGames = True Then hMenu.Checked = True
+    hMenu = New Menu(HideMenu) As "POP"
+  End If    
+  hMenu = New Menu(ContextMenu) As "POP" 'Spacer
+  'Load and Save Presets
+  If LLMod.StoreMode = 0 Then 'Install Mode only    
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "LoadPreset"
+    hMenu.Text = "Load From Preset"
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "SavePreset"
+    hMenu.Text = "Save To Preset"
+  End If
+  
+  If LLMod.StoreMode = 1 Then 'Launcher Mode
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "AddFavorite"
+    hMenu.Text = "Add To Favorites"
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "RemoveFavorite"
+    hMenu.Text = "Remove From Favorites"
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "MakeDesktop"
+    hMenu.Text = "Make Desktop Shortcut"
+  End If
+  
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "SaveCurrentList"
+  hMenu.Text = "Save Current List"
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "ReScanItems"
+  hMenu.Text = "(Re)Scan For Items"
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "AddManualLocation"
+  hMenu.Text = "Add Manual Location"
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "OpenItemLocation"
+  hMenu.Text = "Open Item Location"
+  
+  ContextMenu.Popup(Mouse.ScreenX, Mouse.ScreenY)
+End
+
+Public Sub POP_Click()  
+
+  Dim I As Integer
+  
+  Select Last.Name
+    Case "Select1"            
+      SelectAll()
+    Case "Select2"      
+      SelectNone()
+    Case "Select3"      
+      SelectInvert()
+    Case "SortAlphabetical"      
+      SortMethod = 0 'Alphabetical
+      GenerateMainList()
+    Case "SortUnsorted"      
+      SortMethod = 1 'Unsorted      
+      GenerateMainList()
+    Case "HideInstalled"            
+      If HideInstalled = False Then ' Toggle Showing installed items
+        HideInstalled = True
+      Else
+        HideInstalled = False
+      End If
+      GenerateMainList()
+    Case "HidePaid"
+      If HidePaid = False Then ' Toggle Showing Paid items
+        HidePaid = True
+      Else
+        HidePaid = False
+      End If
+      GenerateMainList()
+    Case "HideWindows"
+      If HideWindows = False Then ' Toggle Showing Windows items
+        HideWindows = True
+      Else
+        HideWindows = False
+      End If
+      GenerateMainList()
+    Case "HideLinux"
+      If HideLinux = False Then ' Toggle Showing Linux items
+        HideLinux = True
+      Else
+        HideLinux = False
+      End If
+      GenerateMainList()
+    Case "HideApps"
+      If HideApps = False Then ' Toggle Showing App items
+        HideApps = True
+      Else
+        HideApps = False
+      End If
+      GenerateMainList()
+    Case "HideGames"
+      If HideGames = False Then ' Toggle Showing Game items
+        HideGames = True
+      Else
+        HideGames = False
+      End If
+      GenerateMainList()
+    Case "LoadPreset"      
+      LoadPreset()
+    Case "SavePreset"
+      SavePreset()
+    Case "AddFavorite"      
+      AddFavorite
+    Case "RemoveFavorite"
+      RemoveFavorite      
+    Case "MakeDesktop"
+      If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+      MakeDesktop(Items.Current.Key - 1)      
+    Case "SaveCurrentList" 
+      SaveCurrentList()
+    Case "ReScanItems"   
+      'Clear All Known Items first
+      Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+      'Get new items
+      GetItemPaths()
+      'Redo Categories
+      GenerateCategoryList()
+      'Redo main Lists
+      GenerateMainList()      
+    Case "OpenItemLocation"
+      If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+      Dim OpenPath As String
+      OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
+      
+      If Right(OpenPath, 1) <> "" Then OpenPath = Left(OpenPath, LLMod.InStrRevSingle(OpenPath, "/"))
+      If Exist(OpenPath) Then Shell "xdg-open " & OpenPath ' Open with default windows manager
+    Case "AddManualLocation"
+      Dialog.Title = "Choose a Folder to Scan for Items"
+      Dialog.Path = User.Home
+      Dialog.FilterIndex = 0
+      If Dialog.SelectDirectory() Then
+        Return ' User pressed Cancel -
+      Endif
+      If ManualLocationCount >= 1 Then
+        For I = 0 To ManualLocationCount - 1
+          If ManualLocation[I] = Dialog.Path Then Return ' Don't add existing location to manual locations
+        Next
+      End If
+      ManualLocation[ManualLocationCount] = Dialog.Path
+      ManualLocationCount = ManualLocationCount + 1
+      'Add selected folder and save to manual folder paths
+      SaveManualLocations      
+      'Rescan all items
+      'Clear All Known Items first
+      Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+      'Get new items
+      GetItemPaths()
+      'Redo Categories
+      GenerateCategoryList()
+      'Redo main Lists
+      GenerateMainList()            
+  End Select
+End
+
+Public Sub SaveManualLocations()
+  Dim I As Integer
+  Dim LocOut As String = ""
+  Dim FileOut As String
+  If LLMod.StoreMode = 0 Then
+    FileOut = LLM.AppPath & "/ManualLocations.ini"
+  Else
+    FileOut = LLM.AppPath & "/ManualLaunchLocations.ini"
+  End If
+  If Exist(FileOut) Then Try Kill (FileOut)
+  For I = 0 To ManualLocationCount - 1
+    If ManualLocation[I] <> "" Then LocOut &= ManualLocation[I] & Chr(10)
+  Next
+  Try File.Save(FileOut, LocOut)        
+End
+
+Public Sub LoadManualLocations()
+  Dim I As Integer
+  Dim FileIn As String
+  'Load in Manual Locations if they exists
+  
+  If LLMod.StoreMode = 0 Then
+    FileIn = LLM.AppPath & "/ManualLocations.ini"
+  Else
+    FileIn = LLM.AppPath & "/ManualLaunchLocations.ini"
+  End If
+  
+  ManualLocationCount = 0
+  
+  Dim InFile As String
+  Dim InFileSp As String[]
+  If Exist(FileIn) Then
+    Try InFile = File.Load(FileIn)
+    InFile = Replace(InFile, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+    InFileSp = Split(InFile, Chr(10))
+    For I = 0 To InFileSp.Count - 1
+      If Trim(InFileSp[I]) <> "" Then
+        ManualLocation[ManualLocationCount] = Trim(InFileSp[I])
+        ManualLocationCount = ManualLocationCount + 1
+      End If
+    Next
+  End If
+End
+
+
+
+Public Sub InstallDelay_Timer()
+   InstallingItem = True
+   Shell RunDelayExec Wait '  run it
+   InstallingItem = False
+End
+
+
+Public Sub Items_DblClick()
+  If WaitASec = True Then Return
+  Dim RefsID As Integer
+  If Items.Current = Null Then Return 'Dead Item
+  CurrentItemKey = Items.Current.Key
+  RefsID = CurrentItemKey - 1 ' Database is 0 based, list is 1 based
+  CurrentItem = Items.Current.Text
+  If LLMod.StoreMode = 1 Then
+    RunGame(RefsID)
+    Return 'Goes back to main routine
+  End If
+  If Data.Items[RefsID, 1].Text = "F" Then
+    Data.Items[RefsID, 1].Text = "T"
+    Items[Data.Items[RefsID, 0].Text].Background = &h664411 'Highlight Selected
+    SelectedItems = SelectedItems + 1
+    Items.Refresh 'So draws change
+  Else 
+    Data.Items[RefsID, 1].Text = "F"
+    Items[Data.Items[RefsID, 0].Text].Background = Color.Transparent 'Un Highlight
+    SelectedItems = SelectedItems - 1
+    Items.Refresh 'So draws change
+  End If
+  
+    'Update Stats  
+  If SelectedItems > 0 Then 
+    Stats.Text = Str(SelectedItems) & "/" & Str(Items.Count) & " Items"
+  Else 
+    Stats.Text = Str(Items.Count) & " Items"
+  End If
+  
+  'GenerateMainList() (Bad Idea)
+  'Items.Refresh 'Good Idea (No bad idea, do it up under change)
+End
+
+
+Public Sub StartButton_MouseUp()
+  'Don't allow pressing start on a Item and have it play the movie in the background
+  MoviePlayer.Stop ' Just In Case
+  MovieTimer.Enabled = False 'Just in case
+  
+  StartButton.Top = StartButton.Top - 1
+  StartButton.Left = StartButton.Left - 1
+  
+  If CurrentItemKey <> Null And CurrentItemKey > 0 Then
+    If Not Mouse.Inside(Last) Then Return 'This is the better check to see if inside the control or not, remarked out old if method
+    If Data.Items.Rows.Count = 0 Then Return 'No Items to run, quit        
+    If LLMod.StoreMode = 1 Then
+      If WaitASec Then Return
+      RunGame(CurrentItemKey - 1)
+    Else 'Installer Mode
+      RunMiniInstaller()       
+    End If
+  End If
+End
+
+Public Sub RunGame(GameID As Integer)
+  MoviePlayer.Stop ' Just In Case
+  MovieTimer.Enabled = False 'Just in case
+  Categories.SetFocus() ' This fixes the issue with the mouse not clicking items when it returns from running a game
+  Wait (0.03)
+  LastOSLinuxStoreMain.Hide ' Hide to run a game
+  Dim PathToUse As String
+  Dim BT As String
+  Dim RunMe As String
+  BT = Data.Items[GameID, Data.CBuildType].Text ' BuildType
+  If BT = "ppGame" Then 'It's a ppGame, use WINE
+    'Trying to use actual INI path instead of LNK one until I update it to generate the full path (shouldn't matter for launcher mode)   
+    
+    If Right(Data.Items[GameID, Data.CPathINI].Text, 1) <> "/" Then Data.Items[GameID, Data.CPathINI].Text &= "/" 'Add Slash so it works
+    PathToUse = Data.Items[GameID, Data.CPathINI].Text
+    RunMe = "wine " & Chr(34) & LLMod.ExpPath(Data.Items[GameID, Data.CPathINI].Text & Data.Items[GameID, Data.CLnkExec].Text) & Chr(34)
+    
+    If Not Exist(RunMe) Then 'Use the Actual install path otherwise      
+      If Right(Data.Items[GameID, Data.CLnkRunPath].Text, 1) <> "/" Then Data.Items[GameID, Data.CLnkRunPath].Text &= "/" 'Add Slash so it works
+      PathToUse = Data.Items[GameID, Data.CLnkRunPath].Text
+      RunMe = "wine " & Chr(34) & LLMod.ExpPath(Data.Items[GameID, Data.CLnkRunPath].Text & Data.Items[GameID, Data.CLnkExec].Text) & Chr(34)
+    End If
+    
+    LLMod.Execute(RunMe, PathToUse)
+  Else 'Linux game
+    RunMe = LLMod.ExpPath(Data.Items[GameID, Data.CLnkExec].Text) 'Expand $HOME path
+    PathToUse = Data.Items[GameID, Data.CLnkRunPath].Text
+    LLMod.Execute(RunMe, LLMod.ExpPath(PathToUse))'
+    'LLMod.Execute(RunMe, "") ' Trying without PWD set as it's not returning when it's done, Fixes it but also has issue with some WINE ones, so will have to fix in execute
+  End If
+  'Move focus back to Items List
+  LastOSLinuxStoreMain.Show ' Show once ran game
+  Wait (0.03)
+  Categories.SetFocus
+  Wait (0.03)
+  Items.SetFocus
+  Wait (0.03)
+  'Items.Refresh 'BAD Idea (Causes a weird delay)
+End
+
+
+'************************************************* MINI-INSTALLER, RUNNING stuff ******************************************
+
+Public Sub RunMiniInstaller()
+  Dim I As Integer
+  Dim BT As String
+  'Dim RunMe As String
+  Dim OldTitle As String
+  Dim InstallCount As Integer
+  For I = 0 To Data.Items.Rows.Count - 1
+    'Check if only one item, if so then install it but don't quit main form etc.
+    If Data.Items[I, Data.CSelected].Text = "T" Then InstallCount = InstallCount + 1
+  Next
+  BT = Data.Items[CurrentItemKey - 1, Data.CBuildType].Text ' BuildType 'The database is 0 based so use -1
+  If InstallCount = 0 Then 'Install only one item without mini installer
+    If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
+      OldTitle = Title.Text
+      Title.Text = "Installing " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text    
+      Wait (0.07) ' Lets the form Redraw before it starts installing  
+      If BT = "ppApp" Or BT = "ppGame" Then
+        LLMod.InstallppFile(Data.Items[CurrentItemKey - 1, Data.CFileINI].Text)
+      Else 'ssApp, still uses SetupS
+        Shell "wine " & Chr(34) & Data.Items[CurrentItemKey - 1, Data.CFileINI].Text & Chr(34) Wait 'This ties up the whole Store, no work around yet?
+      End If
+      'RunItem("wine " & Chr(34) & Data.Items[CurrentItemKey - 1, Data.CFileINI].Text & Chr(34))
+      Title.Text = "Installed " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text  'OldTitle
+      Wait (0.07) 'Redraw
+    Else 'Linux Item
+      OldTitle = Title.Text
+      Title.Text = "Installing " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text    
+      Wait (0.07) ' Lets the form Redraw before it starts installing  
+      LLMod.InstallLLFile(Data.Items[CurrentItemKey - 1, Data.CFileINI].Text) ' Need to use FileINI not PathINI ' Uses Current Item value
+      Title.Text = "Installed " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text  'OldTitle
+      Wait (0.07) 'Redraw
+    End If   
+    Return 'Just go back to main store, user can click off the item.
+  End If
+  
+  'Build install list and go through them all
+  
+  LastOSLinuxStoreMain.Hide
+  MiniInstaller.ListInstall.Clear ' This was used for ListView and not TableView
+
+  For I = 0 To Data.Items.Rows.Count - 1
+    If Data.Items[I, Data.CSelected].Text = "T" Then 'Only do selected items     
+      If Data.Items[I, Data.CPriority].Text <> "" Then
+        MiniInstaller.ListInstall.Add(Data.Items[I, Data.CRefID].Text, Data.Items[I, Data.CPriority].Text & ")" & Data.Items[I, Data.CTitleName].Text)
+      Else
+        MiniInstaller.ListInstall.Add(Data.Items[I, Data.CRefID].Text, "5)" & Data.Items[I, Data.CTitleName].Text)
+      End If
+    End If
+  Next
+  Wait (0.3) 'Redraw
+  
+  'Sort Order here
+  MiniInstaller.ListInstall.Sorted = True ' Can only make it alphabetical for now so remove the priority number from the Title below
+  Dim IT As String
+  MiniInstaller.ListInstall.Sorted = False ' Turn off sorting before renaming them or they move to new sorting location.
+  For I = 0 To InstallCount - 1
+    IT = MiniInstaller.ListInstall[MiniInstaller.ListInstall.Keys[I]].Text
+    MiniInstaller.ListInstall[MiniInstaller.ListInstall.Keys[I]].Text = Right(IT, Len(IT) - InStr(IT, ")", 1))
+  Next
+  
+  Dim ItemINI As String
+  
+  'Do Installs
+  MiniInstaller.Show  
+  Wait (0.1) 'Make sure it has time to draw the pause button
+ 
+  MiniInstaller.ListInstall.MoveFirst()
+  For I = 1 To InstallCount
+    'Move Cursor to current item
+    MiniInstaller.ListInstall.Item.Selected = True
+    MiniInstaller.ListInstall.Item.EnsureVisible()
+    
+    MiniInstaller.Text = Str(I) & "/" & Str(InstallCount)
+    MiniInstaller.Stats.Text = Str(I) & "/" & Str(InstallCount)
+    Wait (0.07) 'Redraw so list moves (Can cause a little flicker, but more useful than being stuck at the bottom of the list or a black form not drawn at all)
+    
+    BT = Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CBuildType].Text ' BuildType    
+        
+    ItemINI = Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text ' Grab ini file it'll install
+    
+    If LLM.ClosedMini = True Then Break 'Closed Form
+    If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
+      If BT = "ppGame" Or BT = "ppApp" Then ' FrizzleFrizzle Trying with apps, but I will need to add %Extract% support to ppApp.cmd
+        LLMod.InstallppFile(Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text)
+      Else ' It's a ssApp and SetupS can handle them for now
+        'Shell "wine " & Chr(34) & Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text & Chr(34) Wait
+        LLMod.Execute("wine " & Chr(34) & Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text & Chr(34), Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CPathINI].Text)
+      End If      
+    Else 'Linux Item      
+      LLMod.InstallLLFile(ItemINI) ' Need to use FileINI not PathINI
+    End If   
+  
+    If LLM.ClosedMini = True Then Break 'Closed Form
+    Wait (0.07) 'Redraw  
+    If LLM.ClosedMini = True Then Break 'Closed Form check 2
+    'Move to Next Item
+    MiniInstaller.ListInstall.MoveNext()
+    While MiniInstaller.Paused = True 'If user pauses, then it really pauses
+      Try Wait (0.1)
+    Wend
+    If LLM.ClosedMini = True Then Break 'Closed Form check 3 (want to make 100% sure we exit asap)
+  Next
+  If LLMod.RefreshPanel = True Then
+    LLMod.RefreshPanel = False
+    Shell "cinnamon --replace" 'Refresh applets so the panel shortcuts show without rebooting
+  End If
+  'Message("Test")
+  'GlennGlenn FrizzleFrizzle, Trying to see if this can update the apps without causing issues, else it wont shw items as installed
+  'Can quit here if set in the options (which I haven't added yet)
+  
+  'Clear All Known Items first
+  Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+  'Get new items    
+  GetItemPaths()  
+  'Redo Categories
+  GenerateCategoryList()
+  'Redo main Lists
+  GenerateMainList()  
+  MiniInstaller.Hide
+  'Move back to first item
+  Items.MoveFirst()
+ 'Move Cursor to current item
+  Items.Item.Selected = True
+  Items_Click() 'Load data and screenshot etc  
+  LastOSLinuxStoreMain.Show
+  Title.Text = "Installed " & Str(InstallCount) & " Items"
+End
+
+Public Sub Screenshot_MouseUp()
+  If Items.Current <> Null Then ' On an Item
+    MovieTimer.Enabled = False 'Disable the movie from playing if user clicks to cycle through the screenshots
+    Try MoviePlayer.Stop ' Stop it too
+    Dim ScreenSh As String
+    ScreenShotCounter = ScreenShotCounter + 1
+    ScreenSh = Data.Items[Items.Current.Key - 1, Data.CFileScreenshot].Text
+    ScreenSh = Left(ScreenSh, Len(ScreenSh) - 4) & Str(ScreenShotCounter) & ".jpg"
+    If Not Exist(ScreenSh) Then 'Loop Screenshots
+      ScreenSh = Data.Items[Items.Current.Key - 1, Data.CFileScreenshot].Text
+      ScreenShotCounter = 0
+    End If
+    Try LLMod.LLScreenshot = Image.Load(ScreenSh)
+    Try LLM.Screenshot = LLMod.LLScreenshot.Picture 'Copy here so can resize form and not have it revert to original pic    
+    Try TmpImage = LLMod.LLScreenshot 'LLM.Screenshot.Image
+    Try TmpImage = TmpImage.Stretch(-1, Screenshot.Height)
+    Try Screenshot.Picture = TmpImage.Picture
+  End If
+End
+
+
+Public Sub ItemURL_MouseDown()
+
+  Shell "xdg-open " & ItemURL.Text
+
+End
+
+Public Sub MoviePlayer_MouseDown()
+
+  If MoviePlayer.State = 4 Then ' 4 Playing, 3 Paused
+    MoviePlayer.Pause
+  Else
+    MoviePlayer.Play
+  End If
+End
+
+Public Sub MoviePlayer_DblClick()
+  'Message("Here")
+  'MoviePlayer.Position
+  'Make it fullscreen here ' Nah I'll need a new form and do it like that, it doesn't have full screen mode and the form controls go over the top of it.
+  'MoviePlayer.Left = 0
+  'MoviePlayer.Top = 0
+  'MoviePlayer.Width = LastOSLinuxStoreMain.Width
+  'MoviePlayer.Height = LastOSLinuxStoreMain.Height
+  
+  Try MoviePlayer.Stop ' Stop movie and show screenshot again if double clicked
+  Screenshot.Visible = True
+  MoviePlayer.Visible = False  
+
+End
+
+Public Sub MovieTimer_Timer()
+  MovieTimer.Enabled = False
+  MoviePlayer.Border = False ' Hide Border
+  MoviePlayer.ShowControl = False
+  
+  If Exist(Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text) Then 
+    Screenshot.Visible = False
+    MoviePlayer.Visible = True
+    MoviePlayer.Volume = 0.2 '20%
+    'MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text 'Moved this back to item click so it can preload the movie
+    MoviePlayer.Play
+  Else
+    Screenshot.Visible = True
+    MoviePlayer.Visible = False
+  End If
+
+End
+
+Public Sub MoviePlayer_AboutToFinish()
+  MoviePlayer.Stop ' Stop early
+  Screenshot.Visible = True
+  MoviePlayer.Visible = False  
+End
+

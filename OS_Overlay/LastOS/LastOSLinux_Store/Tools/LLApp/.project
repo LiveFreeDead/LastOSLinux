@@ -1,0 +1,14 @@
+# Gambas Project File 3.0
+Title=LLApp
+Startup=LLApp
+Icon=Tools/LastOS.png
+Version=1.0.213
+Component=gb.image
+Component=gb.gui.qt
+Component=gb.form
+Description="LLApp Editor, Builder and Installer"
+Authors="Glenn Chugg"
+TabSize=2
+Language=en_AU
+Vendor=LastOS
+Packager=1

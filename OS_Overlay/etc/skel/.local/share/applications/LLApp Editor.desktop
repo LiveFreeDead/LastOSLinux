@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=LLApp Editor
+Exec="/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas"
+Path=/LastOS/LastOSLinux_Store/Tools/LLApp/
+Comment=Insert LastOS DVD or USB to show items
+Terminal=false
+Icon=/LastOS/LastOSLinux_Store/Tools/LLApp/.app.png
+Type=Application
+Categories=Other
+X-Desktop-File-Install-Version=0.26

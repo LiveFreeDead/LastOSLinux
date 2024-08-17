@@ -1,0 +1,204 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Menu
+  PUBLIC '-//freedesktop//DTD Menu 1.0//EN'
+  'http://standards.freedesktop.org/menu-spec/menu-1.0.dtd'>
+<Menu>
+	<Name>Applications</Name>
+	<MergeFile type="parent">/etc/xdg/menus/cinnamon-applications.menu</MergeFile>
+	<Menu>
+		<Name>Other</Name>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-Available PlugIns.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-Available Languages.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-ssCleaner-Clean StartMenu only.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-About IrfanView.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-All SetupS-tech Regenerator.desktop</Filename>
+		</Exclude>
+		<Include>
+			<Filename>wine-Programs-SetupS SendTo-ssCleaner-Clean ALL dud Shortcuts.desktop</Filename>
+		</Include>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-Command line Options.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Digital Certificate for VBA Projects.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-IrfanView 64 4.67.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-IrfanView Help.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-IrfanView - Thumbnails.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-Kazz.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-LastOS.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Clip Organizer.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Office Diagnostics.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Office Picture Manager.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-ppApps Regenerator.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-ppGames Regenerator.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-Resort.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-ssTek Help.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-All Drives-ppApps Regenerator (all drives).desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-All Drives-ppGames Regenerator (all drives).desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-ssApps Regenerator.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-Standard.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-IrfanView-Uninstall IrfanView.desktop</Filename>
+		</Exclude>
+		<Exclude>
+			<Filename>wine-Programs-SetupS SendTo-Regenerator-ppApps Regenerator.desktop</Filename>
+		</Exclude>
+	</Menu>
+	<Menu>
+		<Name>wine-wine</Name>
+		<Menu>
+			<Name>wine-Programs</Name>
+			<Menu>
+				<Name>wine-Programs-IrfanView</Name>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-About IrfanView.desktop</Filename>
+				</Exclude>
+				<AppDir>/home/glenn/.local/share/applications</AppDir>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-Available Languages.desktop</Filename>
+				</Exclude>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-Available PlugIns.desktop</Filename>
+				</Exclude>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-Command line Options.desktop</Filename>
+				</Exclude>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-IrfanView 64 4.67.desktop</Filename>
+				</Exclude>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-IrfanView Help.desktop</Filename>
+				</Exclude>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-IrfanView - Thumbnails.desktop</Filename>
+				</Exclude>
+				<Exclude>
+					<Filename>wine-Programs-IrfanView-Uninstall IrfanView.desktop</Filename>
+				</Exclude>
+				<Include>
+					<Filename>wine-Programs-IrfanView-What's New.desktop</Filename>
+				</Include>
+			</Menu>
+			<Menu>
+				<Name>wine-Programs-Microsoft Office</Name>
+				<Menu>
+					<Name>wine-Programs-Microsoft Office-Microsoft Office Tools</Name>
+					<Exclude>
+						<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Digital Certificate for VBA Projects.desktop</Filename>
+					</Exclude>
+					<AppDir>/home/glenn/.local/share/applications</AppDir>
+					<Exclude>
+						<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Clip Organizer.desktop</Filename>
+					</Exclude>
+					<Include>
+						<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Office 2007 Language Settings.desktop</Filename>
+					</Include>
+					<Exclude>
+						<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Office Diagnostics.desktop</Filename>
+					</Exclude>
+					<Exclude>
+						<Filename>wine-Programs-Microsoft Office-Microsoft Office Tools-Microsoft Office Picture Manager.desktop</Filename>
+					</Exclude>
+				</Menu>
+			</Menu>
+			<Menu>
+				<Name>wine-Programs-SetupS SendTo</Name>
+				<Exclude>
+					<Filename>wine-Programs-SetupS SendTo-ssTek Help.desktop</Filename>
+				</Exclude>
+				<AppDir>/home/glenn/.local/share/applications</AppDir>
+				<Menu>
+					<Name>wine-Programs-SetupS SendTo-Regenerator</Name>
+					<Menu>
+						<Name>wine-Programs-SetupS SendTo-Regenerator-All Drives</Name>
+						<Exclude>
+							<Filename>wine-Programs-SetupS SendTo-Regenerator-All Drives-ppGames Regenerator (all drives).desktop</Filename>
+						</Exclude>
+						<AppDir>/home/glenn/.local/share/applications</AppDir>
+						<Exclude>
+							<Filename>wine-Programs-SetupS SendTo-Regenerator-All Drives-ppApps Regenerator (all drives).desktop</Filename>
+						</Exclude>
+					</Menu>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-Regenerator-All SetupS-tech Regenerator.desktop</Filename>
+					</Exclude>
+					<AppDir>/home/glenn/.local/share/applications</AppDir>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-Regenerator-ppApps Regenerator.desktop</Filename>
+					</Exclude>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-Regenerator-ppGames Regenerator.desktop</Filename>
+					</Exclude>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-Regenerator-ssApps Regenerator.desktop</Filename>
+					</Exclude>
+				</Menu>
+				<Menu>
+					<Name>wine-Programs-SetupS SendTo-ssCleaner</Name>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-ssCleaner-Clean ALL dud Shortcuts.desktop</Filename>
+					</Exclude>
+					<AppDir>/home/glenn/.local/share/applications</AppDir>
+				</Menu>
+				<Menu>
+					<Name>wine-Programs-SetupS SendTo-StartMenu Resorting</Name>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-Kazz.desktop</Filename>
+					</Exclude>
+					<AppDir>/home/glenn/.local/share/applications</AppDir>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-LastOS.desktop</Filename>
+					</Exclude>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-Resort.desktop</Filename>
+					</Exclude>
+					<Exclude>
+						<Filename>wine-Programs-SetupS SendTo-StartMenu Resorting-Standard.desktop</Filename>
+					</Exclude>
+				</Menu>
+			</Menu>
+		</Menu>
+	</Menu>
+</Menu>

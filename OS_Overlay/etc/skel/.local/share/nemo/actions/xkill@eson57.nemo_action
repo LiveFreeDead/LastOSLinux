@@ -1,0 +1,18 @@
+[Nemo Action]
+Name=XKill
+Name[ca]=XKill
+Name[es]=XKill
+Name[fi]=XKill
+Name[fr]=XKill
+Name[hu]=XKill
+Name[it]=XKill
+Name[nl]=XKill
+Name[pt_BR]=XKill
+Name[sv]=XKill
+Name[zh_CN]=XKill
+Exec=<xkill@eson57/xkill@eson57.sh>
+Icon-Name=application-exit-symbolic
+Selection=none
+Extensions=any;
+Conditions=desktop;
+Dependencies=zenity;

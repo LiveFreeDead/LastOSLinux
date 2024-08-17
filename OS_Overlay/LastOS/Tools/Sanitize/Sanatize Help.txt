@@ -1,0 +1,13 @@
+Usage:
+
+Edit C:\Windows\Removes.ini to add word to be removed, by putting a * before a word means it will be removed from the middle of another word.
+
+Holding CTRL when you execute will remove all text before the episode number of a series (useful if you wish to remove the name of a series from the file name).
+* If you also hold Shift while holding Ctrl then it will only keep the Series name and Episode Number instead.
+* Holding CTRL while on Movie (no Episode Numbers) will crop it at 1080p or 720p (Shift has no effect)
+
+Holding Pause when you execute will remove all the " - " seperator from your file names.
+
+Holding Scroll Lock when you execute will place brackets around any year date "2016" = "(2016)"
+
+* You can combine holding keys when you execute
