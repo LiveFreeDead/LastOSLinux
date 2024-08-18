@@ -1,0 +1,4 @@
+#!/bin/bash
+
+gnome-screenshot --delay 5 -p -f ~/Desktop/Screenshot-$(date +%Y-%m-%d-%H-%M-%S).png
+
