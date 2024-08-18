@@ -45,7 +45,7 @@ sudo apt-get install -y nodejs
 
 #Just install local version
 #sudo dpkg --purge penguins-eggs
-sudo dpkg -i debs/penguins-eggs_10.0.24-1_amd64.deb
+sudo dpkg -i debs/penguins-eggs_10.0.27-1_amd64.deb
 sudo apt --fix-broken install -y
 
 #Install Calamares installer (It also configures it, but I do it later on as well just in case)
