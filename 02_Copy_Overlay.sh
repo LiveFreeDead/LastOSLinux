@@ -10,8 +10,8 @@ mkdir -m a=rwx $HOME/Overlay
 sudo 7z x -y Extras/Windows-10-master.zip -o/usr/share/icons
 sudo chmod -R 755 /usr/share/icons/Windows-10-master
 
-#Extract SymLinks
-sudo tar -xf Extras/SymLinks.tar -C /
+#Extract SymLinks (Also Contains LastOS Theme as it has symlinks)
+sudo tar -xf Extras/OSOverlay-SymLinks.tar -C /
 
 #Delete Previous Overlay for LastOS folder so I can apply changes to previous built OS's, May add skel to this eventually
 sudo rm -rf "/LastOS"

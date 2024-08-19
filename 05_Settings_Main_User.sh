@@ -3,6 +3,9 @@
 #Set No effects (Feels faster)
 gsettings set org.cinnamon desktop-effects false
 
+#Transparent Panels
+dconf write /org/cinnamon/enabled-extensions "['transparent-panels@germanfr']"
+
 #Set Clock to 12H not 24H
 gsettings set org.cinnamon.desktop.interface clock-use-24h false
 
@@ -13,7 +16,7 @@ gsettings set org.cinnamon.desktop.background picture-uri 'file:///usr/share/bac
 gsettings set x.dm.slick-greeter background '/usr/share/backgrounds/lastos/Login.jpg'
 
 #Desktop Icon Grid Size and disable sorting by default
-gsettings set org.nemo.desktop use-desktop-grid true
+gsettings set org.nemo.desktop use-desktop-grid false
 gsettings set org.nemo.desktop horizontal-grid-adjust 0.4
 gsettings set org.nemo.desktop vertical-grid-adjust 0.4
 
@@ -63,9 +66,10 @@ gsettings set org.gnome.desktop.interface monospace-font-name 'DejaVu Sans Mono 
 gsettings set org.cinnamon.desktop.wm.preferences titlebar-font 'Ubuntu Medium 9'
 
 #Set Dark Theme
-gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-L-Dark-Blue"
+gsettings set org.cinnamon.desktop.interface gtk-theme "LastOS"
 gsettings set org.cinnamon.desktop.interface icon-theme "Windows-10-master"
-gsettings set org.cinnamon.theme name "Mint-L-Dark-Blue"
+gsettings set org.cinnamon.theme name "LastOS"
+gsettings set org.gnome.desktop.interface gtk-theme "LastOS"
 
 #Set White Mouse Cursor
 gsettings set org.cinnamon.desktop.interface cursor-theme "DMZ-White"
@@ -85,7 +89,6 @@ gsettings set org.nemo.preferences quick-renames-with-pause-in-between true
 gsettings set org.nemo.preferences default-folder-viewer 'compact-view'
 #gsettings set org.nemo.preferences inherit-folder-viewer true #Not Needed when default view is set
 gsettings set org.nemo.preferences show-full-path-titles true
-gsettings set org.nemo.desktop use-desktop-grid false
 
 gsettings set org.nemo.preferences show-new-folder-icon-toolbar true
 gsettings set org.nemo.preferences show-open-in-terminal-toolbar true
@@ -117,6 +120,7 @@ gsettings set org.nemo.preferences show-hidden-files false
 
 #Restart Desktop (Let Icon Auto-Arrange be disable for this Session)
 nemo-desktop --quit
+nemo --no-default-window &
 
 numlockx on
 
