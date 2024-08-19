@@ -14,7 +14,9 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     <mime-type type=\"application/x-$APP\">
         <comment>$COMMENT</comment>
         <icon name=\"application-x-$APP\"/>
-        <glob pattern=\"*.$EXT\"/>
+        <glob pattern=\"*.lla\"/>
+        <glob pattern=\"ppApp.app\"/>
+        <glob pattern=\"*ppApp.apz\"/>
     </mime-type>
 </mime-info>" > $APP-mime.xml
 
@@ -55,7 +57,9 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     <mime-type type=\"application/x-$APP\">
         <comment>$COMMENT</comment>
         <icon name=\"application-x-$APP\"/>
-        <glob pattern=\"*.$EXT\"/>
+        <glob pattern=\"*.llg\"/>
+        <glob pattern=\"*.ppg\"/>
+        <glob pattern=\"*.pgz\"/>
     </mime-type>
 </mime-info>" > $APP-mime.xml
 

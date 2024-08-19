@@ -1,0 +1,159 @@
+{
+    "head0": {
+        "type": "header",
+        "description": "Settings for diskspace@schorschii"
+    },
+
+    "head1": {
+        "type": "header",
+        "description": "General"
+    },
+    "type": {
+        "type": "combobox",
+        "default": "filesystem",
+        "description": "Monitor a file system or RAM usage",
+        "tooltip": "Choose, if this desklet should show file system or RAM usage.",
+        "options" : {
+            "Filesystem" : "filesystem",
+            "RAM": "ram",
+            "Swap": "swap"
+        }
+    },
+    "filesystem": {
+        "type": "filechooser",
+        "default": "/",
+        "description": "Filesystem to monitor",
+        "tooltip": "Select the file system, which you want to monitor.",
+        "allow-none" : true,
+        "select-dir" : true
+    },
+    "onclick-action": {
+        "type": "combobox",
+        "default": "filemanager",
+        "description": "Action on mouse click",
+        "tooltip": "Choose what to do when the desklet was clicked.",
+        "options" : {
+            "Open File Manager" : "filemanager",
+            "Open Partition Manager" : "partitionmanager",
+            "Open System Monitor" : "sysmonitor",
+            "Nothing" : "nothing"
+        }
+    },
+    "size-prefix": {
+        "type": "combobox",
+        "default": "binary",
+        "description": "Size Prefix",
+        "options" : {
+            "Decimal" : "decimal",
+            "Binary": "binary"
+        }
+    },
+    "reserved-blocks-as-used-space": {
+        "type": "checkbox",
+        "description": "Show reserved blocks as used space",
+        "tooltip": "Reserved blocks are useable for the root user only and that's why displayed as used space by default.",
+        "default": true
+    },
+
+    "head2": {
+        "type": "header",
+        "description": "Visual"
+    },
+    "design": {
+        "type": "combobox",
+        "default": "thin",
+        "description": "Design",
+        "options" : {
+            "Thin": "thin",
+            "Compact": "compact",
+            "Classic (Thick)": "classic"
+        }
+    },
+    "text-view": {
+        "type": "combobox",
+        "default": "used-size",
+        "description": "Text",
+        "options" : {
+            "Name and total space" : "name-size",
+            "Used and total space": "used-size",
+            "Total and used space": "size-used",
+            "Free and total space": "free-size",
+            "Total and free space": "size-free",
+            "No text": "none"
+        }
+    },
+    "hide-decorations": {
+        "type": "checkbox",
+        "description": "Hide decorations",
+        "default": false
+    },
+    "draw-free-space": {
+        "type": "checkbox",
+        "description": "Draw free/unused space (gray)",
+        "default": true
+    },
+    "use-own-circle-color": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Use a custom circle color",
+        "value": false
+    },
+    "circle-color": {
+        "type": "colorchooser",
+        "default": "rgba(83,199,160,1.0)",
+        "description": "Circle color",
+        "dependency": "use-own-circle-color"
+    },
+    "text-color": {
+        "type": "colorchooser",
+        "default": "rgba(255,255,255,1.0)",
+        "description": "Text color"
+    },
+    "scale-size": {
+        "type": "spinbutton",
+        "default": 1,
+        "min": 0.4,
+        "max": 10,
+        "step": 0.05,
+        "units": "scale factor",
+        "description": "Desklet size",
+        "tooltip": "Increase or decrease the size of this desklet using this scale factor."
+    },
+
+    "head3": {
+        "type": "header",
+        "description": "Custom desklet label (only visible if decorations are enabled)"
+    },
+    "use-custom-label": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Use a custom desklet label",
+        "tooltip": "Checking this box allows you to set a custom label in the field below.",
+        "value": false
+    },
+    "custom-label": {
+        "type": "entry",
+        "default": "Filesystem /",
+        "description": "Custom desklet label",
+        "indent": true,
+        "dependency": "use-custom-label",
+        "tooltip": "Set your custom label here. This field is unavailable unless the checkbox above is enabled."
+    },
+
+    "random-circle-color-generated": {
+        "type": "generic",
+        "default": false
+    },
+    "random-circle-color-r": {
+        "type": "generic",
+        "default": 1
+    },
+    "random-circle-color-g": {
+        "type": "generic",
+        "default": 1
+    },
+    "random-circle-color-b": {
+        "type": "generic",
+        "default": 1
+    }
+}
