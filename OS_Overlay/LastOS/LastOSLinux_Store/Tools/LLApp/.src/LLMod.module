@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.0.9 2024-08-17-02
+'LastOS v1.1.0 2024-08-19-01
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -10,6 +10,8 @@ Public RefreshPanel As Boolean = False
 'Public Win7zPath As String = "/home/tester/.wine/drive_c/Program Files/SetupS.SendTo/Tools/7z.exe"
 'Public Win7zCmd As String = "/home/tester/.wine/drive_c/Program Files/SetupS.SendTo/Tools/7z.exe -mtc -aoa x "
 Public Win7zCmd As String = Chr(34) & "C:" & Chr(92) & "Program Files" & Chr(92) & "SetupS.SendTo" & Chr(92) & "Tools" & Chr(92) & "7z.exe" & Chr(34) & " -mtc -aoa x "
+
+Public Linux7z As String = Application.Path & "/Tools/7zzs"
 
 'LLItem Data
 Public LLTitle As String
@@ -206,7 +208,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
     If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     If Exist(TmpPath) Then Shell "chmod 775 " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "7z -mtc -aoa e " & Chr(34) & FileIn & Chr(34) & " -o" & Chr(34) & TmpPath & Chr(34) & " *.app *.ppg *App.jpg *App.png *App.ico *Game.jpg *Game.png *Game.ico" Wait
-    Extract(FileIn, TmpPath, " *.app *.ppg *App*.jpg *App.png *App.ico *Game*.jpg *Game.png *Game.ico *Game.mp4 *App.mp4")
+    ExtractFast(FileIn, TmpPath, " *.app *.ppg *App*.jpg *App.png *App.ico *Game*.jpg *Game.png *Game.ico *Game.mp4 *App.mp4")
 
     OriginalFileIn = FileIn
     FileIn = TmpPath 'Make it load below like normal, just need to deal with screenshot loading now
@@ -469,7 +471,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
     If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     If Exist(TmpPath) Then Shell "chmod 775 " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "tar -xf " & Chr(34) & FileIn & Chr(34) & " -C " & Chr(34) & TmpPath & Chr(34) & " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz" Wait
-    Extract(FileIn, TmpPath, " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz")    
+    ExtractFast(FileIn, TmpPath, " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz")    
 
     OriginalFileIn = FileIn
     FileIn = TmpPath 'Make it load below like normal, just need to deal with screenshot loading now
@@ -1110,11 +1112,36 @@ Public Function Extract(Archive As String, OutPath As String, ExcludesIncludes A
   Else 'use 7z for all but tar and tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
-    Execute("7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
+    'Execute("7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
+    Execute(Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
+    
   End If
   If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait
   Return True ' Success
 End
+
+Public Function ExtractFast(Archive As String, OutPath As String, ExcludesIncludes As String) As Boolean
+  If Not Exist(Archive) Then Return False
+  If Lower(Right(Archive, 4)) = ".tar" Then 'tar
+    If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
+   Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+  Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
+    If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
+    Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+  Else 'use 7z for all but tar and tar.gz
+    If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
+    'Shell "7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+    Shell Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
+    
+  End If
+  If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait
+  Return True ' Success
+End
+
+
 
 Public Sub Execute(ShellString As String, PathIn As String)
   '"cd " & Chr(34) & PathIn & Chr(34) & " && " &

@@ -239,7 +239,7 @@ Public Sub GetItemsInPath(DirToCheck As String)
  
     If Not LLM.Loaded Then
       LoadingScreen.Status.Text = "Load: " & DirToCheck
-      'Wait (0.01) 'Redraw loading screen, it needs a little time to redraw
+      Wait (0.1) 'Redraw loading screen, it needs a little time to redraw
     End If
     Dim I As Integer
     If Right(DirToCheck, 1) <> "/" Then DirToCheck &= "/" ' Add Slash
