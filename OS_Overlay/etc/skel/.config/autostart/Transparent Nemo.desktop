@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=First Logon
-Comment=Removes Itself
+Name=Transparent Nemo
+Comment=Makes all inactive windows a little transparent
 Type=Application
-Exec=/LastOS/Scripts/firstlogon.sh
+Exec=/LastOS/Scripts/transparent-nemo.sh
 X-GNOME-Autostart-enabled=true
 NoDisplay=false
 Hidden=false
