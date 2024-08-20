@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.0 2024-08-19-01
+'LastOS v1.1.0 2024-08-20-01
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 

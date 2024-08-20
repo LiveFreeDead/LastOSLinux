@@ -8,6 +8,22 @@ Public FavCount As Integer
 Public ManualLocation[100] As String
 Public ManualLocationCount As Integer
 
+Public LLSettingsFile As String
+Public RepositoryPathLocal As String = LLMod.Slashed(User.Home) & "zLastOSRepository/"
+Public RepositoryList[100] As String
+Public RepositoryListCount As Integer
+Public CurrentRepositoryURL As String
+
+Public QueueURL[1000] As String
+Public QueueLocal[1000] As String
+Public QueueCount As Integer
+Public QueueUpTo As Integer
+
+Public Downloading As Boolean
+
+Public Installing As Boolean
+
+
 Public ScreenShotCounter As Integer
 
 Public TitleCol As Integer = &hFFFFFF
@@ -60,9 +76,15 @@ Public HideApps As Boolean
 Public HideGames As Boolean
 Public HidePaid As Boolean
 
+Public QuitOnComplete As Boolean
+Public UseOnlineRepository As Boolean = True ' Default to using online repo
+
 
 'LLM = Last Linux Module
 Public Sub Form_Open()
+  'Clean up downloader (Will quit after download??? or instant?)
+  Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+
   'Process Arguments passed from terminal  
   Dim S As String
   
@@ -150,8 +172,18 @@ Public Sub Form_Open()
   Data.ClearDataFields() 'This now does the Column Adding and naming scheme
   
   Wait (0.01) 'Lets loading screen show
-  GetItemPaths()
+  
+  'Get LLM.AppPath & "LastOSLinuxSettings.ini" 'SETTINGS HERE
+  LLSettingsFile = LLMod.Slashed(LLM.AppPath) & "LastOSLinuxStoreSettings.ini"  
+  LoadSettings(LLSettingsFile)
+    
+  ''Get Repository Database (Move this below local once tested Glenn 2024)
+  'If UseOnlineRepository = True Then  GetRepositoryDatabase()
+  
+  'Get Local Items
+  GetItemPaths() 'Has the Online Repo in it now
   Wait (0.01) 'Lets loading screen show
+  
   'ReDraw Form
   RedrawTheme()
   
@@ -233,6 +265,11 @@ Public Sub GetItemPaths()
     'GetWineItemsFromPath(User.Home & "/.wine/drive_c/ppGames/")
     GetItemsInPath(User.Home & "/.wine/drive_c/ppGames/")' Changed to using GetItemsIn so form updates status
   End If
+  
+  'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
+  If LLMod.StoreMode = 0 And UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode
+  
+  
 End
 
 Public Sub GetItemsInPath(DirToCheck As String)
@@ -588,7 +625,7 @@ Public Sub GenerateMainList()
         ListIconSize = ScaleItems + (ScaleItems / 2) + 2
         If FirstItem = 0 Then FirstItem = Val(Data.Items[I, Data.CRefID].Text) 'Keeps the ID of the first added item so we can jump to it on the list
         'Add Item
-        If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Then 'If ok
+        If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok        
           Items.Add(Val(Data.Items[I, Data.CRefID].Text), Data.Items[I, Data.CTitleName].Text, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            'Hide icon while I add tar support
         Else 'If Broken/missing Icon
           Items.Add(Val(Data.Items[I, Data.CRefID].Text), Data.Items[I, Data.CTitleName].Text, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
@@ -772,6 +809,7 @@ End
 
 
 Public Sub Items_Click()
+  If ForceClose Then Return 'This is incase wget ties up downloading , Glenn 2024
   Try MoviePlayer.Stop ' Stop Any Movies
   MovieTimer.Enabled = False
   Screenshot.Visible = True
@@ -779,6 +817,7 @@ Public Sub Items_Click()
   If MouseRight Then 'Right clicked
     'Return 'Don't do anything here -Doesn't update the screen but changed the index, bad idea, would have to reverted to last user selected item if we want this in the future
   End If
+  Dim UN As String 'Unique Name
   Dim BT As String
   Dim InstSize As Integer
   Dim InstSizeText As String
@@ -791,16 +830,59 @@ Public Sub Items_Click()
   RefsID = CurrentItemKey - 1
   CurrentItem = Items.Current.Text
 
-  'Change Icon to current
-  'LLM.Icon = Data.Icons[CurrentItemKey].Picture.Stretch(IconPic.W, IconPic.H) 'Old Method, get from file as it's the fader not the icon shown
-  If Exist(Data.Items[RefsID, Data.CFileFader].Text) Then LLM.Icon = Picture.Load(Data.Items[RefsID, Data.CFileFader].Text).Stretch(IconPic.W, IconPic.H)
+  'Get Unique Name
+  UN = Lower(Replace(Data.Items[RefsID, Data.CTitleName].Text, " ", "") & Data.Items[RefsID, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[RefsID, Data.CVersion].Text)
+
+  'Change Fader to current
+  ''LLM.Icon = Data.Icons[CurrentItemKey].Picture.Stretch(IconPic.W, IconPic.H) 'Old Method, get from file as it's the fader not the icon shown
+  
+  'See if online resource and grab it if able and doesn't exist in LocalDB folder already
+  Dim RealPath As String
+  Dim ItemRepositoryURL As String
+  
+  'Fader
+  RealPath = Data.Items[RefsID, Data.CFileFader].Text
+  If InStr(Data.Items[RefsID, Data.CFileFader].Text, "%dbpath%/", 1) >= 1 Then
+    RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
+    ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
+    
+    'Now get Fader etc
+    'Message(ItemRepositoryURL & "database/" & UN & ".png")
+    'Message(RealPath) ' The following isn't needed, it's in the original source above, & UN & ".png")
+    
+    If Not Exist(RealPath) Then 'Get it if missing
+      GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".png", RealPath)
+    End If  
+  End If
+  
+  
+  If Exist(RealPath) Then
+    Try LLM.Icon = Picture.Load(RealPath).Stretch(IconPic.W, IconPic.H)
+  Else
+    LLM.Icon = Theme.Res[1].Picture.Stretch(IconPic.W, IconPic.H) 'Default Theme Icon (just in case)
+  End If
+  
   IconPic.Picture = LLM.Icon
   
   Title.Text = Data.Items[RefsID, Data.CTitleName].Text
   
+  'Screenshot
+  RealPath = Data.Items[RefsID, Data.CFileScreenshot].Text
+  If InStr(Data.Items[RefsID, Data.CFileScreenshot].Text, "%dbpath%/", 1) >= 1 Then
+    RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
+    ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
+    
+    If Not Exist(RealPath) Then 'Get it if missing
+      GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".jpg", RealPath)
+    End If  
+  End If
+  
+  
+  
   'Change Screenshot to current
-  If Exist(Data.Items[RefsID, Data.CFileScreenshot].Text) Then
-    LLM.Screenshot = Picture.Load(Data.Items[RefsID, Data.CFileScreenshot].Text) 'Don't Resize Screenshot stored in ram ' It's not fix it
+  If Exist(RealPath) Then
+    'Must use Try or it will error out on dud pictures
+    Try LLM.Screenshot = Picture.Load(RealPath) 'Don't Resize Screenshot stored in ram ' It's not fix it
   Else ' Use Theme Picture
     Try LLM.Screenshot = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Screenshot.jpg")
   End If
@@ -964,6 +1046,10 @@ Public Sub Form_Close()
   'It cleans up it's own mess, no need to delete temp folders
   'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded
   'Shell "rm -r " & Chr(34) & Temp$("LLTmp*") & Chr(34) Wait  
+  
+  'Clean up downloader (Will quit after download??? or instant?)
+  Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+  
   ForceClose = True
   Data.Close
   Theme.Close
@@ -1740,6 +1826,13 @@ Public Sub StartButton_MouseUp()
   StartButton.Top = StartButton.Top - 1
   StartButton.Left = StartButton.Left - 1
   
+  'Check if ctrl is held to build Repository
+  If LLMod.StoreMode = 0 And CtrlPressed = True Then 'Only make Repo's out of Install Mode items (not Launcher)
+    CtrlPressed = False ' Just make sure it resets  
+    BuildRepository()
+    Return
+  End If
+  
   If CurrentItemKey <> Null And CurrentItemKey > 0 Then
     If Not Mouse.Inside(Last) Then Return 'This is the better check to see if inside the control or not, remarked out old if method
     If Data.Items.Rows.Count = 0 Then Return 'No Items to run, quit        
@@ -1796,42 +1889,69 @@ End
 '************************************************* MINI-INSTALLER, RUNNING stuff ******************************************
 
 Public Sub RunMiniInstaller()
+  If Installing = True Then Return 'One at a time
+  Dim ItemToInstall As Integer
+  ItemToInstall = CurrentItemKey - 1
+  If LLMod.StoreMode = 0 Then Installing = True
   Dim I As Integer
   Dim BT As String
+  
+  Dim ItemLocal As String
+  
   'Dim RunMe As String
   Dim OldTitle As String
   Dim InstallCount As Integer
+  
+  'Don't start the installer until ALL downloads are done, Glenn 2024
+  While Downloading = True 'Can't do more until it's fully downloaded
+    Wait (0.01)
+  Wend
+  
+  
+  
   For I = 0 To Data.Items.Rows.Count - 1
     'Check if only one item, if so then install it but don't quit main form etc.
     If Data.Items[I, Data.CSelected].Text = "T" Then InstallCount = InstallCount + 1
   Next
-  BT = Data.Items[CurrentItemKey - 1, Data.CBuildType].Text ' BuildType 'The database is 0 based so use -1
+  BT = Data.Items[ItemToInstall, Data.CBuildType].Text ' BuildType 'The database is 0 based so use -1
   If InstallCount = 0 Then 'Install only one item without mini installer
+     
+     'Check if needed to download first and also change the paths if successful or already exists
+      ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
+      
+      If Not Exist(ItemLocal) Then 'Get it
+        GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
+        While Downloading = True 'Can't do more until it's fully downloaded
+          Wait (0.01)
+        Wend
+      End If      
+  
     If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
       OldTitle = Title.Text
-      Title.Text = "Installing " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text    
+      
+      Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text    
       Wait (0.07) ' Lets the form Redraw before it starts installing  
       If BT = "ppApp" Or BT = "ppGame" Then
-        LLMod.InstallppFile(Data.Items[CurrentItemKey - 1, Data.CFileINI].Text)
+        LLMod.InstallppFile(ItemLocal)
       Else 'ssApp, still uses SetupS
-        Shell "wine " & Chr(34) & Data.Items[CurrentItemKey - 1, Data.CFileINI].Text & Chr(34) Wait 'This ties up the whole Store, no work around yet?
+        Shell "wine " & Chr(34) & ItemLocal & Chr(34) Wait 'This ties up the whole Store, no work around yet?
       End If
       'RunItem("wine " & Chr(34) & Data.Items[CurrentItemKey - 1, Data.CFileINI].Text & Chr(34))
-      Title.Text = "Installed " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text  'OldTitle
+      Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
       Wait (0.07) 'Redraw
     Else 'Linux Item
       OldTitle = Title.Text
-      Title.Text = "Installing " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text    
+      Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text    
       Wait (0.07) ' Lets the form Redraw before it starts installing  
-      LLMod.InstallLLFile(Data.Items[CurrentItemKey - 1, Data.CFileINI].Text) ' Need to use FileINI not PathINI ' Uses Current Item value
-      Title.Text = "Installed " & Data.Items[CurrentItemKey - 1, Data.CTitleName].Text  'OldTitle
+      LLMod.InstallLLFile(ItemLocal) ' Need to use FileINI not PathINI ' Uses Current Item value
+      Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
       Wait (0.07) 'Redraw
-    End If   
+    End If
+    Installing = False 'Job done   
     Return 'Just go back to main store, user can click off the item.
   End If
   
-  'Build install list and go through them all
-  
+  'Build install list and go through them all  
   LastOSLinuxStoreMain.Hide
   MiniInstaller.ListInstall.Clear ' This was used for ListView and not TableView
 
@@ -1871,17 +1991,29 @@ Public Sub RunMiniInstaller()
     MiniInstaller.Stats.Text = Str(I) & "/" & Str(InstallCount)
     Wait (0.07) 'Redraw so list moves (Can cause a little flicker, but more useful than being stuck at the bottom of the list or a black form not drawn at all)
     
-    BT = Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CBuildType].Text ' BuildType    
+    'Check if needed to download first and also change the paths if successful or already exists Glenn 2025
+    ItemToInstall = MiniInstaller.ListInstall.Item.Key - 1
+    ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
+    
+    If Not Exist(ItemLocal) Then 'Get it
+      GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
+      While Downloading = True 'Can't do more until it's fully downloaded
+        Wait (0.01)
+      Wend
+    End If   
+    
+    
+    BT = Data.Items[ItemToInstall, Data.CBuildType].Text ' BuildType    
         
-    ItemINI = Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text ' Grab ini file it'll install
+    ItemINI = ItemLocal ' Grab ini file it'll install
     
     If LLM.ClosedMini = True Then Break 'Closed Form
     If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
       If BT = "ppGame" Or BT = "ppApp" Then ' FrizzleFrizzle Trying with apps, but I will need to add %Extract% support to ppApp.cmd
-        LLMod.InstallppFile(Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text)
+        LLMod.InstallppFile(ItemINI)
       Else ' It's a ssApp and SetupS can handle them for now
         'Shell "wine " & Chr(34) & Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text & Chr(34) Wait
-        LLMod.Execute("wine " & Chr(34) & Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CFileINI].Text & Chr(34), Data.Items[MiniInstaller.ListInstall.Item.Key - 1, Data.CPathINI].Text)
+        LLMod.Execute("wine " & Chr(34) & ItemINI & Chr(34), Data.Items[ItemToInstall, Data.CPathINI].Text)
       End If      
     Else 'Linux Item      
       LLMod.InstallLLFile(ItemINI) ' Need to use FileINI not PathINI
@@ -1901,9 +2033,11 @@ Public Sub RunMiniInstaller()
     LLMod.RefreshPanel = False
     Shell "cinnamon --replace" 'Refresh applets so the panel shortcuts show without rebooting
   End If
-  'Message("Test")
-  'GlennGlenn FrizzleFrizzle, Trying to see if this can update the apps without causing issues, else it wont shw items as installed
-  'Can quit here if set in the options (which I haven't added yet)
+  
+  If QuitOnComplete = True Then
+    Me.Close
+    Quit
+  End If
   
   'Clear All Known Items first
   Data.ClearDataFields() 'This now does the Column Adding and naming scheme
@@ -1920,6 +2054,7 @@ Public Sub RunMiniInstaller()
   Items.Item.Selected = True
   Items_Click() 'Load data and screenshot etc  
   LastOSLinuxStoreMain.Show
+  Installing = False 'Job done   
   Title.Text = "Installed " & Str(InstallCount) & " Items"
 End
 
@@ -1996,5 +2131,294 @@ Public Sub MoviePlayer_AboutToFinish()
   MoviePlayer.Stop ' Stop early
   Screenshot.Visible = True
   MoviePlayer.Visible = False  
+End
+
+Public Sub BuildRepository()
+  Dim RepoDir As String = User.Home & "/Desktop/Repository/"
+  Dim RepoDirDB As String = RepoDir & "/database/"
+  Dim J As Integer
+  
+  If Not Exist(RepoDirDB) Then Shell "mkdir -p " & Chr(34) & RepoDirDB & Chr(34) Wait
+  If Exist(RepoDir) Then Shell "chmod -R 775 " & Chr(34) & RepoDir & Chr(34) Wait
+  
+  Dim I As Integer
+  Dim UN As String
+  Dim FileOut As String
+  Dim OutFile As String
+  Dim RepoContent As String
+  Dim RepoLine As String
+  Dim Tx As String
+  Dim INIType As String
+  Dim DestPath As String
+  
+  If LLM.DataItemsRows < 0 Then Return
+  For I = 0 To LLM.DataItemsRows
+    
+    'Check if item is local or skip (can't build a repo with remote items)
+    If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
+    
+    UN = Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "") & Data.Items[I, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[I, Data.CVersion].Text)
+    
+    If Exist(Data.Items[I, Data.CFileScreenshot].Text) Then
+      OutFile = RepoDirDB & UN & ".jpg"
+      If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+      Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
+    End If
+    If Exist(Data.Items[I, Data.CFileFader].Text) Then
+      OutFile = RepoDirDB & UN & ".png"
+      If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+      Copy Data.Items[I, Data.CFileFader].Text To OutFile 
+    End If
+    If Exist(Data.Items[I, Data.CFileIcon].Text) Then
+      OutFile = RepoDirDB & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
+      If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+      Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
+    End If
+    
+    RepoLine = ""
+    For J = 1 To Data.Items.Columns.Count - 1
+      Tx = Data.Items[I, J].Text
+      
+      If J = Data.CFileFader Then Tx = "%dbpath%/" & UN & ".png"
+      If J = Data.CFileScreenshot Then Tx = "%dbpath%/" & UN & ".jpg"
+      If J = Data.CFileIcon Then
+        If Exist(Data.Items[I, J].Text) Then Tx = "%dbpath%/" & UN & Right(Data.Items[I, J].Text, 4)
+      End If
+      If J = Data.CFileINI Then
+        If Exist(Data.Items[I, J].Text) Then Tx = "%dbpath%/" & Right(Data.Items[I, J].Text, Len(Data.Items[I, J].Text) - LLMod.InStrRevSingle(Data.Items[I, J].Text, "/"))
+      End If
+      If J = Data.CFileMovie Then
+        If Exist(Data.Items[I, J].Text) Then Tx = "%dbpath%/" & Right(Data.Items[I, J].Text, Len(Data.Items[I, J].Text) - LLMod.InStrRevSingle(Data.Items[I, J].Text, "/"))
+      End If
+      If J = Data.CPathINI Then
+        If Exist(Data.Items[I, J].Text) Then Tx = "%dbpath%/" & Right(Data.Items[I, J].Text, Len(Data.Items[I, J].Text) - LLMod.InStrRevSingle(Data.Items[I, J].Text, "/"))
+      End If
+      If J = Data.CFileCompressed Then
+        If Exist(Data.Items[I, J].Text) Then Tx = "%dbpath%/" & Right(Data.Items[I, J].Text, Len(Data.Items[I, J].Text) - LLMod.InStrRevSingle(Data.Items[I, J].Text, "/"))
+      End If
+      If J = Data.CDescription Then
+        Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
+        Tx = Replace(Tx, Chr(10), Chr(30)) 'Convert CRLF to RS (special)
+      End If
+      
+      If J = Data.CURL Then
+        Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
+        Tx = Replace(Tx, Chr(10), "|") 'Convert CRLF to Pipe splitter
+      End If
+            
+      RepoLine &= Tx & ",|,"
+    Next
+    If RepoLine <> "" Then 'Only add good items
+      'Can only add compressed items at this stage, wont hurt to leave the resources in place incase I add support for building non compressed items to include (not sure I can set a output path yet or not)
+      INIType = Right(Data.Items[I, Data.CFileINI].Text, 4)
+      If INIType = ".tar" Or INIType = ".apz" Or INIType = ".pgz" Then
+        RepoContent &= RepoLine & Chr(10)
+        
+        'Need to copy the .tar, .apz and .pgz files here and if the source isn't a compressed item then do so. Glenn 2025
+        'Message(Data.Items[I, Data.CFileINI].Text)
+        DestPath = RepoDir & Right(Data.Items[I, Data.CFileINI].Text, Len(Data.Items[I, Data.CFileINI].Text) - LLMod.InStrRevSingle(Data.Items[I, Data.CFileINI].Text, "/"))
+        If Exist(DestPath) Then Try Kill DestPath
+        Try Copy Data.Items[I, Data.CFileINI].Text To DestPath
+      End If      
+    End If
+  Next
+  If RepoContent <> "" Then 'Don't bother with an empty file
+    FileOut = RepoDirDB & "LastOSLinuxRepository.db"
+    Try File.Save(FileOut, RepoContent)    
+      
+    If Exist(RepoDir) Then Shell "chmod -R 775 " & Chr(34) & RepoDir & Chr(34) Wait
+  
+    Message("Built Repository Successfully")    
+  End If
+End
+
+Public Sub GetRepositoryDatabase()
+  Dim I As Integer
+  Dim InRepo As String
+  Dim InRepoSp As String[]
+  
+  RepositoryListCount = 0
+  If LLMod.StoreMode = 0 Then 'Only do this for Installation mode
+    If Exist(LLM.AppPath & "/RepositoryList.ini") Then
+      Try InRepo = File.Load(LLM.AppPath & "/RepositoryList.ini")
+      
+      InRepo = Replace(InRepo, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+      InRepoSp = Split(InRepo, Chr(10))
+      For I = 0 To InRepoSp.Count - 1
+        If Trim(InRepoSp[I]) <> "" Then
+          RepositoryList[RepositoryListCount] = Trim(InRepoSp[I])
+          RepositoryListCount = RepositoryListCount + 1
+        End If
+      Next
+    End If
+  End If
+  
+  If Not Exist(RepositoryPathLocal) Then Shell "mkdir -p " & Chr(34) & RepositoryPathLocal & Chr(34) Wait
+  If Exist(RepositoryPathLocal) Then Shell "chmod 775 " & Chr(34) & RepositoryPathLocal & Chr(34) Wait
+  
+  If RepositoryListCount >= 1 Then
+    For I = 0 To RepositoryListCount - 1
+      
+      'Get new Repo DB or keep old one otherwise
+      Shell "wget -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
+      If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db-new") Then
+        'Try Kill(RepositoryPathLocal & "LastOSLinuxRepository.db")
+        Shell "mv -f " & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & " " & RepositoryPathLocal & "LastOSLinuxRepository.db" Wait
+      End If
+      
+      'Load in DB
+      CurrentRepositoryURL = Replace(RepositoryList[I], "/database/LastOSLinuxRepository.db", "") 'Used In Sub Below (Without database for main file
+      If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db") Then LoadRepositoryDatabase()
+      
+    Next
+  End If
+End
+
+
+Public Sub LoadRepositoryDatabase()
+  If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db") Then
+    
+    Dim DRows As Integer
+    Dim I As Integer
+    Dim J As Integer
+    Dim K As Integer
+    Dim InRepo As String
+    Dim InRepoSp As String[]
+    Dim InRepoSpTx As String[]
+    Dim SkipItem As Boolean
+
+    Try InRepo = File.Load(RepositoryPathLocal & "LastOSLinuxRepository.db")
+    InRepoSp = Split(InRepo, Chr(10))
+    For I = 0 To InRepoSp.Count - 1
+      If Trim(InRepoSp[I]) <> "" Then
+        
+        InRepoSp[I] = Replace(InRepoSp[I], ",|,", Chr(8))
+        InRepoSpTx = Split(InRepoSp[I], Chr(8))
+        SkipItem = False
+        If Data.Items.Rows.Count >= 1 Then 'Check if Existing Item
+          For J = 0 To Data.Items.Rows.Count - 1
+            If Data.Items[J, Data.CTitleName].Text & Data.Items[J, Data.CVersion].Text = InRepoSpTx[Data.CTitleName - 1] & InRepoSpTx[Data.CVersion - 1] Then SkipItem = True 'Skip Duplicated Items (Adds different versions though)
+          Next
+        End If
+        If SkipItem = False Then 'Only add new items
+          Data.Items.Rows.Count = Data.Items.Rows.Count + 1 'Always Add a row before starting
+          DRows = Data.Items.Rows.Count - 1
+          LLM.DataItemsRows = DRows
+          
+          For K = 1 To InRepoSpTx.Count
+            If K <= Data.Items.Columns.Count - 1 Then 
+              'Print "Count: " & InRepoSpTx.Count & " DataCols: " & Data.Items.Columns.Count & " K: " & K
+              
+              If K = Data.CPathINI Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "%dbpath%", CurrentRepositoryURL) 'Adds download URL to item    
+              
+              If K = Data.CDescription Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], Chr(30), Chr(13)) 'Testing chr 13 for description, may need 10
+              
+              If K = Data.CURL Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "|", Chr(13)) 'Testing chr 13 for description, may need 10
+              
+              Data.Items[DRows, K].Text = InRepoSpTx[K - 1]
+            End If
+          Next
+        
+          Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
+          Data.Items[DRows, Data.CIconRef].Text = "0"
+          
+        End If
+      End If
+    Next
+
+  End If
+End
+
+Public Sub GetOnlineFile(URL As String, OutPutFile As String)
+  QueueURL[QueueCount] = URL
+  QueueLocal[QueueCount] = OutPutFile
+  QueueCount = QueueCount + 1
+  If Downloading = False Then
+    Downloading = True 'Do this ASAP, so the check is in place as soon as it's sent (as most wont have a wait at the end of the shell calls)  
+    DownTime.Enabled = True  'Only call it if it's finnished, else it'll pick up the changes at runtime
+  End If
+End
+
+
+Public Sub DownTime_Timer()
+  Dim Test As String
+  QueueUpTo = 0
+  DownTime.Enabled = False  
+  'DownloadingDone is the gate keeper, it'll make sure only one at a time downloads
+  
+  While QueueUpTo < QueueCount
+    Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
+    
+    'Check Remote file exist, else it'll fail
+    Shell "curl --head --silent " & QueueURL[QueueUpTo] & " | head -n 1" To Test
+    If InStr(Test, "404", 1) Then '404 not found
+      'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+      Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+    Else ' It exist, download it
+      Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
+      Shell "wget -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & QueueURL[QueueUpTo] & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+      While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
+        Wait (0.01)
+        If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
+      Wend
+      Shell "mv " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait
+      Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+    End If
+    QueueUpTo = QueueUpTo + 1
+  Wend
+  QueueUpTo = 0
+  QueueCount = 0
+  Downloading = False  
+  'Make sure it's gone
+  Wait (0.01)
+  Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+  Wait (0.01)
+  
+  If ForceClose = True Then Quit 'This is just a precaution for if the wget loop keeps the app from quiting if a problem or forced quit occurs
+  If Installing = False Then Items_Click() 'Reload item once queue completes, if not installing items currently
+End
+
+
+Public Sub LoadSettings(SettingsFile As String)
+  
+  If Exist(SettingsFile) Then
+  Dim I As Integer
+  'Load in Settings  
+  Dim InSet As String
+  Dim InSetSp As String[]
+  Dim LineSet As String
+  Dim LineData As String
+    
+  Try InSet = File.Load(SettingsFile)
+  InSet = Replace(InSet, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+  InSetSp = Split(InSet, Chr(10))
+  For I = 0 To InSetSp.Count - 1
+    LineSet = Trim(InSetSp[I])
+    If Trim(LineSet) <> "" Then
+      If InStr(LineSet, "=", 1) >= 1 Then 'Only do items with = in them      
+        LineData = Right(LineSet, Len(LineSet) - InStr(LineSet, "=", 1))
+        LineSet = Left(LineSet, Len(LineSet) - Len(LineData))
+        LineSet = Lower(Left(LineSet, Len(LineSet) - 1)) 'Lowercase and Remove =
+        Select Case LineSet
+        Case "quitoncomplete"
+          QuitOnComplete = IsTrue(LineData)
+        Case "useonlinerepository"
+          UseOnlineRepository = IsTrue(LineData)
+        End Select
+        'Message("Set: " & LineSet & "Data: " & LineData)
+      End If
+    End If
+  Next
+End If
+End
+
+Public Function IsTrue(TestIn As String) As Boolean
+  Dim WasItTrue As Boolean = False
+  TestIn = Trim(Lower(TestIn))
+  If TestIn = "yes" Then WasItTrue = True
+  If TestIn = "true" Then WasItTrue = True
+  If TestIn = "t" Then WasItTrue = True
+  If TestIn = "y" Then WasItTrue = True  
+  Return WasItTrue
 End
 

@@ -136,4 +136,8 @@
     #MoveScaled(34,-3)
     Delay = 3000
   }
+  { DownTime #Timer
+    #MoveScaled(0,56)
+    Delay = 100
+  }
 }
