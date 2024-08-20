@@ -78,6 +78,7 @@ Public HidePaid As Boolean
 
 Public QuitOnComplete As Boolean
 Public UseOnlineRepository As Boolean = True ' Default to using online repo
+Public UseCacheRepository As Boolean = True
 
 
 'LLM = Last Linux Module
@@ -266,9 +267,11 @@ Public Sub GetItemPaths()
     GetItemsInPath(User.Home & "/.wine/drive_c/ppGames/")' Changed to using GetItemsIn so form updates status
   End If
   
-  'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
-  If LLMod.StoreMode = 0 And UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode
+  'Use the local Repository cache and see what goodiwes it has before defaulting to using the online one?
+  If UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
   
+  'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
+  If LLMod.StoreMode = 0 And UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode  
   
 End
 
@@ -2404,6 +2407,8 @@ Public Sub LoadSettings(SettingsFile As String)
           QuitOnComplete = IsTrue(LineData)
         Case "useonlinerepository"
           UseOnlineRepository = IsTrue(LineData)
+        Case "usecacherepository" 
+          UseCacheRepository = IsTrue(LineData)
         End Select
         'Message("Set: " & LineSet & "Data: " & LineData)
       End If
