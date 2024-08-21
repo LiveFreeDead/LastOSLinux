@@ -1,0 +1,16 @@
+[Default Applications]
+application/x-llapp=llapp.desktop
+application/x-llgame=llgame.desktop
+text/html=google-chrome.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
+application/vnd.efi.iso=gnome-disk-image-mounter.desktop
+text/plain=xed.desktop
+
+[Added Associations]
+application/x-llgame=xed.desktop;
+application/x-llapp=xed.desktop;
+application/vnd.efi.iso=gnome-disk-image-mounter.desktop;
+text/plain=xed.desktop;
