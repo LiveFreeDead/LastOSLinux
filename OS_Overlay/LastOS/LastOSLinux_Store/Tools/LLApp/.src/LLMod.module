@@ -1,14 +1,11 @@
 ' Gambas module file
 
-'LastOS v1.1.0 2024-08-21-01
+'LastOS v1.1.0 2024-08-21-02
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public RefreshPanel As Boolean = False
 
-
-'Public Win7zPath As String = "/home/tester/.wine/drive_c/Program Files/SetupS.SendTo/Tools/7z.exe"
-'Public Win7zCmd As String = "/home/tester/.wine/drive_c/Program Files/SetupS.SendTo/Tools/7z.exe -mtc -aoa x "
 Public Win7zCmd As String = Chr(34) & "C:" & Chr(92) & "Program Files" & Chr(92) & "SetupS.SendTo" & Chr(92) & "Tools" & Chr(92) & "7z.exe" & Chr(34) & " -mtc -aoa x "
 
 Public Linux7z As String = Application.Path & "/Tools/7zzs"
@@ -252,7 +249,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
   
   'Get Icon File
   If Exist(DirIn & "ppGame.png") = True Then
-    LLIconFile = DirIn & "ppGame.png"                        'SVG IconFile (Use Best first)
+    LLIconFile = DirIn & "ppGame.png"
   Else
     If Exist(DirIn & "ppGame.ico") = True Then
       LLIconFile = DirIn & "ppGame.ico"                     'ICO IconFile    
@@ -269,7 +266,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
 
   'Get Icon File
   If Exist(DirIn & "ppApp.png") = True Then
-    LLIconFile = DirIn & "ppApp.png"                        'SVG IconFile (Use Best first)
+    LLIconFile = DirIn & "ppApp.png"
   Else
     If Exist(DirIn & "ppApp.ico") = True Then
       LLIconFile = DirIn & "ppApp.ico"                     'ICO IconFile
@@ -286,7 +283,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
   
     'Get Icon File
   If Exist(DirIn & "ssApp.png") = True Then
-    LLIconFile = DirIn & "ssApp.png"                        'SVG IconFile (Use Best first)
+    LLIconFile = DirIn & "ssApp.png"
   Else
     If Exist(DirIn & "ssApp.ico") = True Then
       LLIconFile = DirIn & "ssApp.ico"                     'ICO IconFile
@@ -365,7 +362,6 @@ Public Function LoadSSFile(FileIn As String) As Boolean
         WinPath = ExpWinPath(LLAppPath)
         WinPath = Replace(WinPath, Chr(92), "/")
         WinPath = Replace(WinPath, "C:", User.Home & "/.wine/drive_c", gb.IgnoreCase)
-        'If InStr(WinPath, "View", 1) >= 1 Then Message(WinPath)
         If Exist(WinPath) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
       End If
       If LineID = "url" Then LLURL = Replace(LineData, "|", Chr(13))
@@ -596,8 +592,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         LLDescription = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
       End If
       If LineID = "apppath" Then 
-        LLAppPath = Trim(ExpPath(LineData)) 'Glenn 2024 - See if expanding the path here is a good thing
-        'If Exist(ExpPath(LLAppPath)) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
+        LLAppPath = Trim(ExpPath(LineData)) 'expand the path here
         If Exist(LLAppPath) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options ' Using expanded path from above
       End If
       If LineID = "url" Then LLURL = Replace(LineData, "|", Chr(13))
@@ -641,11 +636,10 @@ Public Function LoadLLFile(FileIn As String) As Boolean
       End If
       If ReadMode = 1 Then
         If LineID = "exec" Then
-          LnkExec[LnkEditing] = Trim(ExpPath(LineData)) 'Glenn 2024 Check Path
+          LnkExec[LnkEditing] = Trim(ExpPath(LineData)) 'Check Path is happy
           If LnkExec[LnkEditing] <> "" Then 
             If Exist(Slashed(LLAppPath) & LnkExec[LnkEditing]) Then
-              LnkExec[LnkEditing] = Slashed(LLAppPath) & LnkExec[LnkEditing]
-              
+              LnkExec[LnkEditing] = Slashed(LLAppPath) & LnkExec[LnkEditing]              
             End If
           End If
         End If
@@ -654,11 +648,11 @@ Public Function LoadLLFile(FileIn As String) As Boolean
           LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
         End If
         If LineID = "path" Then
-          LnkRunInPath[LnkEditing] = Trim(ExpPath(LineData)) 'Glenn 2024 Check Path ' LineData
+          LnkRunInPath[LnkEditing] = Trim(ExpPath(LineData))
           If LnkRunInPath[LnkEditing] = "" Then LnkRunInPath[LnkEditing] = Slashed(LLAppPath)
         End If
         If LineID = "icon" Then
-          LnkIcon[LnkEditing] = Trim(ExpPath(LineData)) 'Glenn 2024 Check Path 'LineData
+          LnkIcon[LnkEditing] = Trim(ExpPath(LineData))
           If LnkIcon[LnkEditing] = "" Then LnkIcon[LnkEditing] = Slashed(LLAppPath) & LLBuildType & ".png"
         End If
         If LineID = "categories" Then LnkCatalog[LnkEditing] = LineData
@@ -920,7 +914,6 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     
     'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
     If Exist(InstallToPath & "LLScript.sh") Then
-      'Message(InstallToPath & "LLScript.sh")
       ExpandScript(InstallToPath & "LLScript.sh")          
       Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
       Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) 'Wait  'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
@@ -942,7 +935,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         ''''If LLBuildType = "LLGame" Then DesktopContent &= "PrefersNonDefaultGPU=true" & Chr(10) 'Make games use the GPU, it's a Mint Thing, but I don't think it'll cause issues. * I think this is an old trick, when you have the correct drivers setup, this isn't needed, so don't include it as on default.
         File.Save(DesktopOutPath & DesktopFile, DesktopContent)        
         Chmod DesktopOutPath & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
-        If LnkPanel[I] = True Then 'Make it on panel too (Default cinnamon Panel Only so far) Glenn
+        If LnkPanel[I] = True Then 'Make it on panel too (Default cinnamon Panel Only so far)
           '~/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json
           PanelPath = User.Home & "/.config/cinnamon/spices/grouped-window-list@cinnamon.org/"
           Shell "jq '." & Chr(34) & "pinned-apps" & Chr(34) & "[" & Chr(34) & "value" & Chr(34) & "] += [" & Chr(34) & DesktopFile & Chr(34) & "]' " & PanelPath & "2.json > " & PanelPath & "2.tmp && mv " & PanelPath & "2.tmp " & PanelPath & "2.json" '& " && cinnamon --replace" 'Replacing the panel is the only way to show Panel icons, Moved to only do once per MiniInstaller
@@ -953,7 +946,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
           File.Save(User.Home & "/Desktop/" & DesktopFile, DesktopContent)        
           Chmod User.Home & "/Desktop/" & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
         End If
-        'Add ability to LLApp Associate Filetypes (Glenn 2024 - testing)
+        'Add ability to LLApp Associate Filetypes
         If LnkFileTypes[I] <> "" Then
           MakeFileType(LnkDisplayName[I], LnkFileTypes[I], LnkComment[I], LLMod.ExpPath(LnkExec[I]), LLMod.ExpPath(LnkRunInPath[I]), LnkIcon[I])
         End If
@@ -971,7 +964,6 @@ Public Function InstallppFile(PPFile As String) As Boolean
   Dim DesktopContent As String
   Dim DesktopFile As String
   Dim DesktopOutPath As String = User.Home & "/.local/share/applications/"
-  'Dim FileIn As String
   Dim TmpPath As String
   Dim CategoryFix As String
   Dim IconFix As String
@@ -1008,36 +1000,34 @@ Public Function InstallppFile(PPFile As String) As Boolean
     
     'Extract Archive to the Install Folder
     If LLBuildType = "ppApp" Then 
-      'Shell "7z -mtc -aoa x " & Chr(34) & LLINIPath & Chr(34) & "ppApp.7z -o" & Chr(34) & InstallToPath & Chr(34) Wait
       Extract(LLINIPath & "ppGame.7z", InstallToPath, "")
       Extract(LLINIPath & "ppApp.7z", InstallToPath, "")
     End If
     If LLBuildType = "ppGame" Then 
-      'Shell "7z -mtc -aoa x " & Chr(34) & LLINIPath & Chr(34) & "ppGame.7z -o" & Chr(34) & InstallToPath & Chr(34) Wait
       Extract(LLINIPath & "ppApp.7z", InstallToPath, "")
       Extract(LLINIPath & "ppGame.7z", InstallToPath, "")
     End If
     
     'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
     If Exist(InstallToPath & "/ppApp.cmd") Then 
-      'Message(InstallToPath & "/ppApp.cmd")
       ExpandWinScript(InstallToPath & "/ppApp.cmd")  
-        
-      'Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine " & Chr(34) & InstallToPath & "/ppApp.cmd" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
       Execute("wine " & Chr(34) & InstallToPath & "/ppApp.cmd" & Chr(34), InstallToPath)
     End If 
     If Exist(InstallToPath & "/ppGame.cmd") Then          
       ExpandWinScript(InstallToPath & "/ppGame.cmd")
-      '***** Just need to disable shell and use Execute function
-      'Execute("cd " & Chr(34) & InstallToPath & Chr(34) & " && wine " & Chr(34) & InstallToPath & "/ppGame.cmd" & Chr(34))
       Execute("wine " & Chr(34) & InstallToPath & "/ppGame.cmd" & Chr(34), InstallToPath)
-      'Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine " & Chr(34) & InstallToPath & "/ppGame.cmd" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
     End If
     
     'Do Registry
     If Exist(InstallToPath & "/ppGame.reg") Then
-      Execute("wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppGame.reg" & Chr(34), InstallToPath)
-      'Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppGame.reg" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
+      'Using shell here makes more sense (Not sure execute was working for regedit anyway)
+      'Execute("wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppGame.reg" & Chr(34), InstallToPath)
+      Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppGame.reg" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
+    End If
+    If Exist(InstallToPath & "/ppApp.reg") Then
+      'Using shell here makes more sense (Not sure execute was working for regedit anyway)
+      'Execute("wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppApp.reg" & Chr(34), InstallToPath)
+      Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && wine regedit.exe /s " & Chr(34) & InstallToPath & "/ppApp.reg" & Chr(34) Wait  'Waiting for the script to end so it can install other things.
     End If  
     
     'Make Shortcuts here
@@ -1074,7 +1064,7 @@ Public Function InstallppFile(PPFile As String) As Boolean
           File.Save(User.Home & "/Desktop/" & DesktopFile, DesktopContent)        
           Chmod User.Home & "/Desktop/" & DesktopFile To "rwxrwxr--" 'Make .desktop file executable
         End If
-        'Add ability to Associate Filetypes (Glenn 2024 - testing)
+        'Add ability to Associate Filetypes
         If LnkFileTypes[I] <> "" Then
           MakeFileType(LnkDisplayName[I], LnkFileTypes[I], LnkComment[I], "wine " & LLMod.ExpPath(LnkExec[I]), LLMod.ExpPath(LnkRunInPath[I]), LnkIcon[I])
         End If
@@ -1089,18 +1079,6 @@ End
 
 Public Function Extract(Archive As String, OutPath As String, ExcludesIncludes As String) As Boolean
   If Not Exist(Archive) Then Return False
-  'If Lower(Right(Archive, 4)) = ".tar" Then 'tar
-  '  If Not Exist(OutPath) Then Shell "mkdir -p " & Chr(34) & OutPath & Chr(34) Wait
-  '  Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
-  'Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
-  '  If Not Exist(OutPath) Then Shell "mkdir -p " & Chr(34) & OutPath & Chr(34) Wait
-  '  Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
-  'Else 'use 7z for all but tar and tar.gz
-  '  If Not Exist(OutPath) Then Shell "mkdir -p " & Chr(34) & OutPath & Chr(34) Wait
-  '  Shell "7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
-  'End If
-  
-  
   If Lower(Right(Archive, 4)) = ".tar" Then 'tar
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
@@ -1144,56 +1122,21 @@ End
 
 
 Public Sub Execute(ShellString As String, PathIn As String)
-  '"cd " & Chr(34) & PathIn & Chr(34) & " && " &
   PathIn = ExpPath(PathIn)
-  'Message(PathIn)  
   Dim Environ As New String[1]
   Dim TheProcess As Process
   Dim Test As String
-  'Below is to change the Working Directory (The remarked out are things that don't work)
-  'ChDir(PathIn)
-  'Application.Dir = PathIn
-  'TheProcess = Shell "cd " & Chr(34) & PathIn & Chr(34)
+  'Below is to change the Working Directory
   If PathIn <> "" Then
-    'Environ[0] = "PWD=" & PathIn
     Environ[0] = "PWD=" & PathIn
-    'Try Wait (0.01)
-    'Sleep (0.09)
     TheProcess = Shell ShellString With Environ
   Else
     TheProcess = Shell ShellString
   End If
-  'Dim I As Integer
   Do
-    'I = I + 1
     Try Wait (0.4)    
     Shell "ps -p " & TheProcess.ID To Test 'This is the tool that checks the ID external to Gambas
-    'Sleep (0.01)
-    'If I >= 5 Then      
-      'I = 0       
-            
-      'Print Test
-      'Print Len(Test)
-      
-      'Print "Handle " & TheProcess.Handle
-      'Print "ID " & TheProcess.ID
-      'Print "Signaled " & TheProcess.Signaled
-      'Print "Stopped " & TheProcess.Stopped
-      'Print "Value " & TheProcess.Value
-      'Print "IsTerm " & TheProcess.IsTerm
-      'Print "State " & TheProcess.State
-    'Endif
   Loop Until TheProcess.State = 0 Or Len(Test) <= 40  'I check the PID externally as Gambas does a bad job of it
- 
-  'Shell "ps -p " & TheProcess.ID To Test
-      'Print Test
-      'Print Len(Test)
-  
-  'Loop Until TheProcess.State <> 1
-  'TheProcess.Kill
-  'TheProcess = Null
-  'Print "State " & TheProcess.State
-  
 End
 
 
@@ -1218,8 +1161,6 @@ Public Function ExpPath(PathIn As String) As String
   PathIn = Replace(PathIn, "%LLGames%", Homes & "/LLGames", gb.IgnoreCase)
 
   PathIn = Replace(PathIn, "$HOME", Homes, gb.IgnoreCase) ' Do this last, so others longer have time to expand
-
-  'Message(LLAppPath)
   
   Return PathIn
 End
@@ -1257,9 +1198,7 @@ Public Function ExpWinPath(PathIn As String) As String
   PathIn = Replace(PathIn, "%WinDir%", "C:" & Chr(92) & "Windows", gb.IgnoreCase)
   PathIn = Replace(PathIn, "%ProgramFiles(x86)%", "C:" & Chr(92) & "Program Files (x86)", gb.IgnoreCase)
   PathIn = Replace(PathIn, "%ProgramData%", "C:" & Chr(92) & "ProgramData", gb.IgnoreCase)
-  
-  'Message(LLAppPath)
-  
+
   Return PathIn
 End
 
@@ -1287,7 +1226,6 @@ Public Sub ExpandWinScript(ScriptIn As String)
     End If
   Next
   'Need to write the script somewhere to run it, may be off ISO so non writable
-  'Message(ScriptOut)
   Try File.Save(ScriptIn, ScriptOut) 'If the path isn't writable this will fail.
   
 End
@@ -1314,7 +1252,6 @@ Public Sub ExpandScript(ScriptIn As String)
     End If
   Next
   'Need to write the script somewhere to run it, may be off ISO so non writable
-  'Message(ScriptOut)
   Try File.Save(ScriptIn, ScriptOut) 'If the path isn't writable this will fail.
   
 End
@@ -1327,16 +1264,6 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   Dim Typs As New String[]
   Dim J As Integer
   
-  'Shell LLMod.AppPath & "Tools/MakeFileType.sh " & Chr(34) & APP & Chr(34) & " " & Chr(34) & EXT & Chr(34) & " " & Chr(34) & COMMENT & Chr(34) & " " & Chr(34) & EXEC & Chr(34) & " " & Chr(34) & LOGO & Chr(34) Wait
-  'Message("All: " & EXT)
-  'Typs = Split(EXT, " ")
-  'If Typs.Count >= 1 Then
-  '  For J = 0 To Typs.Count - 1
-  '    Message(Typs[J])
-  '  Next
-  'End If
-  
-  'Return 'Temp just print file types split for now
   OrigAppName = APP
   APP = Replace(APP, " (Linux)", "") 'Remove Bracketed Linux
   APP = Replace(APP, "(", "") 'Remove Brackets
@@ -1355,7 +1282,6 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   Typs = Split(EXT, " ")
   If Typs.Count >= 1 Then
     For J = 0 To Typs.Count - 1
-      'Message(Typs[J])
       FileContent &= "        <glob pattern=" & Chr(34) & "*." & Typs[J] & Chr(34) & "/>" & Chr(10)
     Next
   Else
@@ -1368,10 +1294,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   Shell "xdg-mime install " & FileOut Wait
   Shell " rm " & FileOut Wait
   Shell "update-mime-database $HOME/.local/share/mime" Wait
-  
-  'If Left(EXECU, "5") = "wine " Then
-  '  EXECU = "wine " & Chr(34) & Right(EXECU, Len(EXECU) - 5) & Chr(34)
-  'End If
+
   
   If Left(EXECU, "5") = "wine " Then
     EXECU = "python3 /LastOS/Scripts-Wine/wine-launcher.py " & Chr(34) & Right(EXECU, Len(EXECU) - 5) & Chr(34) & " %f" 'Works Perfect
@@ -1379,12 +1302,6 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   Else 'Linux one
     EXECU &= " %U"
   End If
-  
-  'Exec=python /LastOS/Scripts-Wine/wine-launcher.py App.exe %F
-  'Exec=python ~/wine-launcher.py "program.exe" %F
-  
-  
-  'EXECU &= " %U" <-Put this back if switch to Linux only
   
   If Right(PathIn, 1) = "/" Then PathIn = Left(PathIn, Len(PathIn) - 1) 'Remove Slash
   

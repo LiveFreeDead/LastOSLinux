@@ -18,7 +18,6 @@ Public Sub Form_Open()
    'Load Theme.ini
   Dim hFile As File
   Dim sLine As String
-  'Message(LLM.AppPath)
   hFile = Open LLM.AppPath & "/Themes/Theme.ini" For Input
   Line Input #hFile, sLine
   hFile.Close

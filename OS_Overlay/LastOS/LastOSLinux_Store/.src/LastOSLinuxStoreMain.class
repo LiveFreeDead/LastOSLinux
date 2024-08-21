@@ -195,10 +195,7 @@ Public Sub Form_Open()
   'Get LLM.AppPath & "LastOSLinuxSettings.ini" 'SETTINGS HERE
   LLSettingsFile = LLMod.Slashed(LLM.AppPath) & "LastOSLinuxStoreSettings.ini"  
   LoadSettings(LLSettingsFile)
-    
-  ''Get Repository Database (Move this below local once tested Glenn 2024)
-  'If UseOnlineRepository = True Then  GetRepositoryDatabase()
-  
+ 
   'Get Local Items
   GetItemPaths() 'Has the Online Repo in it now
   Wait (0.01) 'Lets loading screen show
@@ -223,7 +220,6 @@ Public Sub Form_Open()
   LoadingScreen.Close 'Can close it now we've got the main form
   If LLMod.StoreMode = 0 Then 'Only installer mode
     If AutoInstall = True And SelectedItems > 1 Then 'If the preset doesn't load successfully then no items will be selected and it will show the main form like normal
-      'Message(Str(SelectedItems))
       LastOSLinuxStoreMain.Hide 'Hide Main Form ASAP (less flicker)
       RunMiniInstaller()
     End If
@@ -676,7 +672,6 @@ Public Sub GenerateMainList()
              If Trim(Data.Items[I, Data.CVersion].Text) = "" Then 'No version, can't compare, just add it for now
              Else
                If Trim(Data.Items[J, Data.CVersion].Text) <> "" Then ' Don't compare to empty version ones, Pointless
-                  'Message("Duplicate found: " & Data.Items[J, Data.CTitleName].Text & " " & Trim(Data.Items[J, Data.CVersion].Text) & " & " & ItemNameVersion & " " & Trim(Data.Items[I, Data.CVersion].Text))
                   VerS1 = Lower(Trim(Data.Items[I, Data.CVersion].Text)) 'The item we are deciding to include or not
                   VerS2 = Lower(Trim(Data.Items[J, Data.CVersion].Text)) 'The item we compare to
                   'Remove all common extras so it's more compatible to compare versions
@@ -706,7 +701,6 @@ Public Sub GenerateMainList()
                   
                   If BT2 = BT1 Then 'Only compare if they are the same build type
                     If Ver1 >= Ver2 Then 'Should it be >= or just >, it should be >= otherwise they all hide when including r2 etc, better to show a vew too many than none at all
-                      'Message("Ver 1: " & Str(Ver1) & "Bigger Ver 2: " & Str(Ver2) & " Lower")
                     Else
                       HideItem = True 'Skips older item here
                       Continue 'Only take one newer to make it obsolete
@@ -909,7 +903,7 @@ End
 
 
 Public Sub Items_Click()
-  If ForceClose Then Return 'This is incase wget ties up downloading , Glenn 2024
+  If ForceClose Then Return 'This is incase wget ties up downloading.
   Try MoviePlayer.Stop ' Stop Any Movies
   MovieTimer.Enabled = False
   Screenshot.Visible = True
@@ -940,17 +934,14 @@ Public Sub Items_Click()
   Dim RealPath As String
   Dim ItemRepositoryURL As String
   
-  'Fader
+  'Grab Local Fader or download from URL
   RealPath = Data.Items[RefsID, Data.CFileFader].Text
   If InStr(Data.Items[RefsID, Data.CFileFader].Text, "%dbpath%/", 1) >= 1 Then
     RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
     ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
     
-    'Now get Fader etc
-    'Message(ItemRepositoryURL & "database/" & UN & ".png")
-    'Message(RealPath) ' The following isn't needed, it's in the original source above, & UN & ".png")
-    
-    If Not Exist(RealPath) Then 'Get it if missing
+    'Now get Fader
+    If Not Exist(RealPath) Then 'Get Fader from online repo if missing
       GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".png", RealPath)
     End If  
   End If
@@ -972,12 +963,10 @@ Public Sub Items_Click()
     RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
     ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
     
-    If Not Exist(RealPath) Then 'Get it if missing
+    If Not Exist(RealPath) Then 'Get screenshot from online repo if missing
       GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".jpg", RealPath)
     End If  
   End If
-  
-  
   
   'Change Screenshot to current
   If Exist(RealPath) Then
@@ -1115,7 +1104,6 @@ Public Sub Items_Click()
   End If
   
   'InstallSize
-    'Size
   InstSize = 0
   If Left(BT, 2) = "LL" Then
     Try InstSize = Val(Data.Items[RefsID, Data.CInstalledSize].Text)
@@ -1144,7 +1132,7 @@ End
 
 Public Sub Form_Close()
   'It cleans up it's own mess, no need to delete temp folders
-  'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded
+  'Delete Temp Folder
   'Shell "rm -r " & Chr(34) & Temp$("LLTmp*") & Chr(34) Wait  
   
   'Clean up downloader (Will quit after download??? or instant?)
@@ -1186,14 +1174,13 @@ Public Sub StartButton_MouseDown()
 End
 
 Public Sub Category_Click()
-  If Category.Current <> Null Then CurrentCat = Category.Current.Text 'Error protection done right
+  If Category.Current <> Null Then Try CurrentCat = Category.Current.Text 'Error protection done right
   GenerateMainList()
-  'Items_Click() 'Click Item
+  'Items_Click() 'Click Item (Don't need this)
 End
 
 Public Sub Items_MouseWheel()
   If CtrlPressed Then
-    'Title.Text = Str(ScaleItems)  
     If Mouse.Delta > 0 Then
       ScaleItems = ScaleItems + 1
     Else If Mouse.Delta < 0 Then
@@ -1252,8 +1239,6 @@ Public Sub SelectAll()
   AutoSelect = True
   IK = CurrentItemKey
   For I = 0 To Items.Count - 1 ' Need to add refID instead of using I below for both subs    
-    'Message(Items.Keys[I])
-    'Message(Data.Items[Items.Keys[I] - 1, Data.CRefID].Text) '-1 because 0 based
     Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "T" 'Because I copy the key from the main db I can use the list's key for the 
     GenerateMainList() ' Draw Selection
     CurrentItemKey = IK
@@ -1387,7 +1372,6 @@ End
 Public Sub LoadPresetFile(InPreset As String)
   Dim I, J, K As Integer
   Dim FileIn As String
-  'Dim InPreset As String
   Dim Itm As String[]
   Dim BuildTypeStr As String
   Dim BT2 As String
@@ -1438,7 +1422,6 @@ Public Sub LoadPresetFile(InPreset As String)
                  If Trim(Data.Items[I, Data.CVersion].Text) = "" Then 'No version, can't compare, just add it for now
                  Else
                    If Trim(Data.Items[K, Data.CVersion].Text) <> "" Then ' Don't compare to empty version ones, Pointless
-                      'Message("Duplicate found: " & Data.Items[J, Data.CTitleName].Text & " " & Trim(Data.Items[J, Data.CVersion].Text) & " & " & ItemNameVersion & " " & Trim(Data.Items[I, Data.CVersion].Text))
                       VerS1 = Lower(Trim(Data.Items[I, Data.CVersion].Text)) 'The item we are deciding to include or not
                       VerS2 = Lower(Trim(Data.Items[K, Data.CVersion].Text)) 'The item we compare to
                       'Remove all common extras so it's more compatible to compare versions
@@ -1466,8 +1449,7 @@ Public Sub LoadPresetFile(InPreset As String)
                       BT2 = Trim(Data.Items[K, Data.CBuildType].Text)
                       
                       If BT2 = BuildTypeStr Then 'Only compare if they are the same build type
-                        If Ver1 >= Ver2 Then 'Should it be >= or just >, it should be >= otherwise they all hide when including r2 etc, better to show a vew too many than none at all
-                          'Message("Ver 1: " & Str(Ver1) & "Bigger Ver 2: " & Str(Ver2) & " Lower")
+                        If Ver1 >= Ver2 Then 'Should it be >= or just >, it should be >= otherwise they all hide when including r2 etc, better to show a vew too many than none at all                        
                         Else
                           NotItem = True 'Skips older item here
                           Continue 'Only take one newer to make it obsolete
@@ -1479,9 +1461,8 @@ Public Sub LoadPresetFile(InPreset As String)
             Next
             If NotItem = True Then Continue 'Skips older items
             
-            
             Data.Items[I, Data.CSelected].Text = "T"
-            Break 'Only select one for now, will make it pick the newest versions later on Glenn
+            Break 'Only select one (It waits until it's on the newest or it's Unique before setting it to true.
           End If
         End If
       Next  
@@ -1554,7 +1535,6 @@ Public Sub SaveCurrentList()
   For I = 1 To Items.Count 'This is the only way to access them in order as shown, so doesn't use ref keys
     OutputList &= Items.Item.Text & Chr(10)    
     Items.MoveNext()
-
   Next
   CurrentItemKey = IK
   FileOut = User.Home & "/Desktop/MyList.txt"
@@ -1986,9 +1966,6 @@ Public Sub Items_DblClick()
   Else 
     Stats.Text = Str(Items.Count) & " Items"
   End If
-  
-  'GenerateMainList() (Bad Idea)
-  'Items.Refresh 'Good Idea (No bad idea, do it up under change)
 End
 
 
@@ -2076,7 +2053,7 @@ Public Sub RunMiniInstaller()
   Dim OldTitle As String
   Dim InstallCount As Integer
   
-  'Don't start the installer until ALL downloads are done, Glenn 2024
+  'Don't start the installer until ALL existing downloads are done, Still only downloads one at a time, which is about all LastOS.org can handle anyway
   While Downloading = True 'Can't do more until it's fully downloaded
     Wait (0.01)
   Wend
@@ -2088,7 +2065,6 @@ Public Sub RunMiniInstaller()
   
   'Make sure an items selected
   ItemToInstall = CurrentItemKey - 1  
-  'Message(ItemToInstall)
   
   If InstallCount = 0 And ItemToInstall <> -2 Then 'Install only one item without mini installer, and only if main form has selected it (MiniInstaller is shown with -Auto)
     Try BT = Data.Items[ItemToInstall, Data.CBuildType].Text ' BuildType 'The database is 0 based so use -1   
@@ -2112,7 +2088,6 @@ Public Sub RunMiniInstaller()
       Else 'ssApp, still uses SetupS
         Shell "wine " & Chr(34) & ItemLocal & Chr(34) Wait 'This ties up the whole Store, no work around yet?
       End If
-      'RunItem("wine " & Chr(34) & Data.Items[CurrentItemKey - 1, Data.CFileINI].Text & Chr(34))
       Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
       Wait (0.07) 'Redraw
     Else 'Linux Item
@@ -2167,7 +2142,7 @@ Public Sub RunMiniInstaller()
     MiniInstaller.Stats.Text = Str(I) & "/" & Str(InstallCount)
     Wait (0.07) 'Redraw so list moves (Can cause a little flicker, but more useful than being stuck at the bottom of the list or a black form not drawn at all)
     
-    'Check if needed to download first and also change the paths if successful or already exists Glenn 2025
+    'Check if needed to download first and also change the paths if successful or already exists
     ItemToInstall = MiniInstaller.ListInstall.Item.Key - 1
     ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
     
@@ -2256,13 +2231,10 @@ End
 
 
 Public Sub ItemURL_MouseDown()
-
   Shell "xdg-open " & ItemURL.Text
-
 End
 
 Public Sub MoviePlayer_MouseDown()
-
   If MoviePlayer.State = 4 Then ' 4 Playing, 3 Paused
     MoviePlayer.Pause
   Else
@@ -2271,14 +2243,6 @@ Public Sub MoviePlayer_MouseDown()
 End
 
 Public Sub MoviePlayer_DblClick()
-  'Message("Here")
-  'MoviePlayer.Position
-  'Make it fullscreen here ' Nah I'll need a new form and do it like that, it doesn't have full screen mode and the form controls go over the top of it.
-  'MoviePlayer.Left = 0
-  'MoviePlayer.Top = 0
-  'MoviePlayer.Width = LastOSLinuxStoreMain.Width
-  'MoviePlayer.Height = LastOSLinuxStoreMain.Height
-  
   Try MoviePlayer.Stop ' Stop movie and show screenshot again if double clicked
   Screenshot.Visible = True
   MoviePlayer.Visible = False  
@@ -2391,7 +2355,6 @@ Public Sub BuildRepository()
         RepoContent &= RepoLine & Chr(10)
         
         'Need to copy the .tar, .apz and .pgz files here and if the source isn't a compressed item then do so. Glenn 2025
-        'Message(Data.Items[I, Data.CFileINI].Text)
         DestPath = RepoDir & Right(Data.Items[I, Data.CFileINI].Text, Len(Data.Items[I, Data.CFileINI].Text) - LLMod.InStrRevSingle(Data.Items[I, Data.CFileINI].Text, "/"))
         If Exist(DestPath) Then Try Kill DestPath
         Try Copy Data.Items[I, Data.CFileINI].Text To DestPath
@@ -2483,12 +2446,8 @@ Public Sub LoadRepositoryDatabase()
           
           For K = 1 To InRepoSpTx.Count
             If K <= Data.Items.Columns.Count - 1 Then 
-              'Print "Count: " & InRepoSpTx.Count & " DataCols: " & Data.Items.Columns.Count & " K: " & K
-              
               If K = Data.CPathINI Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "%dbpath%", CurrentRepositoryURL) 'Adds download URL to item    
-              
               If K = Data.CDescription Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], Chr(30), Chr(13)) 'Testing chr 13 for description, may need 10
-              
               If K = Data.CURL Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "|", Chr(13)) 'Testing chr 13 for description, may need 10
               
               Data.Items[DRows, K].Text = InRepoSpTx[K - 1]
@@ -2590,7 +2549,6 @@ Public Sub LoadSettings(SettingsFile As String)
         Case "usecacherepository" 
           UseCacheRepository = IsTrue(LineData)
         End Select
-        'Message("Set: " & LineSet & "Data: " & LineData)
       End If
     End If
   Next
