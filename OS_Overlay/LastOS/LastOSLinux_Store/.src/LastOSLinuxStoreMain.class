@@ -221,8 +221,9 @@ Public Sub Form_Open()
     
   'FirstRun.Enabled = True
   FirstRun = False
-  LLM.Loaded = True 'Make LoadingScreen not called from the other functions
-  LoadingScreen.Close 'Can close it now we've got the main form
+  'LLM.Loaded = True 'Make LoadingScreen not called from the other functions 'Kept this active so I can use the Loading form to rescan items
+  'LoadingScreen.Close 'Can close it now we've got the main form 'Don't can use to re-scan items
+  LoadingScreen.Hide
   If LLMod.StoreMode = 0 Then 'Only installer mode
     If AutoInstall = True And SelectedItems > 1 Then 'If the preset doesn't load successfully then no items will be selected and it will show the main form like normal
       LastOSLinuxStoreMain.Hide 'Hide Main Form ASAP (less flicker)
@@ -1824,12 +1825,17 @@ Public Sub DoContextMenu()
   hMenu.Name = "OpenItemLocation"
   hMenu.Text = "Open Item Location"
   
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "EditItem"
+  hMenu.Text = "Edit Item"
+  
   ContextMenu.Popup(Mouse.ScreenX, Mouse.ScreenY)
 End
 
 Public Sub POP_Click()  
-
   Dim I As Integer
+  Dim OpenPath As String 
+  Dim BT As String
   
   Select Last.Name
     Case "Select1"            
@@ -1902,19 +1908,34 @@ Public Sub POP_Click()
     Case "ReScanItems"   
       'Clear All Known Items first
       Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+      
+      LastOSLinuxStoreMain.Hide
+      LoadingScreen.Show      
       'Get new items
       GetItemPaths()
       'Redo Categories
       GenerateCategoryList()
       'Redo main Lists
-      GenerateMainList()      
+      GenerateMainList()
+      LoadingScreen.Hide
+      LastOSLinuxStoreMain.Show      
     Case "OpenItemLocation"
       If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
-      Dim OpenPath As String
+      
       OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
       
       If Right(OpenPath, 1) <> "" Then OpenPath = Left(OpenPath, LLMod.InStrRevSingle(OpenPath, "/"))
       If Exist(OpenPath) Then Shell "xdg-open " & OpenPath ' Open with default windows manager
+    Case "EditItem"
+      If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+      
+      OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
+      BT = Data.Items[Items.Current.Key - 1, Data.CBuildType].Text
+      If BT = "LLApp" Or BT = "LLGame" Then        
+        Shell LLMod.Slashed(LLMod.AppPath) & "Tools/LLApp/LLApp.gambas -edit " & Chr(34) & OpenPath & Chr(34)
+      Else 'SetupS
+        Shell "wine " & Chr(34) & "$HOME/.wine/dosdevices/c:/Program Files/SetupS.SendTo/ssEditor/ssEditor.exe" & Chr(34) & " " & Chr(34) & OpenPath & Chr(34)
+      End If
     Case "AddManualLocation"
       Dialog.Title = "Choose a Folder to Scan for Items"
       Dialog.Path = User.Home

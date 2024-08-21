@@ -9,6 +9,7 @@ Public Sub Form_Open()
   
   'Get App's Folder
   LLM.AppPath = Application.Path ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
+  LLMod.AppPath = Application.Path ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
   LLM.HomePath = Application.Env["HOME"]
   
   If LLM.AppPath = LLM.HomePath Then LLM.AppPath = "/LastOS/LastOSLinux_Store"
