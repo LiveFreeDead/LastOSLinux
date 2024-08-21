@@ -80,6 +80,8 @@ Public QuitOnComplete As Boolean
 Public UseOnlineRepository As Boolean = True ' Default to using online repo
 Public UseCacheRepository As Boolean = True
 
+Public AutoInstall As Boolean
+
 
 'LLM = Last Linux Module
 Public Sub Form_Open()
@@ -89,17 +91,27 @@ Public Sub Form_Open()
   'Process Arguments passed from terminal  
   Dim PresetToLoad As String
   Dim S As String
-  
-  For Each S In Args
-    S = Trim(S)
-    'Message(S)
-    If Left(S, 1) = "-" Then
-      If S = "-launcher" Then LLMod.StoreMode = 1
-      If S = "-l" Then LLMod.StoreMode = 1      
-      Else
-        PresetToLoad = S
-      End If
-  Next
+  'If Args[0] = "LastOSLinux_Store" Then 'Remark this and unremark below to disable testing argument options
+  If 1 = 2 Then
+    AutoInstall = True
+    QuitOnComplete = True
+    PresetToLoad = "Preset.ini"    
+  Else
+   For Each S In Args
+      S = Trim(S)
+      'Message(S)
+      If Left(S, 1) = "-" Then
+        If S = "-launcher" Then LLMod.StoreMode = 1
+        If S = "-l" Then LLMod.StoreMode = 1
+        If S = "-autoinstall" Then AutoInstall = True
+        If S = "-a" Then AutoInstall = True
+        If S = "-quitoncomplete" Then QuitOnComplete = True
+        If S = "-q" Then QuitOnComplete = True
+        Else
+          PresetToLoad = S
+        End If
+    Next 
+  End If
   
   'Set Title
   Title.Text = "LastOSLinux Store v" & Application.Version
@@ -199,13 +211,23 @@ Public Sub Form_Open()
   
   'Generate Main List on form from Data Form
   'GenerateMainList() 'This is now done in the load preset routine so it only draws it once, if no preet found it'll still draw it.
-  
-  LoadPresetFile(PresetToLoad) ' Does Generate Main List
+  If LLMod.StoreMode = 0 Then
+    LoadPresetFile(PresetToLoad) ' Does Generate Main List
+  Else
+    GenerateMainList() 'Still need to do this in Launcher Mode
+  End If
     
   'FirstRun.Enabled = True
   FirstRun = False
   LLM.Loaded = True 'Make LoadingScreen not called from the other functions
   LoadingScreen.Close 'Can close it now we've got the main form
+  If LLMod.StoreMode = 0 Then 'Only installer mode
+    If AutoInstall = True And SelectedItems > 1 Then 'If the preset doesn't load successfully then no items will be selected and it will show the main form like normal
+      'Message(Str(SelectedItems))
+      LastOSLinuxStoreMain.Hide 'Hide Main Form ASAP (less flicker)
+      RunMiniInstaller()
+    End If
+  End If
 End
 
 Public Sub LoadFavorites()  
@@ -2043,7 +2065,7 @@ End
 Public Sub RunMiniInstaller()
   If Installing = True Then Return 'One at a time
   Dim ItemToInstall As Integer
-  ItemToInstall = CurrentItemKey - 1
+  
   If LLMod.StoreMode = 0 Then Installing = True
   Dim I As Integer
   Dim BT As String
@@ -2059,24 +2081,26 @@ Public Sub RunMiniInstaller()
     Wait (0.01)
   Wend
   
-  
-  
   For I = 0 To Data.Items.Rows.Count - 1
     'Check if only one item, if so then install it but don't quit main form etc.
     If Data.Items[I, Data.CSelected].Text = "T" Then InstallCount = InstallCount + 1
   Next
-  BT = Data.Items[ItemToInstall, Data.CBuildType].Text ' BuildType 'The database is 0 based so use -1
-  If InstallCount = 0 Then 'Install only one item without mini installer
-     
-     'Check if needed to download first and also change the paths if successful or already exists
-      ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
-      
-      If Not Exist(ItemLocal) Then 'Get it
-        GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
-        While Downloading = True 'Can't do more until it's fully downloaded
-          Wait (0.01)
-        Wend
-      End If      
+  
+  'Make sure an items selected
+  ItemToInstall = CurrentItemKey - 1  
+  'Message(ItemToInstall)
+  
+  If InstallCount = 0 And ItemToInstall <> -2 Then 'Install only one item without mini installer, and only if main form has selected it (MiniInstaller is shown with -Auto)
+    Try BT = Data.Items[ItemToInstall, Data.CBuildType].Text ' BuildType 'The database is 0 based so use -1   
+   'Check if needed to download first and also change the paths if successful or already exists
+    ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
+    
+    If Not Exist(ItemLocal) Then 'Get it
+      GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
+      While Downloading = True 'Can't do more until it's fully downloaded
+        Wait (0.01)
+      Wend
+    End If      
   
     If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
       OldTitle = Title.Text
@@ -2560,7 +2584,7 @@ Public Sub LoadSettings(SettingsFile As String)
         LineSet = Lower(Left(LineSet, Len(LineSet) - 1)) 'Lowercase and Remove =
         Select Case LineSet
         Case "quitoncomplete"
-          QuitOnComplete = IsTrue(LineData)
+          If QuitOnComplete = False Then QuitOnComplete = IsTrue(LineData) 'If it's already tru then it was given in the command line, so leave it set to that
         Case "useonlinerepository"
           UseOnlineRepository = IsTrue(LineData)
         Case "usecacherepository" 
