@@ -1931,6 +1931,10 @@ Public Sub POP_Click()
       
       OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
       BT = Data.Items[Items.Current.Key - 1, Data.CBuildType].Text
+      If Not Exist(OpenPath) Then
+        Message("Item not found or not local")
+        Return
+      End If
       If BT = "LLApp" Or BT = "LLGame" Then        
         Shell LLMod.Slashed(LLMod.AppPath) & "Tools/LLApp/LLApp.gambas -edit " & Chr(34) & OpenPath & Chr(34)
       Else 'SetupS
@@ -2270,6 +2274,10 @@ Public Sub RunMiniInstaller()
     Quit
   End If
   
+  MiniInstaller.Hide
+  LoadingScreen.Show
+  Try Wait (0.1)
+  
   'Clear All Known Items first
   Data.ClearDataFields() 'This now does the Column Adding and naming scheme
   'Get new items    
@@ -2284,6 +2292,7 @@ Public Sub RunMiniInstaller()
  'Move Cursor to current item
   Items.Item.Selected = True
   Items_Click() 'Load data and screenshot etc  
+  LoadingScreen.Hide
   LastOSLinuxStoreMain.Show
   Installing = False 'Job done   
   Title.Text = "Installed " & Str(InstallCount) & " Items"
@@ -2568,12 +2577,22 @@ Public Sub DownTime_Timer()
   'DownloadingDone is the gate keeper, it'll make sure only one at a time downloads
   
   While QueueUpTo < QueueCount
-    Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
+    If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
     
     'Check Remote file exist, else it'll fail
     Shell "curl --head --silent " & QueueURL[QueueUpTo] & " | head -n 1" To Test 'This is slow at times, but it's the only way
+    'Message(Test)
+    If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
+      QueueUpTo = 0
+      QueueCount = 0
+      Downloading = False
+      Wait (0.01)
+      If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+      Return
+    End If
     If InStr(Test, "404", 1) Then '404 not found
       'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+      Test = ""
       Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
     Else ' It exist, download it
       'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
@@ -2582,8 +2601,8 @@ Public Sub DownTime_Timer()
         Wait (0.01)
         If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
       Wend
-      Shell "mv " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait
-      Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+      If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "mv " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait
+      If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
     End If
     QueueUpTo = QueueUpTo + 1
     Wait (0.01)
@@ -2593,11 +2612,11 @@ Public Sub DownTime_Timer()
   Downloading = False  
   'Make sure it's gone
   Wait (0.01)
-  Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+  If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
   Wait (0.01)
   
   If ForceClose = True Then Quit 'This is just a precaution for if the wget loop keeps the app from quiting if a problem or forced quit occurs
-  If Installing = False Then Items_Click() 'Reload item once queue completes, if not installing items currently
+  If Installing = False And Test <> "" Then Items_Click() 'Reload item once queue completes, if not installing items currently
 End
 
 
