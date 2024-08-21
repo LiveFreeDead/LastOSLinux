@@ -5,6 +5,9 @@
 Public Favorites[1001] As String '1001 games should be enough?
 Public FavCount As Integer
 
+Public Excludes[1001] As String 'Excluded mounts
+Public ExcludesCount As Integer
+
 Public ManualLocation[100] As String
 Public ManualLocationCount As Integer
 
@@ -86,8 +89,8 @@ Public AutoInstall As Boolean
 'LLM = Last Linux Module
 Public Sub Form_Open()
   'Clean up downloader (Will quit after download??? or instant?)
-  Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
-
+  If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+    
   'Process Arguments passed from terminal  
   Dim PresetToLoad As String
   Dim S As String
@@ -115,6 +118,7 @@ Public Sub Form_Open()
   
   'Set Title
   Title.Text = "LastOSLinux Store v" & Application.Version
+  LastOSLinuxStoreMain.Text = Title.Text
   Title.Font.Bold = True
   Title.Font.Size = 12
   Title.Foreground = TitleCol
@@ -197,6 +201,7 @@ Public Sub Form_Open()
   LoadSettings(LLSettingsFile)
  
   'Get Local Items
+  GetExcludedMounts() 'So My HDD's can sleep well knowing they have no items to scan
   GetItemPaths() 'Has the Online Repo in it now
   Wait (0.01) 'Lets loading screen show
   
@@ -247,12 +252,33 @@ Public Sub LoadFavorites()
   End If
 End
 
+Public Sub GetExcludedMounts()
+  Dim I As Integer
+  'Load in Excluded Mounts if exists
+  ExcludesCount = 0
+  Dim InFavs As String
+  Dim InFavSp As String[]
+  If Exist(LLM.AppPath & "/ExcludeMounts.ini") Then
+    Try InFavs = File.Load(LLM.AppPath & "/ExcludeMounts.ini")
+    InFavs = Replace(InFavs, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+    InFavSp = Split(InFavs, Chr(10))
+    For I = 0 To InFavSp.Count - 1
+      If Trim(InFavSp[I]) <> "" Then
+        Excludes[ExcludesCount] = Trim(InFavSp[I])
+        ExcludesCount = ExcludesCount + 1
+      End If
+    Next
+  End If
+End
+
 
 
 Public Sub GetItemPaths()
   Dim DirToCheck As String
   Dim DirInPath As String
   Dim DirInSubPath As String
+  Dim Exclude As Boolean
+  Dim J As Integer
   
   'Clear checked locations
   Data.ScanPaths.Clear
@@ -277,9 +303,17 @@ Public Sub GetItemPaths()
     For Each DirInPath In Dir("/media", "[^.]*", gb.Directory) ' Check all mounted and sub mounts Media also
       If Access("/media/" & DirInPath) = True Then ' Only do ones with access to them
         GetItemsInPath("/media/" & DirInPath)
-        If Access("/media/" & DirInPath) = True Then ' Only do ones you have access to
+        If Access("/media/" & DirInPath) = True Then ' Only do ones you have access to          
           For Each DirInSubPath In Dir("/media/" & DirInPath, "[^.]*", gb.Directory) ' Check all sub mounted
-            GetItemsInPath("/media/" & DirInPath & "/" & DirInSubPath)
+            'ExcludeMounts.ini - Excludes checking in some mounts, so not wake up sleeping HDD's
+            Exclude = False
+            For J = 0 To ExcludesCount
+              If Excludes[J] = "/media/" & DirInPath & "/" & DirInSubPath Then
+                Exclude = True
+                Continue
+              End If
+            Next
+            If Exclude = False Then GetItemsInPath("/media/" & DirInPath & "/" & DirInSubPath)
           Next
         End If
       End If
@@ -558,6 +592,7 @@ Public Sub GenerateCategoryList()
   Dim FoundCat As Boolean
   Dim CatSp As String[]
   Dim CatTesting As String
+
   'Generate Categories
   Category.Clear  ' - NEVER use clear except for ListViews  
   
@@ -580,6 +615,16 @@ Public Sub GenerateCategoryList()
         FoundCat = False
         For K = 0 To CatSp.Count - 1
           CatTesting = Trim(Replace(CatSp[K], ";", ""))
+          
+          If LLMod.StoreMode = 0 Then 'Make sure all games have Game written before their category in store mode
+            Select Case Data.Items[I, Data.CBuildType].Text
+            Case "ppGame", "LLGame"
+              If Left(CatTesting, 4) <> "Game" Then CatTesting = "Game " & CatTesting              
+            End Select
+          
+          
+          End If
+                    
           If CatTesting <> "" Then 'Don't Add Empties here either
             If LastAddedDataCat > 0 Then
               For J = 1 To LastAddedDataCat
@@ -635,6 +680,9 @@ Public Sub GenerateMainList()
   
   If LLM.DataItemsRows >= 0 Then ' Must have 1 item
     FirstItem = 0
+    If LLMod.StoreMode = 0 Then
+      If Lower(Left(CurrentCat, 5)) = "game " Then CurrentCat = Right(CurrentCat, Len(CurrentCat) - 5) 'Makes Installer mode categories check drop "Game " from tests
+    End If
     For I = 0 To LLM.DataItemsRows
       Try CatFound = InStr(Data.Items[I, Data.CCategories].Text, CurrentCat, gb.IgnoreCase)
       If CurrentCat = "Favorites" And FavCount >= 1 Then 'Favorites doesn't exist in Install Mode, so will never do this anyway
@@ -660,7 +708,8 @@ Public Sub GenerateMainList()
         
         If HidePaid = True And Left(Data.Items[I, Data.CLicense].Text, 1) = "1" Then Continue 'Hide Paid Items
          
-        ListIconSize = ScaleItems + (ScaleItems / 2) + 2
+        'ListIconSize = ScaleItems + (ScaleItems / 2) + 2
+        ListIconSize = Items.Font.H 'Use Font Height in Pixels to set icon height, works great
         If FirstItem = 0 Then FirstItem = Val(Data.Items[I, Data.CRefID].Text) 'Keeps the ID of the first added item so we can jump to it on the list
         
         'Do Version Check here and skip if older
@@ -1240,10 +1289,11 @@ Public Sub SelectAll()
   IK = CurrentItemKey
   For I = 0 To Items.Count - 1 ' Need to add refID instead of using I below for both subs    
     Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "T" 'Because I copy the key from the main db I can use the list's key for the 
-    GenerateMainList() ' Draw Selection
+    'GenerateMainList() ' Draw Selection
     CurrentItemKey = IK
     If CurrentItemKey >= 0 Then Items[CurrentItemKey].Selected = True     
   Next  
+  GenerateMainList() ' Draw Selection, Only have to do this the once, way faster
   AutoSelect = False
 End
 Public Sub SelectNone()
@@ -1253,10 +1303,11 @@ Public Sub SelectNone()
   IK = CurrentItemKey
   For I = 0 To Items.Count - 1    
     Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "F" 'Because I copy the key from the main db I can use the list's key for the 
-    GenerateMainList() ' Draw Selection
+    'GenerateMainList() ' Draw Selection
     CurrentItemKey = IK
     If CurrentItemKey >= 0 Then Items[CurrentItemKey].Selected = True     
   Next
+  GenerateMainList() ' Draw Selection
   AutoSelect = False
 End
 
@@ -1274,10 +1325,11 @@ Public Sub SelectInvert()
     Else
       Data.Items[Items.Keys[I] - 1, Data.CSelected].Text = "T"
     End If
-    GenerateMainList() ' Draw Selection
+    'GenerateMainList() ' Draw Selection
     CurrentItemKey = IK
     If CurrentItemKey >= 0 Then Items[CurrentItemKey].Selected = True     
   Next  
+  GenerateMainList() ' Draw Selection
   AutoSelect = False
 End
 

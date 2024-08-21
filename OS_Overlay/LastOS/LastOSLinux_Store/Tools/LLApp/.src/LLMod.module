@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.0 2024-08-21-02
+'LastOS v1.1.0 2024-08-21-03
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -1033,6 +1033,9 @@ Public Function InstallppFile(PPFile As String) As Boolean
     'Make Shortcuts here
     If LnkCount > 0 Then
       For I = 1 To LnkCount
+        If InStr(LnkDisplayName[I], "{#2}", 1) >= 1 Then Continue 'Skip dual arch shortcuts, just keep 1st one, which is usually x64 anyway        
+        LnkDisplayName[I] = Replace(LnkDisplayName[I], " {#1}", "") 'Remove Dual Arch Off First Shortcut and just use that
+        
         DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"
         
         CategoryFix = LnkCatalog[I] 'Remove Games and convert to Game; 
