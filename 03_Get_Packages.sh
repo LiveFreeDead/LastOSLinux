@@ -22,7 +22,9 @@ sudo apt-get -qq update -y
 
 #Get Apps and Games 
 #To Get Proton working - Steam needs to be ran and logged in, then you need to add a game and configure a game to use Proton compatability, then you can right click a .exe and open it with proton using that games configurations)
-sudo apt install -y steam protontricks lutris playonlinux krita ffmpeg mint-meta-codecs vlc trash-cli grub-customizer notepadqq bleachbit cpu-x flameshot gparted htop jstest-gtk simplescreenrecorder obs-studio rar unrar filezilla catfish okular qbittorrent uget dconf-editor meld xfburn asunder qpdfview mediainfo-gui audacity kmahjongg kmines kpat ksudoku lbreakout2 kid3 ffmpegthumbs remmina darktable rapid-photo-downloader pdfarranger geany soundconverter cherrytree retext stacer plank makeself archivemount gambas3 fastfetch dos2unix
+sudo apt install -y steam protontricks lutris playonlinux ffmpeg mint-meta-codecs vlc trash-cli grub-customizer notepadqq bleachbit cpu-x flameshot gparted htop jstest-gtk simplescreenrecorder obs-studio rar unrar filezilla catfish okular qbittorrent uget dconf-editor meld xfburn asunder qpdfview mediainfo-gui audacity kmahjongg kmines kpat ksudoku lbreakout2 kid3 ffmpegthumbs remmina darktable rapid-photo-downloader pdfarranger geany soundconverter cherrytree retext stacer plank makeself archivemount gambas3 fastfetch dos2unix
+
+#krita <-This needs resources, so not including it as default
 
 #Nemo Customised
 sudo apt install -y nemo-media-columns

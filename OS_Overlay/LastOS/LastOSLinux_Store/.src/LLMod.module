@@ -1263,6 +1263,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   Dim FileContent As String
   Dim Typs As New String[]
   Dim J As Integer
+  Dim CurrentIconTheme As String
   
   OrigAppName = APP
   APP = Replace(APP, " (Linux)", "") 'Remove Bracketed Linux
@@ -1272,7 +1273,13 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   
   'MIME Type
   Print "MIME Output"
+  
+  Shell "gsettings get org.gnome.desktop.interface icon-theme" To CurrentIconTheme
+  CurrentIconTheme = Replace(CurrentIconTheme, "'", "")  
+  Shell "xdg-icon-resource install --context mimetypes --size 48 --theme " & CurrentIconTheme & " " & LOGO & " application-x-" & APP Wait
+  
   Shell "xdg-icon-resource install --context mimetypes --size 48 " & LOGO & " application-x-" & APP Wait
+  
   FileOut = "/tmp/" & APP & "-mime.xml"
   FileContent = "<?xml version=" & Chr(34) & "1.0" & Chr(34) & " encoding=" & Chr(34) & "UTF-8" & Chr(34) & "?>" & Chr(10)
   FileContent &= "<mime-info xmlns=" & Chr(34) & "http://www.freedesktop.org/standards/shared-mime-info" & Chr(34) & ">" & Chr(10)

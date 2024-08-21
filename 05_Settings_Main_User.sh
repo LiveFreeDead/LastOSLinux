@@ -113,6 +113,10 @@ gsettings set org.nemo.window-state network-expanded false
 cd $HOME/.config/cinnamon/spices/menu@cinnamon.org/
 grep -lZ '"value": "linuxmint-logo-ring-symbolic"' 0.json | xargs -0 sed -i 's|"value": "linuxmint-logo-ring-symbolic"|"value": "/usr/share/icons/Start Button.png"|g'
 
+
+#Add LastOS File Types for LLApp/Game files
+./Tools/AddLastOSFileTypes.sh
+
 #####################################################################################################################################
 
 #Hide Hidden Files By Default

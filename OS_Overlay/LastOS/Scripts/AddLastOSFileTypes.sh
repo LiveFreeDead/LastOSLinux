@@ -1,13 +1,16 @@
 #!/bin/bash
 #set -e # stop on error
 
+eval ICONTHEME=$(gsettings get org.gnome.desktop.interface icon-theme)
 APP=llapp
 EXT=lla
 COMMENT="LLApp File"
 EXEC=/usr/bin/llapp
 LOGO=/LastOS/LLOSStore.png
 
-xdg-icon-resource install --context mimetypes --size 48 $LOGO application-x-$APP
+xdg-icon-resource install --context mimetypes --size 256 $LOGO application-x-$APP
+
+xdg-icon-resource install --context mimetypes --size 256 --theme $ICONTHEME $LOGO application-x-$APP
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <mime-info xmlns=\"http://www.freedesktop.org/standards/shared-mime-info\">
@@ -50,7 +53,9 @@ COMMENT="LLGame File"
 EXEC=/usr/bin/llapp
 LOGO=/LastOS/LLOSStore.png
 
-xdg-icon-resource install --context mimetypes --size 48 $LOGO application-x-$APP
+xdg-icon-resource install --context mimetypes --size 256 $LOGO application-x-$APP
+
+xdg-icon-resource install --context mimetypes --size 256 --theme $ICONTHEME $LOGO application-x-$APP
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <mime-info xmlns=\"http://www.freedesktop.org/standards/shared-mime-info\">

@@ -70,5 +70,3 @@ sudo chmod +x "/LastOS/Scripts/sudo_firstlogon_service.sh"
 sudo fc-cache -f -v
 fc-cache -f -v
 
-#Add LastOS File Types for LLApp/Game files
-./Tools/AddLastOSFileTypes.sh

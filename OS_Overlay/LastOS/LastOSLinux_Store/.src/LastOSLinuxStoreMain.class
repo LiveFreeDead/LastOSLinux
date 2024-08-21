@@ -1370,6 +1370,10 @@ Public Sub SaveFavorites()
 End
 
 Public Sub LoadPresetFile(InPreset As String)
+  InPreset = Trim(InPreset)
+  'If Right(InPreset, 7) = ".gambas" Then InPreset = ""
+  If Right(InPreset, 4) <> ".ini" Then InPreset = "" 'If not the right filetype, don't attempt to load it
+  
   Dim I, J, K As Integer
   Dim FileIn As String
   Dim Itm As String[]
@@ -1386,89 +1390,92 @@ Public Sub LoadPresetFile(InPreset As String)
   
   Test = Trim(InPreset)
   InPreset = ""
-  If Exist(Test) = False Then Test = LLMod.Slashed(LLM.AppPath) & "/Presets/" & Test
-  
-  If Exist(Test) = True Then
-    FileIn = Test    
-    Try InPreset = File.Load(FileIn)
+  If Test = "" Then 
+    'Do Nothing
+  Else
+    If Exist(Test) = False Then Test = LLMod.Slashed(LLM.AppPath) & "/Presets/" & Test
     
-    InPreset = Replace(InPreset, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
-    
-    Itm = Split(InPreset, Chr(10))
-    
-    'Unselect everything
-    For I = 0 To LLM.DataItemsRows
-      Data.Items[I, Data.CSelected].Text = "F"
-    Next
-    
-    For J = 0 To Itm.Count - 1
-      If Trim(Itm[j]) = "" Then Continue 'Skip Empty lines
+    If Exist(Test) = True Then
+      FileIn = Test    
+      Try InPreset = File.Load(FileIn)
       
-      If Left(Itm[J], 1) = 1 Then BuildTypeStr = "ssApp"
-      If Left(Itm[J], 1) = 2 Then BuildTypeStr = "ppApp"
-      If Left(Itm[J], 1) = 3 Then BuildTypeStr = "ppGame"
-      If Left(Itm[J], 1) = 4 Then BuildTypeStr = "LLApp"
-      If Left(Itm[J], 1) = 5 Then BuildTypeStr = "LLGame"
+      InPreset = Replace(InPreset, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+      
+      Itm = Split(InPreset, Chr(10))
+      
+      'Unselect everything
       For I = 0 To LLM.DataItemsRows
-        If Data.Items[I, Data.CBuildType].Text = BuildTypeStr Then 'Correct Build Type
-          If Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "")) = Right(Itm[J], Len(Itm[J]) - 2) Then ' Reduced Name matches
-            'Select Item
-            'Do Version Check here and skip if older
-            ItemNameVersion = Data.Items[I, Data.CTitleName].Text
-            NotItem = False
-             For K = 0 To LLM.DataItemsRows        
-               If K <> I And Data.Items[K, Data.CTitleName].Text = ItemNameVersion Then
-                 'It's the same title name but not itself, check version number, else hide duplicate/older
-                 If Trim(Data.Items[I, Data.CVersion].Text) = "" Then 'No version, can't compare, just add it for now
-                 Else
-                   If Trim(Data.Items[K, Data.CVersion].Text) <> "" Then ' Don't compare to empty version ones, Pointless
-                      VerS1 = Lower(Trim(Data.Items[I, Data.CVersion].Text)) 'The item we are deciding to include or not
-                      VerS2 = Lower(Trim(Data.Items[K, Data.CVersion].Text)) 'The item we compare to
-                      'Remove all common extras so it's more compatible to compare versions
-                      VerS1 = Replace(VerS1, "version", "")
-                      VerS1 = Replace(VerS1, "build", "")
-                      VerS1 = Replace(VerS1, "v", "")
-                      VerS1 = Replace(VerS1, "r1", "")
-                      VerS1 = Replace(VerS1, "r2", "")
-                      VerS1 = Replace(VerS1, "r3", "")
-                      VerS1 = Replace(VerS1, "r4", "")
-                      VerS1 = Replace(VerS1, "-", "")
-                      VerS2 = Replace(VerS2, "version", "")
-                      VerS2 = Replace(VerS2, "build", "")
-                      VerS2 = Replace(VerS2, "v", "")
-                      VerS2 = Replace(VerS2, "r1", "")
-                      VerS2 = Replace(VerS2, "r2", "")
-                      VerS2 = Replace(VerS2, "r3", "")
-                      VerS2 = Replace(VerS2, "r4", "")
-                      VerS2 = Replace(VerS2, "-", "")
-                      Ver1 = 0
-                      Ver2 = 0
-                      Try Ver1 = Val(VerS1)
-                      Try Ver2 = Val(VerS2)
-                      
-                      BT2 = Trim(Data.Items[K, Data.CBuildType].Text)
-                      
-                      If BT2 = BuildTypeStr Then 'Only compare if they are the same build type
-                        If Ver1 >= Ver2 Then 'Should it be >= or just >, it should be >= otherwise they all hide when including r2 etc, better to show a vew too many than none at all                        
-                        Else
-                          NotItem = True 'Skips older item here
-                          Continue 'Only take one newer to make it obsolete
+        Data.Items[I, Data.CSelected].Text = "F"
+      Next
+      
+      For J = 0 To Itm.Count - 1
+        If Trim(Itm[j]) = "" Then Continue 'Skip Empty lines
+        
+        If Left(Itm[J], 1) = 1 Then BuildTypeStr = "ssApp"
+        If Left(Itm[J], 1) = 2 Then BuildTypeStr = "ppApp"
+        If Left(Itm[J], 1) = 3 Then BuildTypeStr = "ppGame"
+        If Left(Itm[J], 1) = 4 Then BuildTypeStr = "LLApp"
+        If Left(Itm[J], 1) = 5 Then BuildTypeStr = "LLGame"
+        For I = 0 To LLM.DataItemsRows
+          If Data.Items[I, Data.CBuildType].Text = BuildTypeStr Then 'Correct Build Type
+            If Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "")) = Right(Itm[J], Len(Itm[J]) - 2) Then ' Reduced Name matches
+              'Select Item
+              'Do Version Check here and skip if older
+              ItemNameVersion = Data.Items[I, Data.CTitleName].Text
+              NotItem = False
+               For K = 0 To LLM.DataItemsRows        
+                 If K <> I And Data.Items[K, Data.CTitleName].Text = ItemNameVersion Then
+                   'It's the same title name but not itself, check version number, else hide duplicate/older
+                   If Trim(Data.Items[I, Data.CVersion].Text) = "" Then 'No version, can't compare, just add it for now
+                   Else
+                     If Trim(Data.Items[K, Data.CVersion].Text) <> "" Then ' Don't compare to empty version ones, Pointless
+                        VerS1 = Lower(Trim(Data.Items[I, Data.CVersion].Text)) 'The item we are deciding to include or not
+                        VerS2 = Lower(Trim(Data.Items[K, Data.CVersion].Text)) 'The item we compare to
+                        'Remove all common extras so it's more compatible to compare versions
+                        VerS1 = Replace(VerS1, "version", "")
+                        VerS1 = Replace(VerS1, "build", "")
+                        VerS1 = Replace(VerS1, "v", "")
+                        VerS1 = Replace(VerS1, "r1", "")
+                        VerS1 = Replace(VerS1, "r2", "")
+                        VerS1 = Replace(VerS1, "r3", "")
+                        VerS1 = Replace(VerS1, "r4", "")
+                        VerS1 = Replace(VerS1, "-", "")
+                        VerS2 = Replace(VerS2, "version", "")
+                        VerS2 = Replace(VerS2, "build", "")
+                        VerS2 = Replace(VerS2, "v", "")
+                        VerS2 = Replace(VerS2, "r1", "")
+                        VerS2 = Replace(VerS2, "r2", "")
+                        VerS2 = Replace(VerS2, "r3", "")
+                        VerS2 = Replace(VerS2, "r4", "")
+                        VerS2 = Replace(VerS2, "-", "")
+                        Ver1 = 0
+                        Ver2 = 0
+                        Try Ver1 = Val(VerS1)
+                        Try Ver2 = Val(VerS2)
+                        
+                        BT2 = Trim(Data.Items[K, Data.CBuildType].Text)
+                        
+                        If BT2 = BuildTypeStr Then 'Only compare if they are the same build type
+                          If Ver1 >= Ver2 Then 'Should it be >= or just >, it should be >= otherwise they all hide when including r2 etc, better to show a vew too many than none at all                        
+                          Else
+                            NotItem = True 'Skips older item here
+                            Continue 'Only take one newer to make it obsolete
+                          End If
                         End If
                       End If
-                    End If
-                End If
-               End If
-            Next
-            If NotItem = True Then Continue 'Skips older items
-            
-            Data.Items[I, Data.CSelected].Text = "T"
-            Break 'Only select one (It waits until it's on the newest or it's Unique before setting it to true.
+                  End If
+                 End If
+              Next
+              If NotItem = True Then Continue 'Skips older items
+              
+              Data.Items[I, Data.CSelected].Text = "T"
+              Break 'Only select one (It waits until it's on the newest or it's Unique before setting it to true.
+            End If
           End If
-        End If
-      Next  
-    Next     
+        Next  
+      Next     
+    End If
   End If
-  
   'Must do this every time as it's called from Open Form to only draw once
   GenerateMainList() ' Draw Selection
   
