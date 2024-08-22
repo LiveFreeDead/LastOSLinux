@@ -6,7 +6,7 @@ Public StartItemCount As Integer
 Public MidItemCount As Integer
 Public FinishItemCount As Integer
 
-Public LocalDBFile As String = "LLFile_DB.ini"
+Public LocalDBFile As String = ".LLFileDB/LLFile_DB.ini"
 Public ForceReScanItems As Boolean
 
 Public Favorites[1001] As String '1001 games should be enough?
@@ -351,14 +351,14 @@ Public Sub GetItemPaths()
 End
 
 Public Sub GetItemsInPath(DirToCheck As String)
-    'Try Resetting between item scans Glenn 2025
+    'Try Resetting between item scans (Fixed)
     StartItemCount = 0
     MidItemCount = 0
     FinishItemCount = 0
     
     If Not LLM.Loaded Then
       LoadingScreen.Status.Text = "Load: " & DirToCheck
-      Wait (0.1) 'Redraw loading screen, it needs a little time to redraw
+      Wait (0.07) 'Redraw loading screen, it needs a little time to redraw
     End If
     Dim I As Integer
     If Right(DirToCheck, 1) <> "/" Then DirToCheck &= "/" ' Add Slash
@@ -401,6 +401,7 @@ Public Sub GetLLItemsFromPath(InPath As String)
   Dim AddedItems As Integer
   Dim Test As String  
   Dim RescanThis As Boolean
+  Dim LocalDBCache As String = InPath & ".LLFileDB/"
 
   StartItemCount = Data.Items.Rows.Count
   'if InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
@@ -408,6 +409,7 @@ Public Sub GetLLItemsFromPath(InPath As String)
   If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
   
   'Shell "rm " & Chr(34) & InPath & ".a" & Chr(34) 'Remove them all (temp fixer)
+  'Shell "rm " & Chr(34) & InPath & "LLFile_DB.ini" & Chr(34) 'Remove them all (temp fixer)
   
   MidItemCount = Data.Items.Rows.Count
   
@@ -415,7 +417,7 @@ Public Sub GetLLItemsFromPath(InPath As String)
   
   If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
     'Check if using Local DB or the last check has newer items/changes
-    Shell "find " & InPath & " -type f -newer " & InPath & "/.a" To Test    
+    Shell "find " & InPath & " -type f -newer " & LocalDBCache & ".a" To Test    
     If Trim(Test) <> "" Then  'Somethings Newer - rescan this path
       'Message(Test)
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
@@ -423,7 +425,7 @@ Public Sub GetLLItemsFromPath(InPath As String)
       'ForceReScanItems = True
     End If
     
-    If Not Exist(InPath & ".a") Then
+    If Not Exist(LocalDBCache & ".a") Then
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
       RescanThis = True
     End If
@@ -471,6 +473,7 @@ Public Sub GetWineItemsFromPath(InPath As String)
   Dim AddedItems As Integer
   Dim Test As String
   Dim RescanThis As Boolean
+  Dim LocalDBCache As String = InPath & ".LLFileDB/"
    
   StartItemCount = Data.Items.Rows.Count
     
@@ -478,6 +481,7 @@ Public Sub GetWineItemsFromPath(InPath As String)
   If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath)
   
   'Shell "rm " & Chr(34) & InPath & ".a" & Chr(34) 'Remove them all (temp fixer)
+  'Shell "rm " & Chr(34) & InPath & "LLFile_DB.ini" & Chr(34) 'Remove them all (temp fixer)
 
   MidItemCount = Data.Items.Rows.Count
   
@@ -485,7 +489,7 @@ Public Sub GetWineItemsFromPath(InPath As String)
   
   If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
     'Check if using Local DB or the last check has newer items/changes
-    Shell "find " & InPath & " -type f -newer " & InPath & "/.a" To Test    
+    Shell "find " & InPath & " -type f -newer " & LocalDBCache & ".a" To Test    
     If Trim(Test) <> "" Then 'Somethings Newer - rescan this path
       'Message(Test)
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
@@ -493,7 +497,7 @@ Public Sub GetWineItemsFromPath(InPath As String)
       'ForceReScanItems = True
     End If
     
-    If Not Exist(InPath & ".a") Then
+    If Not Exist(LocalDBCache & ".a") Then
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
       RescanThis = True
     End If
@@ -547,7 +551,7 @@ Public Sub SaveToLocalDB(InPath As String)
   Dim RepoLine As String
   Dim Tx As String
   
-  Dim IconCache As String = InPath & ".LLFileDB/"
+  Dim LocalDBCache As String = InPath & ".LLFileDB/"
   
   LocalDB = InPath & LocalDBFile  
 'SaveDB Here to repload above next time
@@ -568,9 +572,9 @@ Public Sub SaveToLocalDB(InPath As String)
         If J = Data.CFileIcon Then
           If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
             Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
-            If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
-            If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
-            OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
+            If Not Exist(LocalDBCache) Then Shell "mkdir -p " & Chr(34) & LocalDBCache & Chr(34) Wait
+            If Exist(LocalDBCache) Then Shell "chmod -R 775 " & Chr(34) & LocalDBCache & Chr(34) Wait
+            OutFile = LocalDBCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
             If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
             Try Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
           End If
@@ -579,9 +583,9 @@ Public Sub SaveToLocalDB(InPath As String)
         If J = Data.CFileScreenshot Then
           If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
             Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
-            If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
-            If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
-            OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
+            If Not Exist(LocalDBCache) Then Shell "mkdir -p " & Chr(34) & LocalDBCache & Chr(34) Wait
+            If Exist(LocalDBCache) Then Shell "chmod -R 775 " & Chr(34) & LocalDBCache & Chr(34) Wait
+            OutFile = LocalDBCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
             If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
             Try Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
           End If
@@ -611,7 +615,7 @@ Public Sub SaveToLocalDB(InPath As String)
     Next
     If RepoContent <> "" Then 'Don't bother with an empty file
       Try File.Save(LocalDB, RepoContent) 'Save DB File if able to
-      Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
+      Shell "touch " & Chr(34) & LocalDBCache & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
     End If
   End If
 End
@@ -879,6 +883,11 @@ Public Sub GenerateCategoryList()
     Category.Item.Foreground = &h00FF00
     LastAddedCat = LastAddedCat + 1
   End If
+  Category.Add(LastAddedCat, "Linux")
+  LastAddedCat = LastAddedCat + 1
+  Category.Add(LastAddedCat, "Windows")
+  LastAddedCat = LastAddedCat + 1
+  
   'Add To Data form so can sort
   If LLM.DataItemsRows >= 0 Then
     For I = 1 To LLM.DataItemsRows      
@@ -941,6 +950,7 @@ Public Sub GenerateMainList()
   Dim Ver1 As Float
   Dim Ver2 As Float
   Dim HideItem As Boolean
+  Dim BT As String
   Dim BT1 As String
   Dim BT2 As String
   
@@ -966,6 +976,15 @@ Public Sub GenerateMainList()
           End If
         Next
       End If
+      
+      BT = Trim(Data.Items[I, Data.CBuildType].Text)
+      
+      If BT = "LLApp" Or BT = "LLGame" Then
+        If CurrentCat = "Linux" Then CatFound = 7
+      Else 'Windows Item
+        If CurrentCat = "Windows" Then CatFound = 7
+      End If
+      
       If CurrentCat = "" Or CurrentCat = "All" Or CatFound >= 1 Then  'Only add if in the cat
         If Data.Items[I, Data.CTitleName].Text = "" Then Continue 'Don't show dead items, even if the data is in tact and error may occur
         If HideInstalled = True And Data.Items[I, Data.CInstalled].Text = "T" Then Continue 'Jumps to Next For
@@ -1070,18 +1089,18 @@ Public Sub GenerateMainList()
         End If
         
         'Item font color
-        If LLMod.StoreMode = 0 Then 'Only show colours for Installer
+        If LLMod.StoreMode = 0 Then 'Only show colours for Installer, Had a crash here, check Glenn 2025
           Select Case Lower(Data.Items[I, Data.CBuildType].Text)
           Case "ssapp"
-            Items[Data.Items[I, 0].Text].Foreground = ItemColssApp
+            Try Items[Data.Items[I, 0].Text].Foreground = ItemColssApp
           Case "ppapp"
-            Items[Data.Items[I, 0].Text].Foreground = ItemColppApp
+            Try Items[Data.Items[I, 0].Text].Foreground = ItemColppApp
           Case "ppgame"
-            Items[Data.Items[I, 0].Text].Foreground = ItemColppGame
+            Try Items[Data.Items[I, 0].Text].Foreground = ItemColppGame
           Case "llapp"
-            Items[Data.Items[I, 0].Text].Foreground = ItemColLLApp
+            Try Items[Data.Items[I, 0].Text].Foreground = ItemColLLApp
           Case "llgame"
-            Items[Data.Items[I, 0].Text].Foreground = ItemColLLGame
+            Try Items[Data.Items[I, 0].Text].Foreground = ItemColLLGame
           End Select
         End If
         'Select if set to selected
@@ -2162,6 +2181,7 @@ Public Sub POP_Click()
       Else
         HideInstalled = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "HideOnline"            
       If HideOnline = False Then ' Toggle Showing Online items
@@ -2169,6 +2189,7 @@ Public Sub POP_Click()
       Else
         HideOnline = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "HidePaid"
       If HidePaid = False Then ' Toggle Showing Paid items
@@ -2176,6 +2197,7 @@ Public Sub POP_Click()
       Else
         HidePaid = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "HideWindows"
       If HideWindows = False Then ' Toggle Showing Windows items
@@ -2183,6 +2205,7 @@ Public Sub POP_Click()
       Else
         HideWindows = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "HideLinux"
       If HideLinux = False Then ' Toggle Showing Linux items
@@ -2190,6 +2213,7 @@ Public Sub POP_Click()
       Else
         HideLinux = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "HideApps"
       If HideApps = False Then ' Toggle Showing App items
@@ -2197,6 +2221,7 @@ Public Sub POP_Click()
       Else
         HideApps = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "HideGames"
       If HideGames = False Then ' Toggle Showing Game items
@@ -2204,6 +2229,7 @@ Public Sub POP_Click()
       Else
         HideGames = False
       End If
+      'GenerateCategoryList()
       GenerateMainList()
     Case "LoadPreset"      
       LoadPreset()
@@ -2461,6 +2487,9 @@ Public Sub RunMiniInstaller()
     Wait (0.01)
   Wend
   
+  
+  'Change Category to All, Generate Main List and step through them, else all the hidden items you previously selected install too.
+  'I'll leave this one, if someone is messing about they'll get the mini installer every time
   For I = 0 To Data.Items.Rows.Count - 1
     'Check if only one item, if so then install it but don't quit main form etc.
     If Data.Items[I, Data.CSelected].Text = "T" Then InstallCount = InstallCount + 1
@@ -2506,19 +2535,48 @@ Public Sub RunMiniInstaller()
   End If
   
   'Build install list and go through them all  
-  LastOSLinuxStoreMain.Hide
+  LastOSLinuxStoreMain.Hide 'Hide Main Form
   MiniInstaller.ListInstall.Clear ' This was used for ListView and not TableView
 
-  For I = 0 To Data.Items.Rows.Count - 1
-    If Data.Items[I, Data.CSelected].Text = "T" Then 'Only do selected items     
-      If Data.Items[I, Data.CPriority].Text <> "" Then
-        MiniInstaller.ListInstall.Add(Data.Items[I, Data.CRefID].Text, Data.Items[I, Data.CPriority].Text & ")" & Data.Items[I, Data.CTitleName].Text)
+  'Glenn 2026
+  'Change Category to All, Generate Main List and step through them, else all the hidden items you previously selected install too.
+  Category.MoveFirst '(All)
+  Category.Item.Selected = True
+  CurrentCat = "All"
+  GenerateMainList()
+  Items.MoveFirst
+  Items.Item.Selected = True 'Move to each item  
+  InstallCount = 0
+  For I = 1 To Items.Count
+    Items.Item.Selected = True 'Move to each item      
+    
+    If Data.Items[Items.Current.Key - 1, Data.CSelected].Text = "T" Then 'Only do selected items
+      InstallCount = InstallCount + 1 ' Count how many we add
+      If Data.Items[Items.Current.Key - 1, Data.CPriority].Text <> "" Then
+        MiniInstaller.ListInstall.Add(Data.Items[Items.Current.Key - 1, Data.CRefID].Text, Data.Items[Items.Current.Key - 1, Data.CPriority].Text & ")" & Data.Items[Items.Current.Key - 1, Data.CTitleName].Text)
       Else
-        MiniInstaller.ListInstall.Add(Data.Items[I, Data.CRefID].Text, "5)" & Data.Items[I, Data.CTitleName].Text)
+        MiniInstaller.ListInstall.Add(Data.Items[Items.Current.Key - 1, Data.CRefID].Text, "5)" & Data.Items[Items.Current.Key - 1, Data.CTitleName].Text)
       End If
     End If
+    Items.MoveNext
   Next
-  Wait (0.3) 'Redraw
+  Items.MoveFirst
+  Items.Item.Selected = True 'Move to first Item on Main Form
+  
+  ''Old Method Below, incase the above one goes bad
+  'For I = 0 To Data.Items.Rows.Count - 1
+  '  If Data.Items[I, Data.CSelected].Text = "T" Then 'Only do selected items     
+  '    If Data.Items[I, Data.CPriority].Text <> "" Then
+  '      MiniInstaller.ListInstall.Add(Data.Items[I, Data.CRefID].Text, Data.Items[I, Data.CPriority].Text & ")" & Data.Items[I, Data.CTitleName].Text)
+  '    Else
+  '      MiniInstaller.ListInstall.Add(Data.Items[I, Data.CRefID].Text, "5)" & Data.Items[I, Data.CTitleName].Text)
+  '    End If
+  '  End If
+  'Next
+  'Wait (0.3) 'Redraw
+  
+  'MiniInstaller.Show
+  'Message("Check")
   
   'Sort Order here
   MiniInstaller.ListInstall.Sorted = True ' Can only make it alphabetical for now so remove the priority number from the Title below
@@ -2528,7 +2586,7 @@ Public Sub RunMiniInstaller()
     IT = MiniInstaller.ListInstall[MiniInstaller.ListInstall.Keys[I]].Text
     MiniInstaller.ListInstall[MiniInstaller.ListInstall.Keys[I]].Text = Right(IT, Len(IT) - InStr(IT, ")", 1))
   Next
-  
+    
   Dim ItemINI As String
   Dim OldStats As String
   
