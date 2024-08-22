@@ -296,6 +296,7 @@ Public Sub GetItemPaths()
   
   'Clear checked locations
   Data.ScanPaths.Clear
+  
   Dim I As Integer
   
   'Add Manual Locations to scan first
@@ -350,7 +351,11 @@ Public Sub GetItemPaths()
 End
 
 Public Sub GetItemsInPath(DirToCheck As String)
- 
+    'Try Resetting between item scans Glenn 2025
+    StartItemCount = 0
+    MidItemCount = 0
+    FinishItemCount = 0
+    
     If Not LLM.Loaded Then
       LoadingScreen.Status.Text = "Load: " & DirToCheck
       Wait (0.1) 'Redraw loading screen, it needs a little time to redraw
@@ -396,8 +401,15 @@ Public Sub GetLLItemsFromPath(InPath As String)
   Dim AddedItems As Integer
   Dim Test As String  
   Dim RescanThis As Boolean
+
+  StartItemCount = Data.Items.Rows.Count
+  'if InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
   
-  If InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
+  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
+  
+  'Shell "rm " & Chr(34) & InPath & ".a" & Chr(34) 'Remove them all (temp fixer)
+  
+  MidItemCount = Data.Items.Rows.Count
   
   AddedItems = MidItemCount - StartItemCount
   
@@ -442,6 +454,7 @@ Public Sub GetLLItemsFromPath(InPath As String)
     
     'Save If Local DB Enabled
     If InPath <> RepositoryPathLocal Then
+      SaveToLocalDB(InPath)    
       'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
     End If
@@ -458,8 +471,15 @@ Public Sub GetWineItemsFromPath(InPath As String)
   Dim AddedItems As Integer
   Dim Test As String
   Dim RescanThis As Boolean
+   
+  StartItemCount = Data.Items.Rows.Count
     
-  If InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath)
+  'If InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath)  
+  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath)
+  
+  'Shell "rm " & Chr(34) & InPath & ".a" & Chr(34) 'Remove them all (temp fixer)
+
+  MidItemCount = Data.Items.Rows.Count
   
   AddedItems = MidItemCount - StartItemCount
   
@@ -529,71 +549,71 @@ Public Sub SaveToLocalDB(InPath As String)
   
   Dim IconCache As String = InPath & ".LLFileDB/"
   
-  LocalDB = InPath & LocalDBFile
+  LocalDB = InPath & LocalDBFile  
+'SaveDB Here to repload above next time
+  FinishItemCount = Data.Items.Rows.Count
+  'Message(Str(StartItemCount) & " " & Str(MidItemCount) & " " & Str(FinishItemCount))
   
-  'SaveDB Here to repload above next time
-    FinishItemCount = Data.Items.Rows.Count - 1
-    
-    If FinishItemCount > StartItemCount Then 'Found Items
-      For I = 0 To LLM.DataItemsRows
-        'Check if item is local or skip (can't build a repo with remote items)
-        If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
-        
-        UN = Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "") & Data.Items[I, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[I, Data.CVersion].Text)     
-        
-        RepoLine = ""
-        For J = 1 To Data.Items.Columns.Count - 1          
-          Tx = Data.Items[I, J].Text
-          'Keep Icons in a .LLFileDB folder on the USB
-          If J = Data.CFileIcon Then
-            If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
-              Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
-              If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
-              If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
-              OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
-              If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
-              Try Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
-            End If
+  If FinishItemCount > StartItemCount Then 'Found Items save a DB (I fixed the miscount issue making sure to move it into the main routines instead of the sub routines)
+    For I = 0 To LLM.DataItemsRows
+      'Check if item is local or skip (can't build a repo with remote items)
+      If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
+      
+      UN = Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "") & Data.Items[I, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[I, Data.CVersion].Text)     
+      
+      RepoLine = ""
+      For J = 1 To Data.Items.Columns.Count - 1          
+        Tx = Data.Items[I, J].Text
+        'Keep Icons in a .LLFileDB folder on the USB
+        If J = Data.CFileIcon Then
+          If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
+            Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
+            If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
+            If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
+            OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
+            If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+            Try Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
           End If
-          'Worked so well for Icons, try with Screenshots
-          If J = Data.CFileScreenshot Then
-            If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
-              Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
-              If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
-              If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
-              OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
-              If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
-              Try Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
-            End If
-          End If
-          
-          Tx = Replace(Tx, InPath, "%dbpath%/") 'Instead of doing below, just replce DB path for everything
-          
-          If Left(Tx, 5) = "/tmp/" Then Tx = Right(Tx, Len(Tx) - LLMod.InStrRevSingle(Tx, "/")) 'Just keep the screenshot name to nab out of the Archive individually when clicking an Item
-                    
-          If J = Data.CDescription Then
-            Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
-            Tx = Replace(Tx, Chr(10), Chr(30)) 'Convert CRLF to RS (special)
-          End If
-          
-          If J = Data.CURL Then
-            Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
-            Tx = Replace(Tx, Chr(10), "|") 'Convert CRLF to Pipe splitter
-          End If
-          
-          If J = Data.CIconRef Then Tx = "0" 'Cleat Icon refs, we need to re-gen them
-                
-          RepoLine &= Tx & ",|,"
-        Next
-        If RepoLine <> "" Then 'Only add good items
-          RepoContent &= RepoLine & Chr(10)
         End If
+        'Worked so well for Icons, try with Screenshots
+        If J = Data.CFileScreenshot Then
+          If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
+            Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
+            If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
+            If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
+            OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
+            If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+            Try Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
+          End If
+        End If
+        
+        Tx = Replace(Tx, InPath, "%dbpath%/") 'Instead of doing below, just replce DB path for everything
+        
+        If Left(Tx, 5) = "/tmp/" Then Tx = Right(Tx, Len(Tx) - LLMod.InStrRevSingle(Tx, "/")) 'Just keep the screenshot name to nab out of the Archive individually when clicking an Item
+                  
+        If J = Data.CDescription Then
+          Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
+          Tx = Replace(Tx, Chr(10), Chr(30)) 'Convert CRLF to RS (special)
+        End If
+        
+        If J = Data.CURL Then
+          Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
+          Tx = Replace(Tx, Chr(10), "|") 'Convert CRLF to Pipe splitter
+        End If
+        
+        If J = Data.CIconRef Then Tx = "0" 'Cleat Icon refs, we need to re-gen them
+              
+        RepoLine &= Tx & ",|,"
       Next
-      If RepoContent <> "" Then 'Don't bother with an empty file
-        Try File.Save(LocalDB, RepoContent) 'Save DB File if able to
-        Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
+      If RepoLine <> "" Then 'Only add good items
+        RepoContent &= RepoLine & Chr(10)
       End If
+    Next
+    If RepoContent <> "" Then 'Don't bother with an empty file
+      Try File.Save(LocalDB, RepoContent) 'Save DB File if able to
+      Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
     End If
+  End If
 End
 
 
@@ -616,7 +636,6 @@ Public Sub GetFromLocalDB(InPath As String)
   Dim LoadedIcon As Image
   
   LocalDB = InPath & LocalDBFile
-  StartItemCount = Data.Items.Rows.Count - 1
   
   If UseLocalDBFiles = False Then ForceReScanItems = True ' If disabled DB's then force rescan
   
@@ -662,7 +681,7 @@ Public Sub GetFromLocalDB(InPath As String)
     
     'Get the Icons for added items and put in the Data references, so items have their icons properly
     If Data.Items.Rows.Count >= 1 Then 'Check if Icon exist
-      For J = StartItemCount + 1 To Data.Items.Rows.Count - 1
+      For J = StartItemCount To Data.Items.Rows.Count - 1
         If Exist(Data.Items[J, Data.CFileIcon].Text) Then 
 
           'Load Icon ready to add here
@@ -680,9 +699,6 @@ Public Sub GetFromLocalDB(InPath As String)
     End If
     
   End If
-  
-  MidItemCount = Data.Items.Rows.Count - 1
-  
 End
 
 
