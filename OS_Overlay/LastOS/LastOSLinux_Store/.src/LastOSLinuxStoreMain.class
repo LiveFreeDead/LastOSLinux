@@ -2,6 +2,8 @@
 
 'Public LLMod.StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode (moved to LLMod now)
 
+Public LocalDBFile As String = "LLFile_DB.ini"
+
 Public Favorites[1001] As String '1001 games should be enough?
 Public FavCount As Integer
 
@@ -291,7 +293,7 @@ Public Sub GetItemPaths()
   If ManualLocationCount >= 1 Then
     For I = 0 To ManualLocationCount - 1
       GetItemsInPath(ManualLocation[I]) 'Scan items in location and any Subfolders of interest
-      'GetItemsFromPath(ManualLocation[I]) ' Scan in the actual supplied path for items too' This happens anyway
+      'GetLLItemsFromPath(ManualLocation[I]) ' Scan in the actual supplied path for items too' This happens anyway
     Next
   End If
   
@@ -323,13 +325,13 @@ Public Sub GetItemPaths()
     
   End If
   If LLMod.StoreMode = 1 Then 'Get Launchable Game Items
-    'GetItemsFromPath(User.Home & "/LLGames/")
+    'GetLLItemsFromPath(User.Home & "/LLGames/")
     GetItemsInPath(User.Home & "/LLGames/") ' Changed to using GetItemsIn so form updates status
     'GetWineItemsFromPath(User.Home & "/.wine/drive_c/ppGames/")
     GetItemsInPath(User.Home & "/.wine/drive_c/ppGames/")' Changed to using GetItemsIn so form updates status
   End If
   
-  'Use the local Repository cache and see what goodiwes it has before defaulting to using the online one?
+  'Use the local Repository cache and see what goodies it has before defaulting to using the online one?
   If UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
   
   'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
@@ -351,13 +353,13 @@ Public Sub GetItemsInPath(DirToCheck As String)
       Next
     End If
     Data.ScanPaths.Add(Data.ScanPaths.Count, DirToCheck)    
-    GetItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
+    GetLLItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
     GetWineItemsFromPath(DirToCheck) 'Same as above
     If LLMod.StoreMode = 0 Then
-      GetItemsFromPath(DirToCheck & "LLAppsInstalls/")
-      GetItemsFromPath(DirToCheck & "LLGamesInstalls/")
-      GetItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
-      GetItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
+      GetLLItemsFromPath(DirToCheck & "LLAppsInstalls/")
+      GetLLItemsFromPath(DirToCheck & "LLGamesInstalls/")
+      GetLLItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
+      GetLLItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
       
       GetWineItemsFromPath(DirToCheck & "ssAppsInstalls/")
       GetWineItemsFromPath(DirToCheck & "ppAppsInstalls/")
@@ -367,17 +369,20 @@ Public Sub GetItemsInPath(DirToCheck As String)
       GetWineItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
       GetWineItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
     Else 'Launcher Mode
-      GetItemsFromPath(DirToCheck & "LLGames/")
+      GetLLItemsFromPath(DirToCheck & "LLGames/")
       GetWineItemsFromPath(DirToCheck & "LLGames/")
-      GetItemsFromPath(DirToCheck & "ppGames/")
+      GetLLItemsFromPath(DirToCheck & "ppGames/")
       GetWineItemsFromPath(DirToCheck & "ppGames/")
     End If
 End
 
 
-Public Sub GetItemsFromPath(InPath As String)
+Public Sub GetLLItemsFromPath(InPath As String)
   If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  
+  'Check DB file here
+  'LocalDBFile
   
   'Get Folders then files
   Dim DirInPath As String
@@ -402,6 +407,9 @@ Public Sub GetItemsFromPath(InPath As String)
       End If
     Next 
   Next
+  
+  'SaveDB Here to repload above next time
+  
 End
 
 
@@ -409,10 +417,24 @@ Public Sub GetWineItemsFromPath(InPath As String)
   If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
   
+  
+  'Check DB file here
+  'LocalDBFile
+  Dim LocalDB As String
+  Dim StartItemCount As Integer
+  Dim FinishItemCount As Integer
+  Dim I As Integer
+  
+  Dim DBCont As String
+  LocalDB = InPath & LocalDBFile
+  StartItemCount = Data.Items.Rows.Count - 1
+  
+  'Make sure to only save DB files in paths that find items
+  
   'Get Folders then files
   Dim DirInPath As String
   Dim FileIn As String  
-'Compressed ones first, only check the root folders for them though
+ 'Compressed ones first, only check the root folders for them though
   If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
     For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
        If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
@@ -433,6 +455,17 @@ Public Sub GetWineItemsFromPath(InPath As String)
       End If
     Next 
   Next
+  
+  'SaveDB Here to repload above next time
+  FinishItemCount = Data.Items.Rows.Count - 1
+  
+  If FinishItemCount > StartItemCount Then 'Found Items
+    DBCont = ""
+  
+    'Message(LocalDB)
+  End If
+  
+  
 End
 
 Public Sub AddItem()
@@ -444,11 +477,12 @@ Public Sub AddItem()
   
   If LLMod.StoreMode = 1 And LLMod.LLTitle = "Games Launcher" Then Return ' Hide Games Launcher from Launcher
   
-  If Data.Items.Rows.Count >= 1 Then 'Check if Existing Item
-    For I = 0 To Data.Items.Rows.Count - 1
-      If Data.Items[I, Data.CTitleName].Text & Data.Items[I, Data.CVersion].Text = LLMod.LLTitle & LLMod.LLVersion Then Return 'Skip Duplicated Items (Adds different versions though)
-    Next
-  End If
+  ''Can't do below if we're using DB files as they need complete items added, I'll move the dupe checks to the GenerateMainList
+  'If Data.Items.Rows.Count >= 1 Then 'Check if Existing Item
+  '  For I = 0 To Data.Items.Rows.Count - 1
+  '    If Data.Items[I, Data.CTitleName].Text & Data.Items[I, Data.CVersion].Text = LLMod.LLTitle & LLMod.LLVersion Then Return 'Skip Duplicated Items (Adds different versions though)
+  '  Next
+  'End If
   
   Data.Items.Rows.Count = Data.Items.Rows.Count + 1 'Always Add a row before starting
   DRows = Data.Items.Rows.Count - 1
@@ -718,11 +752,27 @@ Public Sub GenerateMainList()
         ListIconSize = Items.Font.H 'Use Font Height in Pixels to set icon height, works great
         If FirstItem = 0 Then FirstItem = Val(Data.Items[I, Data.CRefID].Text) 'Keeps the ID of the first added item so we can jump to it on the list
         
+        
+        
+        'Check if duplcated and hide all but the first occurence
+        HideItem = False
+        Items.MoveFirst()
+        For J = 1 To Items.Count 'This is the only way to access them in order as shown, so doesn't use ref keys
+          'Print Data.Items[I, Data.CTitleName].Text & " " & Data.Items[I, Data.CVersion].Text & " = " & Items.Item.Text
+          If Trim(Data.Items[I, Data.CTitleName].Text & " " & Data.Items[I, Data.CVersion].Text) = Items.Item.Text Then ' As Games don't have versions in the Generated list, this will show duplicates, look into it later
+            HideItem = True
+            Continue 'Skip Duplicated Items 'Need to add Items List items text here (order isn't important)
+          End If
+          Items.MoveNext()
+        Next
+        If HideItem = True Then Continue 'No point in doing other checks, it's hidden from above checks
+        
         'Do Version Check here and skip if older
         ItemNameVersion = Data.Items[I, Data.CTitleName].Text
         HideItem = False
         For J = 0 To LLM.DataItemsRows        
            If J <> I And Data.Items[J, Data.CTitleName].Text = ItemNameVersion Then
+             
              'It's the same title name but not itself, check version number, else hide duplicate/older
              If Trim(Data.Items[I, Data.CVersion].Text) = "" Then 'No version, can't compare, just add it for now
              Else
@@ -800,16 +850,19 @@ Public Sub GenerateMainList()
         If Data.Items[I, Data.CSelected].Text = "T" Then
           Items[Data.Items[I, 0].Text].Background = &h664411 'Highlight Selected
           SelectedItems = SelectedItems + 1
-        End If
-        'Reselect Previous item if loading a new Category and it exists
-        If Data.Items[I, Data.CTitleName].Text <> "" And CurrentItem = Data.Items[I, Data.CTitleName].Text Then '(Same item that was selcted, Reselect it)            
-          If AutoSelect = False Then Try Items[CurrentItemKey].Selected = True 'Try will stop error if not found
-          FoundItem = True                      
-          
-        End If
+        End If       
       End If      
     Next
   End If
+  
+  'Do this after as not to intefere with the Move.Next used to check for dupes
+  For I = 1 To Items.Count
+  'Reselect Previous item if still exists
+   If Data.Items[I, Data.CTitleName].Text <> "" And CurrentItem = Data.Items[I, Data.CTitleName].Text Then '(Same item that was selcted, Reselect it)            
+     If AutoSelect = False Then Try Items[CurrentItemKey].Selected = True 'Try will stop error if not found
+     FoundItem = True                                
+   End If
+  Next
  
  
   If FoundItem = False 'Not found item in new list Then Then
@@ -1191,7 +1244,7 @@ Public Sub Form_Close()
   'Shell "rm -r " & Chr(34) & Temp$("LLTmp*") & Chr(34) Wait  
   
   'Clean up downloader (Will quit after download??? or instant?)
-  Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+  If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
   
   ForceClose = True
   Data.Close
