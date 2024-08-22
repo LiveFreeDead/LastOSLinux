@@ -51,7 +51,9 @@ Public Sub Form_Resize()
   ListInstall.Left = 5
   ListInstall.Top = 5
   ButPause.Top = Me.height - ButPause.Height - 10
-
+  
+  Stats.Top = ButPause.Top
+  Stats.Foreground = LastOSLinuxStoreMain.TitleCol
   ListInstall.Width = MiniInstaller.Width - 10
   ListInstall.Height = ButPause.Top - 5
   

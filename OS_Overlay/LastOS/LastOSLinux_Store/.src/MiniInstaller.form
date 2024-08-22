@@ -13,9 +13,8 @@
     Text = ("Pause")
   }
   { !Stats Label
-    MoveScaled(17,43,16,6)
+    MoveScaled(17,44,16,5)
     #Public = True
-    Visible = False
     Alignment = Align.Center
     Text = ("0/0")
   }

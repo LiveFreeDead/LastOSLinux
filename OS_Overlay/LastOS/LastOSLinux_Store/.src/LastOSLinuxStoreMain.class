@@ -73,6 +73,7 @@ Public ContextMenu As Menu
 
 Public SortMethod As Integer = 0
 Public HideInstalled As Boolean
+Public HideOnline As Boolean
 Public HideWindows As Boolean
 Public HideLinux As Boolean
 Public HideApps As Boolean
@@ -697,6 +698,10 @@ Public Sub GenerateMainList()
       If CurrentCat = "" Or CurrentCat = "All" Or CatFound >= 1 Then  'Only add if in the cat
         If Data.Items[I, Data.CTitleName].Text = "" Then Continue 'Don't show dead items, even if the data is in tact and error may occur
         If HideInstalled = True And Data.Items[I, Data.CInstalled].Text = "T" Then Continue 'Jumps to Next For
+        If HideOnline = True And Left(Data.Items[I, Data.CPathINI].Text, 4) = "http" Then 
+          If UseCacheRepository = False Then Continue 'Skip showing Online Items at all when showing online and cache is off          
+          If Not Exist(Replace(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)) Then Continue 'Don't show uncached items when Online is off and Cache not shown          
+        End If
         If LLMod.StoreMode = 1 And Data.Items[I, Data.CHidden].Text = "T" Then Continue 'Skip hidden Items in Launcher Mode
         If HideWindows = True And Lower(Left(Data.Items[I, Data.CBuildType].Text, 2)) <> "ll" Then Continue 'Hide Windows Items
         If HideLinux = True And Lower(Left(Data.Items[I, Data.CBuildType].Text, 2)) = "ll" Then Continue 'Hide Windows Items
@@ -1763,6 +1768,10 @@ Public Sub DoContextMenu()
     hMenu.Text = "Installed"
     If HideInstalled = True Then hMenu.Checked = True
     hMenu = New Menu(HideMenu) As "POP"
+    hMenu.Name = "HideOnline"
+    hMenu.Text = "Online"
+    If HideOnline = True Then hMenu.Checked = True
+    hMenu = New Menu(HideMenu) As "POP"
   End If
   
   hMenu.Name = "HidePaid"
@@ -1855,6 +1864,13 @@ Public Sub POP_Click()
         HideInstalled = True
       Else
         HideInstalled = False
+      End If
+      GenerateMainList()
+    Case "HideOnline"            
+      If HideOnline = False Then ' Toggle Showing Online items
+        HideOnline = True
+      Else
+        HideOnline = False
       End If
       GenerateMainList()
     Case "HidePaid"
@@ -2211,6 +2227,7 @@ Public Sub RunMiniInstaller()
   Next
   
   Dim ItemINI As String
+  Dim OldStats As String
   
   'Do Installs
   MiniInstaller.Show  
@@ -2231,10 +2248,13 @@ Public Sub RunMiniInstaller()
     ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
     
     If Not Exist(ItemLocal) Then 'Get it
+      OldStats = MiniInstaller.Stats.Text
+      MiniInstaller.Stats.Text = "Downloading..."
       GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
       While Downloading = True 'Can't do more until it's fully downloaded
         Wait (0.01)
       Wend
+      MiniInstaller.Stats.Text = OldStats
     End If   
     
     
@@ -2581,29 +2601,31 @@ Public Sub DownTime_Timer()
     
     'Check Remote file exist, else it'll fail
     Shell "curl --head --silent " & QueueURL[QueueUpTo] & " | head -n 1" To Test 'This is slow at times, but it's the only way
-    'Message(Test)
+    Print "Curl Test: P" & Test & "P"
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
-      QueueUpTo = 0
-      QueueCount = 0
-      Downloading = False
-      Wait (0.01)
-      If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
-      Return
-    End If
-    If InStr(Test, "404", 1) Then '404 not found
-      'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
-      Test = ""
-      Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
-    Else ' It exist, download it
-      'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
-      Shell "wget -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & QueueURL[QueueUpTo] & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
-      While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
-        Wait (0.01)
-        If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
-      Wend
-      If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "mv " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait
-      If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
-    End If
+      'QueueUpTo = 0
+      'QueueCount = 0
+      'Downloading = False
+      'Wait (0.01)
+      'If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+      'Return
+    Else ' Try to get item
+      If InStr(Test, "404", 1) Then '404 not found
+        'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Test = ""
+        Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Print "Skipping Missing Item: " & QueueURL[QueueUpTo]
+      Else ' It exist, download it
+        'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Shell "wget -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & QueueURL[QueueUpTo] & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
+          Wait (0.01)
+          If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
+        Wend
+        If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "mv " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait
+        If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+      End If
+    End If    
     QueueUpTo = QueueUpTo + 1
     Wait (0.01)
   Wend
@@ -2645,6 +2667,7 @@ Public Sub LoadSettings(SettingsFile As String)
           If QuitOnComplete = False Then QuitOnComplete = IsTrue(LineData) 'If it's already tru then it was given in the command line, so leave it set to that
         Case "useonlinerepository"
           UseOnlineRepository = IsTrue(LineData)
+          If UseOnlineRepository = False Then HideOnline = True ' No point in showing the items if they are turned of, but the user still can if they want (local cached items etc), if UseCacheRepository it will still show them ones
         Case "usecacherepository" 
           UseCacheRepository = IsTrue(LineData)
         End Select
