@@ -2,10 +2,11 @@
 Title=LastOSLinux Store
 Startup=LoadingScreen
 Icon=Themes/LLOSStore.png
-Version=1.0.95
+Version=1.0.96
 Component=gb.image
 Component=gb.gui.qt
 Component=gb.form
+Component=gb.settings
 Component=gb.media
 Component=gb.media.form
 Description="This will enable users to Install and Launch their Linux/WINE Apps and Games."

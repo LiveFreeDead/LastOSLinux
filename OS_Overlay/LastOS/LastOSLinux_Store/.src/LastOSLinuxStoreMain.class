@@ -191,11 +191,17 @@ Public Sub Form_Open()
   LLM.OrigScreenTop = Screenshot.Top
   LLM.OrigScreenHeight = Screenshot.Height
 
-  'Center Form with Border
+  'Center Form with Border (Default)
   Me.Width = Screens[0].AvailableWidth - 60
   Me.Height = Screens[0].AvailableHeight - 60
   Me.Center
   Me.Top = 15
+  
+  'Try to use inbuilt Settings file to store things
+  Me.Top = Settings["Window/Top", Me.Top]
+  Me.Left = Settings["Window/Left", Me.Left]
+  Me.Height = Settings["Window/Height", Me.Height]
+  Me.Width = Settings["Window/Width", Me.Width]
   
   'Make StartButton a Tab Stop
   StartButton.NoTabFocus = False
@@ -1508,6 +1514,12 @@ Public Sub Form_Close()
   
   'Clean up downloader (Will quit after download??? or instant?)
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+  
+  'Saves settings to User.Home &/ ".config/gambas3" &/ Application.Name & ".conf"
+  Settings["Window/Top"] = Me.Top
+  Settings["Window/Left"] = Me.Left
+  Settings["Window/Height"] = Me.Height
+  Settings["Window/Width"] = Me.Width
   
   ForceClose = True
   Data.Close
