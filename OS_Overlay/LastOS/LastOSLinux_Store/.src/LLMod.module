@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.1 2024-08-22-01
+'LastOS v1.1.1 2024-08-22-02
 
 Public StoreMode As Integer = 1 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -806,6 +806,19 @@ Public Function SaveLLFile(FileOut As String) As Boolean
         End If
       Else
         Copy LLScreenshotFile To OutFile
+      End If      
+    End If
+  End If
+  OutFile = LLBuildPath & LLBuildType & Right(LLMovieFile, 4) 'Grab extension off original source
+  If LLMovieFile <> "" And Exist(LLMovieFile) Then
+    If LLMovieFile <> OutFile Then 'Don't Copy Self
+      If OutFile <> "/" And Exist(OutFile) Then 
+        If Message.Delete("Delete Existing Movie?", "Yes", "No") = 1 Then 
+          Kill OutFile 'Remove existing Screenshot if found
+          Copy LLMovieFile To OutFile
+        End If
+      Else
+        Copy LLMovieFile To OutFile
       End If      
     End If
   End If

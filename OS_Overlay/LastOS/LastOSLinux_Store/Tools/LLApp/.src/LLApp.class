@@ -288,7 +288,7 @@ Public Sub File_Click()
     Case "Open"
       Dialog.Title = "Choose a LLApp or LLGame file"
       'Dialog.Filter = ["*.lla", "LLApp File", "*.llg", "LLGame File"]
-      Dialog.Filter = ["*.lla *.llg", "LLFile File"]
+      Dialog.Filter = ["*.lla *.llg *LLApp.tar *LLGame.tar", "LLFile File"]
       Dialog.Path = User.Home & "/Desktop/LastOS-Important/LLAppsInstalls"
       Dialog.FilterIndex = 0
       If Dialog.OpenFile() Then
@@ -375,6 +375,8 @@ Public Sub LoadFileIn(FileIn As String)
     If LLMod.LLIcon <> Null Then Icon.Picture = LLMod.LLIcon.Picture
     If LLMod.LLFader <> Null Then Fader.Picture = LLMod.LLFader.Picture
     If LLMod.LLScreenshot <> Null Then Screenshot.Picture = LLMod.LLScreenshot.Picture.Stretch(Screenshot.Width, -1)
+    
+    If LLMod.LLMovieFile <> "" Then MovieFile.Text = LLMod.LLMovieFile
     
     If LLMod.LLScript <> "" Then
       PostScript.Text = LLMod.LLScript 'Show Loaded Script
@@ -996,4 +998,20 @@ Public Sub NewDisplayName_KeyPress()
       NewDisplayName.Text = "" 'Clear it      
     End If
   End If
+End
+
+Public Sub BrowseMovieFile_Click()
+  Dialog.Title = "Choose a Movie"
+  Dialog.Filter = ["*.mp4", "MP4 File"]
+  Dialog.Path = LLMod.LLBuildPath
+  Dialog.FilterIndex = 0
+  If Dialog.OpenFile() Then
+    Return ' User pressed Cancel -
+  Endif
+  LLMod.LLMovieFile = Dialog.Path
+  MovieFile.Text = LLMod.LLMovieFile
+End
+
+Public Sub MovieFile_Change()
+  LLMod.LLMovieFile = MovieFile.Text
 End

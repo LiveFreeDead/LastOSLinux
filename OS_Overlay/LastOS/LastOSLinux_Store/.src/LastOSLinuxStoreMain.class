@@ -94,6 +94,7 @@ Public UseCacheRepository As Boolean = True
 Public UseLocalDBFiles As Boolean = True
 
 Public UseVideoPlayback As Boolean = True
+Public VideoVolume As Float = 0.2 '20%
 
 Public AutoInstall As Boolean
 
@@ -2596,7 +2597,7 @@ Public Sub MovieTimer_Timer()
   If Exist(Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text) Then 
     Screenshot.Visible = False
     MoviePlayer.Visible = True
-    MoviePlayer.Volume = 0.2 '20%
+    MoviePlayer.Volume = VideoVolume '0.2 '20%
     'MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text 'Moved this back to item click so it can preload the movie
     MoviePlayer.Play
   Else
@@ -2904,6 +2905,9 @@ Public Sub LoadSettings(SettingsFile As String)
           UseLocalDBFiles = IsTrue(LineData)
         Case "usevideoplayback"
           UseVideoPlayback = IsTrue(LineData)
+        Case "videovolume"
+          VideoVolume = Val(LineData) / 100 '(0.1 To 1.0 Is Full volume)so divide 100 by 100 To get 1(100%)
+          If VideoVolume > 1 Then VideoVolume = 1
         End Select
       End If
     End If

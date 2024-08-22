@@ -260,6 +260,18 @@
       MoveScaled(74,0,9,3)
       Text = ("Icon:")
     }
+    { Label19 Label
+      MoveScaled(1,1,9,3)
+      Text = ("Movie:")
+    }
+    { !MovieFile TextBox
+      MoveScaled(7,1,49,4)
+      #Public = True
+    }
+    { BrowseMovieFile Button
+      MoveScaled(56,1,5,4)
+      Text = ("..")
+    }
     Index = 0
   }
   { BuildBut Button
