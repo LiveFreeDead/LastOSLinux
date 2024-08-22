@@ -2,7 +2,12 @@
 
 'Public LLMod.StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode (moved to LLMod now)
 
+Public StartItemCount As Integer
+Public MidItemCount As Integer
+Public FinishItemCount As Integer
+
 Public LocalDBFile As String = "LLFile_DB.ini"
+Public ForceReScanItems As Boolean
 
 Public Favorites[1001] As String '1001 games should be enough?
 Public FavCount As Integer
@@ -85,6 +90,10 @@ Public HidePaid As Boolean
 Public QuitOnComplete As Boolean
 Public UseOnlineRepository As Boolean = True ' Default to using online repo
 Public UseCacheRepository As Boolean = True
+
+Public UseLocalDBFiles As Boolean = True
+
+Public UseVideoPlayback As Boolean = True
 
 Public AutoInstall As Boolean
 
@@ -380,35 +389,36 @@ End
 Public Sub GetLLItemsFromPath(InPath As String)
   If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
-  
-  'Check DB file here
-  'LocalDBFile
-  
   'Get Folders then files
   Dim DirInPath As String
   Dim FileIn As String  
-'Compressed ones first, only check the root folders for them though
-  If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
-    For Each FileIn In Dir(InPath & "/", "*.tar")
-       If LLMod.LoadLLFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/"
-         AddItem()
-       End If
-    Next
-  End If
-'Uncompressed items now
-'Print ("HERE: " & InPath)
-  For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
-    'Get Files:
-    For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
-      If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
-        If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
-         AddItem()
-        End If        
-      End If
-    Next 
-  Next
   
-  'SaveDB Here to repload above next time
+  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
+  
+  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Then 'Not Added from LocalDB so get scanning 'Also don't do it for Online Repo Path
+  'Compressed ones first, only check the root folders for them though
+    If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
+      For Each FileIn In Dir(InPath & "/", "*.tar")
+         If LLMod.LoadLLFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/"
+           AddItem()
+         End If
+      Next
+    End If
+  'Uncompressed items now
+    For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
+      'Get Files:
+      For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
+        If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
+          If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
+           AddItem()
+          End If        
+        End If
+      Next 
+    Next
+    
+    'Save If Local DB Enabled
+    If InPath <> RepositoryPathLocal Then SaveToLocalDB(InPath)
+  End If
   
 End
 
@@ -416,57 +426,213 @@ End
 Public Sub GetWineItemsFromPath(InPath As String)
   If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  Dim DirInPath As String
+  Dim FileIn As String 
   
+  'Check if Local DB
+  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath)
   
-  'Check DB file here
-  'LocalDBFile
+  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
+   'Get Folders then files
+   'Compressed ones first, only check the root folders for them though
+    If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
+      For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
+         If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
+          AddItem()
+         End If
+      Next
+    End If
+  'Uncompressed items now
+    For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
+      'Get Files:
+      For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
+        If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
+          If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
+            AddItem()
+          End If
+        End If
+      Next 
+    Next
+    
+    'Save If Local DB Enabled
+    If InPath <> RepositoryPathLocal Then SaveToLocalDB(InPath)
+  End If
+
+End
+
+Public Sub SaveToLocalDB(InPath As String)
+
   Dim LocalDB As String
-  Dim StartItemCount As Integer
-  Dim FinishItemCount As Integer
+
   Dim I As Integer
+ 
+  Dim J As Integer
+
+  Dim UN As String
+  Dim OutFile As String
+  Dim RepoContent As String
+  Dim RepoLine As String
+  Dim Tx As String
   
-  Dim DBCont As String
+  Dim IconCache As String = InPath & ".LLFileDB/"
+  
+  LocalDB = InPath & LocalDBFile
+  
+  'SaveDB Here to repload above next time
+    FinishItemCount = Data.Items.Rows.Count - 1
+    
+    If FinishItemCount > StartItemCount Then 'Found Items
+      For I = 0 To LLM.DataItemsRows
+        'Check if item is local or skip (can't build a repo with remote items)
+        If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
+        
+        UN = Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "") & Data.Items[I, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[I, Data.CVersion].Text)     
+        
+        RepoLine = ""
+        For J = 1 To Data.Items.Columns.Count - 1          
+          Tx = Data.Items[I, J].Text
+          'Keep Icons in a .LLFileDB folder on the USB
+          If J = Data.CFileIcon Then
+            If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
+              Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
+              If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
+              If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
+              OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
+              If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+              Try Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
+            End If
+          End If
+          'Worked so well for Icons, try with Screenshots
+          If J = Data.CFileScreenshot Then
+            If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
+              Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
+              If Not Exist(IconCache) Then Shell "mkdir -p " & Chr(34) & IconCache & Chr(34) Wait
+              If Exist(IconCache) Then Shell "chmod -R 775 " & Chr(34) & IconCache & Chr(34) Wait
+              OutFile = IconCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
+              If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
+              Try Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
+            End If
+          End If
+          
+          Tx = Replace(Tx, InPath, "%dbpath%/") 'Instead of doing below, just replce DB path for everything
+          
+          If Left(Tx, 5) = "/tmp/" Then Tx = Right(Tx, Len(Tx) - LLMod.InStrRevSingle(Tx, "/")) 'Just keep the screenshot name to nab out of the Archive individually when clicking an Item
+                    
+          If J = Data.CDescription Then
+            Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
+            Tx = Replace(Tx, Chr(10), Chr(30)) 'Convert CRLF to RS (special)
+          End If
+          
+          If J = Data.CURL Then
+            Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
+            Tx = Replace(Tx, Chr(10), "|") 'Convert CRLF to Pipe splitter
+          End If
+          
+          If J = Data.CIconRef Then Tx = "0" 'Cleat Icon refs, we need to re-gen them
+                
+          RepoLine &= Tx & ",|,"
+        Next
+        If RepoLine <> "" Then 'Only add good items
+          RepoContent &= RepoLine & Chr(10)
+        End If
+      Next
+      If RepoContent <> "" Then 'Don't bother with an empty file
+        Try File.Save(LocalDB, RepoContent) 'Glenn 2025, Disabled for now for testing
+      End If
+    End If
+End
+
+
+
+Public Sub GetFromLocalDB(InPath As String)
+  
+    'Check DB file here
+  Dim LocalDB As String
+
+  Dim I As Integer
+
+  Dim DRows As Integer    
+  Dim J As Integer
+  Dim K As Integer
+  Dim InRepo As String
+  Dim InRepoSp As String[]
+  Dim InRepoSpTx As String[]
+  Dim SkipItem As Boolean
+  
+  Dim LoadedIcon As Image
+  
   LocalDB = InPath & LocalDBFile
   StartItemCount = Data.Items.Rows.Count - 1
   
-  'Make sure to only save DB files in paths that find items
+  If UseLocalDBFiles = False Then ForceReScanItems = True ' If disabled DB's then force rescan
   
-  'Get Folders then files
-  Dim DirInPath As String
-  Dim FileIn As String  
- 'Compressed ones first, only check the root folders for them though
-  If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
-    For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
-       If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
-        AddItem()
-       End If
-    Next
-  End If
-'Uncompressed items now
-'Print ("HERE: " & InPath)
-  For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
-    'Print ("HERE2: " & DirInPath)
-    'Get Files:
-    For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
-      If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
-        If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
-          AddItem()
+  If Exist(LocalDB) And ForceReScanItems = False Then 'Scan in Database
+    
+    Try InRepo = File.Load(LocalDB)
+    InRepoSp = Split(InRepo, Chr(10))
+    For I = 0 To InRepoSp.Count - 1
+      If Trim(InRepoSp[I]) <> "" Then
+        
+        InRepoSp[I] = Replace(InRepoSp[I], ",|,", Chr(8))
+        InRepoSpTx = Split(InRepoSp[I], Chr(8))
+        SkipItem = False
+        If Data.Items.Rows.Count >= 1 Then 'Check if Existing Item
+          For J = 0 To Data.Items.Rows.Count - 1
+            If Data.Items[J, Data.CTitleName].Text & Data.Items[J, Data.CVersion].Text = InRepoSpTx[Data.CTitleName - 1] & InRepoSpTx[Data.CVersion - 1] Then SkipItem = True 'Skip Duplicated Items (Adds different versions though)
+          Next
+        End If
+        If SkipItem = False Then 'Only add new items
+          Data.Items.Rows.Count = Data.Items.Rows.Count + 1 'Always Add a row before starting
+          DRows = Data.Items.Rows.Count - 1
+          LLM.DataItemsRows = DRows
+          
+          For K = 1 To InRepoSpTx.Count
+            If K <= Data.Items.Columns.Count - 1 Then 
+              'Replace all %dbpath%/ with InPath
+              InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "%dbpath%/", InPath) 'Change all to this, Hopefully the sub folders are kept in the wtiring loop below, or I'll have to add it
+              
+              'If K = Data.CPathINI Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "%dbpath%", CurrentRepositoryURL) 'Adds download URL to item    
+              If K = Data.CDescription Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], Chr(30), Chr(13)) 'Testing chr 13 for description, may need 10
+              If K = Data.CURL Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "|", Chr(13)) 'Testing chr 13 for description, may need 10
+              
+              Data.Items[DRows, K].Text = InRepoSpTx[K - 1]
+            End If
+          Next
+        
+          Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
+          Data.Items[DRows, Data.CIconRef].Text = "0"
+          
         End If
       End If
-    Next 
-  Next
-  
-  'SaveDB Here to repload above next time
-  FinishItemCount = Data.Items.Rows.Count - 1
-  
-  If FinishItemCount > StartItemCount Then 'Found Items
-    DBCont = ""
-  
-    'Message(LocalDB)
+    Next
+    
+    'Get the Icons for added items and put in the Data references, so items have their icons properly
+    If Data.Items.Rows.Count >= 1 Then 'Check if Icon exist
+      For J = StartItemCount + 1 To Data.Items.Rows.Count - 1
+        If Exist(Data.Items[J, Data.CFileIcon].Text) Then 
+
+          'Load Icon ready to add here
+          LoadedIcon = Image.Load(Data.Items[J, Data.CFileIcon].Text)
+          
+          'Add Icon and add ReferenceID       
+          If LoadedIcon <> Null Then
+            Data.IconCount = Data.IconCount + 1
+            Data.Icons.Add(Data.IconCount, Data.IconCount, LoadedIcon.Picture)
+            Data.Items[J, Data.CIconRef].Text = Str(Data.IconCount)
+          End If          
+        Else 'Give up
+        End If        
+      Next
+    End If
+    
   End If
   
+  MidItemCount = Data.Items.Rows.Count - 1
   
 End
+
+
+
 
 Public Sub AddItem()
   Dim LoadedIcon As Image
@@ -494,11 +660,12 @@ Public Sub AddItem()
   If LLMod.LLIconFile <> "" And Exist(LLMod.LLIconFile) Then LoadedIcon = Image.Load(LLMod.LLIconFile)
   
   'Add Icon and add ReferenceID       
+  
   If LoadedIcon <> Null Then
     Data.IconCount = Data.IconCount + 1
     Data.Icons.Add(Data.IconCount, Data.IconCount, LoadedIcon.Picture)
-  End If
-  Data.Items[DRows, Data.CIconRef].Text = Str(Data.IconCount)
+    Data.Items[DRows, Data.CIconRef].Text = Str(Data.IconCount)
+  End If  
   Data.Items[DRows, Data.CSelected].Text = "F"
   Data.Items[DRows, Data.CBuildType].Text = LLMod.LLBuildType
   
@@ -545,7 +712,7 @@ Public Sub AddItem()
   Data.Items[DRows, Data.CFileIcon].Text = LLMod.LLIconFile
   Data.Items[DRows, Data.CFileScreenshot].Text = LLMod.LLScreenshotFile
   Data.Items[DRows, Data.CFileFader].Text = LLMod.LLFaderFile
-  Data.Items[DRows, Data.CFileMovie].Text = LLMod.LLMovieFile 'Skipped for now
+  Data.Items[DRows, Data.CFileMovie].Text = LLMod.LLMovieFile
   Data.Items[DRows, Data.CTags].Text = LLMod.LLTags
   Data.Items[DRows, Data.CPublisher].Text = LLMod.LLPublisher
   Data.Items[DRows, Data.CLanguage].Text = LLMod.LLLanguage
@@ -856,8 +1023,9 @@ Public Sub GenerateMainList()
   End If
   
   'Do this after as not to intefere with the Move.Next used to check for dupes
-  For I = 1 To Items.Count
+  For I = 0 To Items.Count - 1
   'Reselect Previous item if still exists
+    'Message(Str(Data.Items.Rows.Count) & " = " & Str(I) & "  === " & Str(Items.Count))
    If Data.Items[I, Data.CTitleName].Text <> "" And CurrentItem = Data.Items[I, Data.CTitleName].Text Then '(Same item that was selcted, Reselect it)            
      If AutoSelect = False Then Try Items[CurrentItemKey].Selected = True 'Try will stop error if not found
      FoundItem = True                                
@@ -1044,6 +1212,7 @@ Public Sub Items_Click()
   
   'Grab Local Fader or download from URL
   RealPath = Data.Items[RefsID, Data.CFileFader].Text
+  
   If InStr(Data.Items[RefsID, Data.CFileFader].Text, "%dbpath%/", 1) >= 1 Then
     RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
     ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
@@ -1054,11 +1223,15 @@ Public Sub Items_Click()
     End If  
   End If
   
-  
   If Exist(RealPath) Then
     Try LLM.Icon = Picture.Load(RealPath).Stretch(IconPic.W, IconPic.H)
   Else
-    LLM.Icon = Theme.Res[1].Picture.Stretch(IconPic.W, IconPic.H) 'Default Theme Icon (just in case)
+    RealPath = Data.Items[RefsID, Data.CFileIcon].Text 'Use the Icon/Fader If not available
+    If Exist(RealPath) Then
+      Try LLM.Icon = Picture.Load(RealPath).Stretch(IconPic.W, IconPic.H)
+    Else 'Just use default Icon    
+      LLM.Icon = Theme.Res[1].Picture.Stretch(IconPic.W, IconPic.H) 'Default Theme Icon (just in case)
+    End If
   End If
   
   IconPic.Picture = LLM.Icon
@@ -1085,7 +1258,7 @@ Public Sub Items_Click()
   End If
   
   'Try Movie here
-  If Exist(Data.Items[RefsID, Data.CFileMovie].Text) Then
+  If UseVideoPlayback = True And Exist(Data.Items[RefsID, Data.CFileMovie].Text) Then
     Try MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text ' Load the movie in case the users starts it    
     Try MoviePlayer.Play
     Wait (0.01) ' Let it do a quick play so it caches
@@ -1980,6 +2153,9 @@ Public Sub POP_Click()
       
       LastOSLinuxStoreMain.Hide
       LoadingScreen.Show      
+      
+      ForceReScanItems = True
+      
       'Get new items
       GetItemPaths()
       'Redo Categories
@@ -1987,7 +2163,8 @@ Public Sub POP_Click()
       'Redo main Lists
       GenerateMainList()
       LoadingScreen.Hide
-      LastOSLinuxStoreMain.Show      
+      LastOSLinuxStoreMain.Show
+      ForceReScanItems = False
     Case "OpenItemLocation"
       If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
       
@@ -2464,17 +2641,17 @@ Public Sub BuildRepository()
     If Exist(Data.Items[I, Data.CFileScreenshot].Text) Then
       OutFile = RepoDirDB & UN & ".jpg"
       If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
-      Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
+      Try Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
     End If
     If Exist(Data.Items[I, Data.CFileFader].Text) Then
       OutFile = RepoDirDB & UN & ".png"
       If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
-      Copy Data.Items[I, Data.CFileFader].Text To OutFile 
+      Try Copy Data.Items[I, Data.CFileFader].Text To OutFile 
     End If
     If Exist(Data.Items[I, Data.CFileIcon].Text) Then
       OutFile = RepoDirDB & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
       If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
-      Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
+      Try Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
     End If
     
     RepoLine = ""
@@ -2723,6 +2900,10 @@ Public Sub LoadSettings(SettingsFile As String)
           If UseOnlineRepository = False Then HideOnline = True ' No point in showing the items if they are turned of, but the user still can if they want (local cached items etc), if UseCacheRepository it will still show them ones
         Case "usecacherepository" 
           UseCacheRepository = IsTrue(LineData)
+        Case "uselocaldbfiles"
+          UseLocalDBFiles = IsTrue(LineData)
+        Case "usevideoplayback"
+          UseVideoPlayback = IsTrue(LineData)
         End Select
       End If
     End If
