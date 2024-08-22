@@ -2241,8 +2241,10 @@ Public Sub POP_Click()
       
       OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
       
-      If Right(OpenPath, 1) <> "" Then OpenPath = Left(OpenPath, LLMod.InStrRevSingle(OpenPath, "/"))
-      If Exist(OpenPath) Then Shell "xdg-open " & OpenPath ' Open with default windows manager
+      If Right(OpenPath, 1) <> "" Then
+        OpenPath = Left(OpenPath, LLMod.InStrRevSingle(OpenPath, "/"))
+      End If
+      If Exist(OpenPath) Then Shell "xdg-open " & Chr(34) & OpenPath & Chr(34) ' Open with default windows manager
     Case "EditItem"
       If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
       
