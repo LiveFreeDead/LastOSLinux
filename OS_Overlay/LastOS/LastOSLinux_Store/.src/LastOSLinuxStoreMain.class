@@ -392,11 +392,34 @@ Public Sub GetLLItemsFromPath(InPath As String)
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
   'Get Folders then files
   Dim DirInPath As String
-  Dim FileIn As String  
+  Dim FileIn As String
+  Dim AddedItems As Integer
+  Dim Test As String  
+  Dim RescanThis As Boolean
   
-  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
+  If InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
   
-  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Then 'Not Added from LocalDB so get scanning 'Also don't do it for Online Repo Path
+  AddedItems = MidItemCount - StartItemCount
+  
+  If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
+    'Check if using Local DB or the last check has newer items/changes
+    Shell "find " & InPath & " -type f -newer " & InPath & "/.a" To Test    
+    If Trim(Test) <> "" Then  'Somethings Newer - rescan this path
+      'Message(Test)
+      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
+      RescanThis = True
+      'ForceReScanItems = True
+    End If
+    
+    If Not Exist(InPath & ".a") Then
+      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
+      RescanThis = True
+    End If
+    
+  End If
+  
+  
+  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
   'Compressed ones first, only check the root folders for them though
     If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
       For Each FileIn In Dir(InPath & "/", "*.tar")
@@ -418,7 +441,10 @@ Public Sub GetLLItemsFromPath(InPath As String)
     Next
     
     'Save If Local DB Enabled
-    If InPath <> RepositoryPathLocal Then SaveToLocalDB(InPath)
+    If InPath <> RepositoryPathLocal Then
+      'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
+      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
+    End If
   End If
   
 End
@@ -429,11 +455,33 @@ Public Sub GetWineItemsFromPath(InPath As String)
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
   Dim DirInPath As String
   Dim FileIn As String 
+  Dim AddedItems As Integer
+  Dim Test As String
+  Dim RescanThis As Boolean
+    
+  If InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath)
   
-  'Check if Local DB
-  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath)
+  AddedItems = MidItemCount - StartItemCount
   
-  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
+  If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
+    'Check if using Local DB or the last check has newer items/changes
+    Shell "find " & InPath & " -type f -newer " & InPath & "/.a" To Test    
+    If Trim(Test) <> "" Then 'Somethings Newer - rescan this path
+      'Message(Test)
+      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
+      RescanThis = True
+      'ForceReScanItems = True
+    End If
+    
+    If Not Exist(InPath & ".a") Then
+      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
+      RescanThis = True
+    End If
+    
+  End If
+  
+  
+  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
    'Get Folders then files
    'Compressed ones first, only check the root folders for them though
     If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
@@ -456,7 +504,11 @@ Public Sub GetWineItemsFromPath(InPath As String)
     Next
     
     'Save If Local DB Enabled
-    If InPath <> RepositoryPathLocal Then SaveToLocalDB(InPath)
+    If InPath <> RepositoryPathLocal Then
+      SaveToLocalDB(InPath)
+      'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
+      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
+    End If
   End If
 
 End
@@ -538,7 +590,8 @@ Public Sub SaveToLocalDB(InPath As String)
         End If
       Next
       If RepoContent <> "" Then 'Don't bother with an empty file
-        Try File.Save(LocalDB, RepoContent) 'Glenn 2025, Disabled for now for testing
+        Try File.Save(LocalDB, RepoContent) 'Save DB File if able to
+        Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
       End If
     End If
 End
@@ -990,13 +1043,14 @@ Public Sub GenerateMainList()
         End If
         
         
-        'Add Item
-        If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok
-        
-          Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            'Hide icon while I add tar support
-        Else 'If Broken/missing Icon
-          Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
+        'Add Item 'Did get an error here, so may need to protect it better Glenn 2025
+        If Data.Items[I, Data.CIconRef].Text <> Null Then
+          If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok
           
+            Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            
+          Else 'If Broken/missing Icon
+            Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
+          End If
         End If
         
         'Item font color
