@@ -5,7 +5,7 @@ Public Sub Form_Open()
   Me.Background = &h000000
   Me.Foreground = &hFFFFFF
   Status.Foreground = &hFFFFFF
-  Status.Top = Me.Height - Status.Height - 3
+  Status.Top = Me.Height - Status.Height - 5
   
   'Get App's Folder
   LLM.AppPath = Application.Path ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
