@@ -1,8 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  Move(0,0,440,200)
-  #Scaled = False
+  MoveScaled(0,0,62.8571,28.5714)
   Resizable = False
   Border = False
   Stacking = Window.Above
@@ -11,7 +10,7 @@
     Delay = 30
   }
   { !Statusold Label
-    Move(0,63,441,35)
+    MoveScaled(0,9,63,5)
     #Public = True
     Visible = False
     Font = Font["+1"]
@@ -19,7 +18,7 @@
     Text = ("Loading") & "..."
   }
   { !Status TextArea
-    Move(7,140,427,56)
+    MoveScaled(1,20,61,8)
     #Public = True
     #Translate = False
     Background = Color.Transparent

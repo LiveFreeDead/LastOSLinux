@@ -19,12 +19,14 @@ Public Sub Form_Open()
    'Load Theme.ini
   Dim hFile As File
   Dim sLine As String
+  
   hFile = Open LLM.AppPath & "/Themes/Theme.ini" For Input
   Line Input #hFile, sLine
   hFile.Close
   LLM.ThemeName = Trim$(sLine)
-      
-  Try Me.Picture = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Loading.png")
+
+  Try Me.Picture = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Loading.png").Stretch(Me.Width, Me.Height) 'Scale form and stretch wallpaper to fit
+
   Timer1.Enabled = True 'Use a timer to open main form so that this Loading form can show ASAP
 End
 
