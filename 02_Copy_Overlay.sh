@@ -66,6 +66,9 @@ sudo chmod 755 "/LastOS/Scripts/sudo_firstlogon_service.sh"
 #sudo chown root:root "/LastOS/Scripts/sudo_firstlogon_service.sh"
 sudo chmod +x "/LastOS/Scripts/sudo_firstlogon_service.sh"
 
+#copy skel to root user so default scripts are in context menu etc
+sudo cp -rf /etc/skel/* /root
+
 #Rebuild Fonts
 sudo fc-cache -f -v
 fc-cache -f -v

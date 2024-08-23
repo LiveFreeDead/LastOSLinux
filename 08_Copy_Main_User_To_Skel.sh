@@ -24,3 +24,9 @@ sudo rm -f /etc/skel/.config/menus/cinnamon-applications-merged
 
 #Correct the permissions for skel (needs RW for root, RW for users and Access for non user)
 sudo chmod -R 775 /etc/skel
+
+#root stuff #
+#copy skel to root user so custom changes are also applied to root user
+#No need to remove things as I do it above for the skel user, same applies to root
+sudo cp -rf /etc/skel/* /root
+
