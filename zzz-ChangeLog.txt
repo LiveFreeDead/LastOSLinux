@@ -2,8 +2,9 @@
 *                          LastOSLinux Change Log                              *
 ################################################################################
 
----------- 2024-08-15 ----------
-
+---------- 2024-08-23 ----------
+Decided to not use this until the public release comes out, changes can be seen
+on github: https://github.com/LiveFreeDead/LastOSLinux/activity
 
 ---------- 2024-08-14 ----------
 ADD: Sudo Update (System wide overlays and scripts can be applied at firstlogon)
