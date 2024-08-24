@@ -18,16 +18,16 @@ Public FileType As String
 Public InstallerType As String
 Public InstallThisApp As String
 Public CurrentPath As String
+Public ForceInstall As Boolean
 
 Public Sub Form_Open()
   Dim S As String
   Dim OldLineFileIn As String
   LLMod.AppPath = LLMod.Slashed(Application.Path) ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
-  If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp/"
-  
-  
+  If LLMod.AppPath = "/usr/bin" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
+  If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
   LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
-  
+
   LLMod.HomePath = LLMod.Slashed(Application.Env["HOME"])
 
   CurrentPath = LLMod.Slashed(Application.Dir)
@@ -48,6 +48,7 @@ Public Sub Form_Open()
         End If        
         If S = "-install" Or S = "-i" Then
           LineInstall = True
+          ForceInstall = True
           Continue 'Found command, process next argument
         End If
         If S = "-build" Or S = "-b" Then
@@ -132,11 +133,16 @@ Public Sub Form_Open()
     End If
   Next
   
+  If ForceInstall = True Then LineInstall = True 'Make sure to always only install if it's specified
+  
   'If LineFileIn <> "" Then Message(LineFileIn & " Exists: " & Exist(S) & " Install: " & LineInstall & " Build: " & LineBuild & " Compress: " & LineCompress)
   'Quit
 
+  'Message(InstallThisApp & " here " & LineInstall)
+
   If LineInstall = True And InstallThisApp <> "" Then 'If provided a file test if it's a ss or ppApp 'Moved this down so the install line is required, if I installed ssApp instantly I couldn't check to see if the user tried to edit it
 
+    'Message(InstallThisApp)
     'First Check if supplied a .apz, .pgz, .app or .ppg
     FileType = Lower(Right(LineFileIn, 4))        
     Select Case FileType
