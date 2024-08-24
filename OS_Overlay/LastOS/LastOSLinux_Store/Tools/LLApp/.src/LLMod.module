@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.2 2024-08-24-05
+'LastOS v1.1.2 2024-08-24-06
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -640,25 +640,25 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         LnkActive[LnkEditing] = True
         ReadMode = 1
       End If
-      If ReadMode = 1 Then
+      If ReadMode = 1 Then 'Fixed the exp paths (they are in the AddItem now)
         If LineID = "exec" Then
-          LnkExec[LnkEditing] = Trim(ExpPath(LineData)) 'Check Path is happy
-          If LnkExec[LnkEditing] <> "" Then 
-            If Exist(Slashed(LLAppPath) & LnkExec[LnkEditing]) Then
-              LnkExec[LnkEditing] = Slashed(LLAppPath) & LnkExec[LnkEditing]              
-            End If
-          End If
+          LnkExec[LnkEditing] = Trim(LineData) 'Check Path is happy
+          'If LnkExec[LnkEditing] <> "" Then 
+          '  If Exist(Slashed(LLAppPath) & LnkExec[LnkEditing]) Then
+          '    LnkExec[LnkEditing] = Slashed(LLAppPath) & LnkExec[LnkEditing]              
+          '  End If
+          'End If
         End If
         If LineID = "comment" Then LnkComment[LnkEditing] = LineData
         If LineID = "description" Then 
           LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
         End If
         If LineID = "path" Then
-          LnkRunInPath[LnkEditing] = Trim(ExpPath(LineData))
+          LnkRunInPath[LnkEditing] = Trim(LineData)
           If LnkRunInPath[LnkEditing] = "" Then LnkRunInPath[LnkEditing] = Slashed(LLAppPath)
         End If
         If LineID = "icon" Then
-          LnkIcon[LnkEditing] = Trim(ExpPath(LineData))
+          LnkIcon[LnkEditing] = Trim(LineData)
           If LnkIcon[LnkEditing] = "" Then LnkIcon[LnkEditing] = Slashed(LLAppPath) & LLBuildType & ".png"
         End If
         If LineID = "categories" Then LnkCatalog[LnkEditing] = LineData

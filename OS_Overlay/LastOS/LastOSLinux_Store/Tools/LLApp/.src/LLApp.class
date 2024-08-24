@@ -553,7 +553,7 @@ Public Sub BuildBut_Click()
         If NoInstall.Value = False Then Shell "cd " & Chr(34) & IncludeFolder.Text & Chr(34) & " && tar " & "--exclude=" & LLMod.LLBuildType & ".* " & " -czf " & Chr(34) & OutFile & Chr(34) & " *" Wait
       Else 'Copy Existing Only
         If InFile <> OutFile Then 'Don't Copy Self
-            If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 'Glenn 2025
+            If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 'Glenn 2024
             Copy InFile To OutFile 'Grab extension off original source
           End If
       End If
@@ -561,7 +561,7 @@ Public Sub BuildBut_Click()
     
     'Check if build path is the same as Source Path and delete original uncompressed files if so
     
-    'STOP * If the user makes a script only build then this will remove important files, need a checkbox for them Glenn 2025
+    'STOP * If the user makes a script only build then this will remove important files, need a checkbox for them Glenn 2024
     
     If NoInstall.Value = False Then
       If IncludeFolder.Text = BuildToFolder.Text Then      

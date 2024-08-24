@@ -919,10 +919,10 @@ Public Sub AddItem()
   'Make sure to get a category from the Link if it was empty
   If Data.Items[DRows, Data.CCategories].Text = "" Then Data.Items[DRows, Data.CCategories].Text = Data.Items[DRows, Data.CLnkCategories].Text
   
-  Data.Items[DRows, Data.CLnkRunPath].Text = LLMod.LnkRunInPath[1]
-  Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[1]
+  Data.Items[DRows, Data.CLnkRunPath].Text = Trim(LLMod.ExpPath(LLMod.LnkRunInPath[1]))
+  Data.Items[DRows, Data.CLnkExec].Text = Trim(LLMod.ExpPath(LLMod.LnkExec[1]))
   'Data.Items[DRows, Data.CLnkArguments].Text = LLMod.LnkArguments[1] 'Doesn't Exist yet
-  Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[1]
+  Data.Items[DRows, Data.CLnkExec].Text = Trim(LLMod.ExpPath(LLMod.LnkExec[1]))
   'Data.Items[DRows, Data.CLnkFlags].Text = LLMod.LnkFlags[1] 'Doesn't Exist yet
   'Data.Items[DRows, Data.CLnkAssociations].Text = LLMod.LnkAssociations[1] ' Doesn't exist yet
   Data.Items[DRows, Data.CLnkTerminal].Text = LLMod.LnkTerminal[1]
@@ -949,11 +949,18 @@ Public Sub AddItem()
       Data.Items[DRows, Data.CLnkDescription].Text = LLMod.LnkDescription[I]
       Data.Items[DRows, Data.CLnkComment].Text = LLMod.LnkComment[I]
       Data.Items[DRows, Data.CLnkCategories].Text = LLMod.LnkCatalog[I]
-      Data.Items[DRows, Data.CLnkRunPath].Text = LLMod.LnkRunInPath[I]
-      Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[I]
+      Data.Items[DRows, Data.CLnkRunPath].Text = Trim(LLMod.ExpPath(LLMod.LnkRunInPath[I]))
+      Data.Items[DRows, Data.CLnkExec].Text = Trim(LLMod.ExpPath(LLMod.LnkExec[I]))
+      
+      If Trim(LLMod.ExpPath(LLMod.LnkExec[I])) <> "" Then 
+        If Exist(LLMod.Slashed(LLMod.LLAppPath) & Trim(LLMod.LnkExec[I])) Then
+          LLMod.LnkExec[I] = LLMod.Slashed(LLMod.LLAppPath) & Trim(LLMod.LnkExec[I])           
+        End If
+      End If
+      
       'Data.Items[DRows, Data.CLnkArguments].Text = LLMod.LnkArguments[I] 'Doesn't Exist yet
-      Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[I]
-      Data.Items[DRows, Data.CLnkIcon].Text = LLMod.LnkIcon[I]
+      'Data.Items[DRows, Data.CLnkExec].Text = LLMod.LnkExec[I]
+      Data.Items[DRows, Data.CLnkIcon].Text = Trim(LLMod.ExpPath(LLMod.LnkIcon[I]))
       'Data.Items[DRows, Data.CLnkFlags].Text = LLMod.LnkFlags[I] 'Doesn't Exist yet
       'Data.Items[DRows, Data.CLnkAssociations].Text = LLMod.LnkAssociations[I] ' Doesn't exist yet
       Data.Items[DRows, Data.CLnkTerminal].Text = LLMod.LnkTerminal[I]
