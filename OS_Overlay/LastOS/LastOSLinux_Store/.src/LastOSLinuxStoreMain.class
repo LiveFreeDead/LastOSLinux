@@ -103,59 +103,70 @@ Public AutoInstall As Boolean
 Public Sub Form_Open()
   Dim RemoteVersion As String
   Dim LocalVersion As String
+  Dim OrigArgs As String
+  Dim S As String
   'Clean up downloader (Will quit after download??? or instant?)
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
   'Check for updated version first
   'Shell "echo " & Chr(34) & Application.Version & Chr(34) & " > " & LLMod.Slashed(LLM.AppPath) & "version"
   'No need for above, we have a .version file made anyway
   
+  Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+  Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
   Try Kill "/tmp/version" ' Clear previous checks
+  Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
   GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
   While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
     Wait (0.01)
     If ForceClose = True Then Quit ' No point in looping the user already quit
     If Exist("/tmp/version") Then Break 'Gets out of While, it's downloaded
   Wend
-  Try RemoteVersion = Trim(File.Load("/tmp/version"))  
-  LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
-  RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
-  If LocalVersion <> "" And RemoteVersion <> "" Then
-    
-    Installing = True
-    'Message(LocalVersion & " = " & RemoteVersion)
-    If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
-      LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
-      Wait (0.03)
-      Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
-      Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-      GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
-      While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
-        Wait (0.01)
-        If ForceClose = True Then Quit ' No point in looping the user already quit
-        If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
-      Wend
+  If Not Exist(RepositoryPathLocal & "FailedDownload") Then 'If can't download the version file, then there is no internet?
+    Try RemoteVersion = Trim(File.Load("/tmp/version"))  
+    LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
+    RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
+    If LocalVersion <> "" And RemoteVersion <> "" Then
       
-      If Exist("/tmp/LastLinuxStore.gambas") 'Downloaded, install update Then Then        
-        Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
-        Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
-        Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
-        Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
-        Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
-        Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
-        Wait (10)
-        Quit
+      Installing = True
+      'Message(LocalVersion & " = " & RemoteVersion)
+      If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
+        LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
+        Wait (0.03)
+        Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
+        Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+        GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
+        While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+          Wait (0.01)
+          If ForceClose = True Then Quit ' No point in looping the user already quit
+          If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
+        Wend
+        
+        If Exist("/tmp/LastLinuxStore.gambas") 'Downloaded, install update Then Then        
+          Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
+          Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
+          Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
+          Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+          Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+          OrigArgs = ""
+          For Each S In Args
+            S = Trim(S)
+            If S <> "" Then 
+              OrigArgs = OrigArgs & " " & S
+            End If
+          Next
+          Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" & OrigArgs 'The args transfer to next call after update
+          LoadingScreen.Hide 'Just hide the loading screen until we quit after a second, then the new one will start
+          Wait (1)
+          Quit
+        End If
       End If
+      
+      Installing = False
     End If
-    
-    
-    Installing = False
-  End If
-  
-  
-    
+  End If 
   'Process Arguments passed from terminal  
   Dim PresetToLoad As String
-  Dim S As String
+  
   'If Args[0] = "LastOSLinux_Store" Then 'Remark this and unremark below to disable testing argument options
   If 1 = 2 Then
     AutoInstall = True
@@ -3033,6 +3044,7 @@ Public Sub DownTime_Timer()
       'Wait (0.01)
       'If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
       'Return
+      Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
     Else ' Try to get item
       If InStr(Test, "404", 1) Then '404 not found
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
