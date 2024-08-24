@@ -67,6 +67,16 @@ notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/Las
 wine /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe
 
 #install Apps
+FILES="/LastOS/LinuxApps/*"
+for f in $FILES
+do
+  echo "Processing $f file..."
+  # take action on each file. $f store current file name
+  #notify-send --hint=int:transient:1  "Please wait, Installing Linux App:" "$f"
+  #wine "$f"
+  llapp -install "$f"
+done
+
 FILES="/LastOS/WindowsApps/*"
 for f in $FILES
 do
@@ -78,6 +88,16 @@ do
 done
 
 #install Games
+FILES="/LastOS/LinuxGames/*"
+for f in $FILES
+do
+  echo "Processing $f file..."
+  # take action on each file. $f store current file name
+  #notify-send --hint=int:transient:1  "Please wait, Installing Linux Game:" "$f"
+  #wine "$f"
+  llapp -install "$f"
+done
+
 FILES="/LastOS/WindowsGames/*"
 for f in $FILES
 do
