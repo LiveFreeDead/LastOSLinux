@@ -101,8 +101,28 @@ Public AutoInstall As Boolean
 
 'LLM = Last Linux Module
 Public Sub Form_Open()
+  Dim RemoteVersion As String
+  Dim LocalVersion As String
   'Clean up downloader (Will quit after download??? or instant?)
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+  'Check for updated version first
+  'Shell "echo " & Chr(34) & Application.Version & Chr(34) & " > " & LLMod.Slashed(LLM.AppPath) & "version"
+  'No need for above, we have a .version file made anyway
+  
+  Try Kill "/tmp/version" ' Clear previous checks
+  GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
+  Try RemoteVersion = Trim(File.Load("/tmp/version"))
+  LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
+  RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
+  If LocalVersion <> "" And RemoteVersion <> "" Then    
+    'Message(LocalVersion & " = " & RemoteVersion)
+    If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
+      Print LocalVersion & " = " & RemoteVersion
+      
+    End If
+  End If
+  
+  
     
   'Process Arguments passed from terminal  
   Dim PresetToLoad As String
