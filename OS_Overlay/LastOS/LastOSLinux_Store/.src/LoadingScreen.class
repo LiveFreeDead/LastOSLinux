@@ -16,6 +16,10 @@ Public Sub Form_Open()
   If LLM.AppPath = "/LastOS" Then LLM.AppPath &= "/LastOSLinux_Store"
   If Not Exist(LLM.AppPath) Then LLM.AppPath = "/LastOS/LastOSLinux_Store"
   
+  LLMod.AppPath = LLM.AppPath
+  
+  LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
+  
    'Load Theme.ini
   Dim hFile As File
   Dim sLine As String

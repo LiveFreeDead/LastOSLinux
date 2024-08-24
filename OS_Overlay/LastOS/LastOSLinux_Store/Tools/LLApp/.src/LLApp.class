@@ -24,7 +24,10 @@ Public Sub Form_Open()
   Dim OldLineFileIn As String
   LLMod.AppPath = LLMod.Slashed(Application.Path) ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
   If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp/"
-
+  
+  
+  LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
+  
   LLMod.HomePath = LLMod.Slashed(Application.Env["HOME"])
 
   CurrentPath = LLMod.Slashed(Application.Dir)

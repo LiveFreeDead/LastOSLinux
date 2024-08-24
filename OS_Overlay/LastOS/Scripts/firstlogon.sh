@@ -72,7 +72,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  #notify-send --hint=int:transient:1  "Please wait, Installing Linux App:" "$f"
+  notify-send --hint=int:transient:1  "Please wait, Installing Linux App:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -82,7 +82,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  #notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
+  notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -93,7 +93,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  #notify-send --hint=int:transient:1  "Please wait, Installing Linux Game:" "$f"
+  notify-send --hint=int:transient:1  "Please wait, Installing Linux Game:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -103,7 +103,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  #notify-send --hint=int:transient:1  "Please wait, Installing Windows Game:" "$f"
+  notify-send --hint=int:transient:1  "Please wait, Installing Windows Game:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
