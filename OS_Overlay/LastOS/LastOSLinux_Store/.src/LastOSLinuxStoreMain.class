@@ -2953,6 +2953,8 @@ Public Sub GetOnlineFile(URL As String, OutPutFile As String)
       If QueueURL[I] = URL Then Return 'Skip existing URL download already queued up
     Next
   End If
+  'URL = Replace(URL, "(", Chr(92) & "(") 'Add Break characters for special characters, noit needed as I put quotes around them, so bash ignores special characters now (in shell)
+  'URL = Replace(URL, ")", Chr(92) & ")")
   QueueURL[QueueCount] = URL
   QueueLocal[QueueCount] = OutPutFile
   QueueCount = QueueCount + 1
@@ -2973,7 +2975,7 @@ Public Sub DownTime_Timer()
     If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
     
     'Check Remote file exist, else it'll fail
-    Shell "curl --head --silent " & QueueURL[QueueUpTo] & " | head -n 1" To Test 'This is slow at times, but it's the only way
+    Shell "curl --head --silent " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " | head -n 1" To Test 'This is slow at times, but it's the only way
     Print "Curl Test: P" & Test & "P"
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
       'QueueUpTo = 0
@@ -2990,7 +2992,7 @@ Public Sub DownTime_Timer()
         Print "Skipping Missing Item: " & QueueURL[QueueUpTo]
       Else ' It exist, download it
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
-        Shell "wget -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & QueueURL[QueueUpTo] & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        Shell "wget -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
           Wait (0.01)
           If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
