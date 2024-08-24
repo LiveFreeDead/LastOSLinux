@@ -105,6 +105,11 @@ Public Sub Form_Open()
   Dim LocalVersion As String
   Dim OrigArgs As String
   Dim S As String
+  
+  'Make sure local Repo is in place or DownloadDone will fail to be created and everything breaks.
+  If Not Exist(RepositoryPathLocal) Then Shell "mkdir -p " & Chr(34) & RepositoryPathLocal & Chr(34) Wait
+  If Exist(RepositoryPathLocal) Then Shell "chmod 775 " & Chr(34) & RepositoryPathLocal & Chr(34) Wait
+  
   'Clean up downloader (Will quit after download??? or instant?)
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
   'Check for updated version first
