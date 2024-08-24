@@ -905,33 +905,42 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   If LoadLLFile(LLAFile) = True Then 'Loaded good, get to installing it
     InstallToPath = Replace(LLAppPath, "$HOME", User.Home)
     
-    'Make install to folder and copy LLApp files accross
-    If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
-    If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-    If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
-    If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
-    If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-    
-    'Extract Archive to the Install Folder
-    If LLBuildType = "LLApp" Then 
-      'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
-      Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
+    'Check for a LLApp.tar.gz or a LLGame.tag.gz and if not found, it's not installable, just runs scripts etc
+    If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then
+      'Make install to folder and copy LLApp files accross
+      If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
+      If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+      If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
+      If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
+      If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+      
+      'Extract Archive to the Install Folder
+      If LLBuildType = "LLApp" Then 
+        'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+        Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
+      End If
+      If LLBuildType = "LLGame" Then 
+        'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+        Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
+      End If
+      
+      'Below is done in Extract Routine, not needed here
+      'If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait    
+      'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
+      If Exist(InstallToPath & "LLScript.sh") Then
+        ExpandScript(InstallToPath & "LLScript.sh")          
+        Try Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) 'Wait  'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+      End If  
+    Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
+      If Exist(LLINIPath & "LLScript.sh") Then
+        'ExpandScript(InstallToPath & "LLScript.sh")          
+        Try Chmod LLINIPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        Shell "cd " & Chr(34) & LLINIPath & Chr(34) & " && " & Chr(34) & LLINIPath & "LLScript.sh" & Chr(34) 'Wait  'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+      End If  
     End If
-    If LLBuildType = "LLGame" Then 
-      'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
-      Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
-    End If
-    
-    'Below is done in Extract Routine, not needed here
-    'If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-    
-    'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
-    If Exist(InstallToPath & "LLScript.sh") Then
-      ExpandScript(InstallToPath & "LLScript.sh")          
-      Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
-      Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) 'Wait  'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
-      'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
-    End If  
     If LnkCount > 0 Then
       For I = 1 To LnkCount
         DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"
