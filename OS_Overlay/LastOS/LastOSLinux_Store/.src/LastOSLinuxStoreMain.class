@@ -112,6 +112,7 @@ Public Sub Form_Open()
   'No need for above, we have a .version file made anyway
   
   Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+  Try Kill "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
   Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
   Try Kill "/tmp/version" ' Clear previous checks
   Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
