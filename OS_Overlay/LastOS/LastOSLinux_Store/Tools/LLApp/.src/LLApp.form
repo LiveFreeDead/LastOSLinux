@@ -93,7 +93,7 @@
     }
     { BuildTypeCheck CheckBox
       MoveScaled(9,19,14,4)
-      ToolTip = ("Chnages To Game Build Mode (Not an App)")
+      ToolTip = ("Changes To Game Build Mode (Not an App)")
       Text = ("Game Build")
     }
     { InternetRequiredCheck CheckBox
@@ -275,41 +275,47 @@
     Index = 0
   }
   { BuildBut Button
-    MoveScaled(73,57,16,6)
+    MoveScaled(61,55,13,6)
     Text = ("Build")
   }
   { Label15 Label
-    MoveScaled(1,54,13,4)
+    MoveScaled(1,54,7,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
-    Text = ("Include Folder")
+    Text = ("Include")
   }
   { !IncludeFolder TextBox
-    MoveScaled(15,54,49,4)
+    MoveScaled(9,54,46,4)
     #Public = True
   }
   { BrowsePathBut2 Button
-    MoveScaled(64,54,5,4)
+    MoveScaled(55,54,5,4)
     Text = ("..")
   }
   { Label16 Label
-    MoveScaled(1,59,13,4)
+    MoveScaled(1,59,7,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
-    Text = ("Build To Folder")
+    Text = ("Build To")
   }
   { BuildToFolder TextBox
-    MoveScaled(15,59,49,4)
+    MoveScaled(9,59,46,4)
   }
   { BrowsePathBut3 Button
-    MoveScaled(64,59,5,4)
+    MoveScaled(55,59,5,4)
     Text = ("..")
   }
   { !CompressBuild CheckBox
-    MoveScaled(73,53,16,4)
+    MoveScaled(76,53,14,4)
     #Public = True
     ToolTip = ("Tick this if you also want a single tar file and the folder version (Puts in root folder)")
     Text = ("Compressed")
+  }
+  { !NoInstall CheckBox
+    MoveScaled(76,56,14,4)
+    #Public = True
+    ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked")
+    Text = ("No Install")
   }
 }
 

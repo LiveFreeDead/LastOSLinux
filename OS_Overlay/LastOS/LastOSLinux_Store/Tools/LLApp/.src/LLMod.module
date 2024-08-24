@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.1 2024-08-22-02
+'LastOS v1.1.2 2024-08-24-03
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -22,6 +22,8 @@ Public LLPriority As String
 Public LLCompressed As Boolean
 Public LLArch As String 
 Public LLOS As String 
+
+'Public LLNoInstall As Boolean
 
 Public LLHideInLaunch As Boolean
 Public LLShowAlways As Boolean
@@ -571,7 +573,9 @@ Public Function LoadLLFile(FileIn As String) As Boolean
   ReadMode = 0
  
   'Check LLA File is a LLA compatible ini      
-  If Trim(Lower(LLFile[0])) = "[llfile]" Then                 
+  If Trim(Lower(LLFile[0])) = "[llfile]" Then
+    'Set some defaults
+    LLBuildType = "LLApp"
     For I = 1 To LLFile.Count - 1
       
       LineID = "" 'Clear these before moving to the next line
@@ -601,7 +605,9 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         LLCategory = Replace(LLCategory, "Games" & Chr(92), "")
         LLCategory = Replace(LLCategory, "Gamess", "Games")
       End If
-      If LineID = "buildtype" Then LLBuildType = LineData
+      If LineID = "buildtype" Then
+        If LineData <> "" Then LLBuildType = LineData 'Doesn't use it if a dud BuildType givem defaults to LLApp as set above
+      End If
       If LineID = "flags" Then LLFlags = Lower(LineData)
       
       If LineID = "priority" Then LLPriority = Trim(LineData)
@@ -707,16 +713,25 @@ End
 
 
 Public Function SaveLLFile(FileOut As String) As Boolean
-  
+  Dim SamePath As Boolean
   Dim DirIn As String  
   Dim I As Integer
   Dim LLFileContent As String
   Dim TL As String
 
   DirIn = Left(FileOut, LLMod.InStrRevSingle(FileOut, "/")) 'Has Slash at end (So don't have to add it each use)  
-  LLBuildPath = DirIn
+  
   If DirIn = LLBuildPath Then 'Building in same path as source
+    SamePath = True
   End If  
+  
+  LLBuildPath = DirIn
+  
+  If LLBuildType = "" Then
+    Message("Dodgy stuff happened, aborting build")
+    Return False
+  End If
+  
   LLFileContent = "[LLFile]" & Chr(10)
   LLFileContent &= "Title=" & Trim(LLTitle) & Chr(10)
   If LLVersion <> "" Then LLFileContent &= "Version=" & Trim(LLVersion) & Chr(10)
@@ -890,7 +905,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     'If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "tar -xf " & Chr(34) & LLAFile & Chr(34) & " -C " & Chr(34) & TmpPath & Chr(34) Wait
     Extract(LLAFile, TmpPath, "")
-    
+
     'Get Temp path AND File to install from
     LLAFile = TmpPath
     If Exist(LLAFile & "LLGame.llg") = True Then 
@@ -905,33 +920,44 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   If LoadLLFile(LLAFile) = True Then 'Loaded good, get to installing it
     InstallToPath = Replace(LLAppPath, "$HOME", User.Home)
     
-    'Make install to folder and copy LLApp files accross
-    If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
-    If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-    If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
-    If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
-    If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-    
-    'Extract Archive to the Install Folder
-    If LLBuildType = "LLApp" Then 
-      'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
-      Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
+    'Check for a LLApp.tar.gz or a LLGame.tag.gz and if not found, it's not installable, just runs scripts etc
+    If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then
+      'Make install to folder and copy LLApp files accross
+      If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
+      If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+      If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
+      If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
+      If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+      
+      'Extract Archive to the Install Folder
+      If LLBuildType = "LLApp" Then 
+        'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+        Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
+      End If
+      If LLBuildType = "LLGame" Then 
+        'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+        Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
+      End If
+      
+      'Below is done in Extract Routine, not needed here
+      'If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait    
+      'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
+      If Exist(InstallToPath & "LLScript.sh") Then
+        ExpandScript(InstallToPath & "LLScript.sh")          
+        Try Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) Wait  'I now wait as I'll do my best to not use sudo things that stop the installs 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+      End If  
+    Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
+      If TmpPath = "" Then TmpPath = LLINIPath 'If not a tar then it uses the current path off USB or DVD etc
+      If Exist(TmpPath & "LLScript.sh") Then
+        'ExpandScript(InstallToPath & "LLScript.sh")          
+        Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+        'Message(TmpPath)
+      End If  
     End If
-    If LLBuildType = "LLGame" Then 
-      'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
-      Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
-    End If
-    
-    'Below is done in Extract Routine, not needed here
-    'If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-    
-    'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
-    If Exist(InstallToPath & "LLScript.sh") Then
-      ExpandScript(InstallToPath & "LLScript.sh")          
-      Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
-      Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) 'Wait  'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
-      'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
-    End If  
     If LnkCount > 0 Then
       For I = 1 To LnkCount
         DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"
@@ -1119,16 +1145,16 @@ Public Function ExtractFast(Archive As String, OutPath As String, ExcludesInclud
   If Lower(Right(Archive, 4)) = ".tar" Then 'tar
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
-   Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes & ">/dev/null" Wait
+   Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
   Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
-    Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes & ">/dev/null" Wait
+    Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
   Else 'use 7z for all but tar and tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
     'Shell "7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
-    Shell Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes & ">/dev/null" Wait
+    Shell Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
     
   End If
   If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait

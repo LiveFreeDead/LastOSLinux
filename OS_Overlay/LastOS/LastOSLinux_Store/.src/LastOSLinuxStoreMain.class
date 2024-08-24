@@ -112,7 +112,7 @@ Public Sub Form_Open()
   'No need for above, we have a .version file made anyway
   
   Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
-  Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+    Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
   Try Kill "/tmp/version" ' Clear previous checks
   Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
   GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
@@ -141,12 +141,34 @@ Public Sub Form_Open()
           If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
         Wend
         
-        If Exist("/tmp/LastLinuxStore.gambas") 'Downloaded, install update Then Then        
+        If Exist("/tmp/LastLinuxStore.gambas") Then 'Downloaded, install update     
           Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
           Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
           Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
           Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
           Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+          
+          '------------------------------
+          'Also Update LLApp.gambas if the store updated
+          Try Kill "/tmp/LLApp.gambas" ' Clear previous download
+          Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+          GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas", "/tmp/LLApp.gambas")
+          While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+            Wait (0.01)
+            If ForceClose = True Then Quit ' No point in looping the user already quit
+            If Exist("/tmp/LLApp.gambas") Then Break 'Gets out of While, it's downloaded
+          Wend
+          
+          If Exist("/tmp/LLApp.gambas") Then 'Downloaded, install update
+            Shell "chmod +x /tmp/LLApp.gambas" Wait
+            Chmod "/tmp/LLApp.gambas" To "rwxrwxr--" 'Make file executable
+            Shell "mv /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
+            Shell "mv /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
+            Shell "chmod +x /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
+          End If
+          '-----------------------------
+          
+          
           OrigArgs = ""
           For Each S In Args
             S = Trim(S)
