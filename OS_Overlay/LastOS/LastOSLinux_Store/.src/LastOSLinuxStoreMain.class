@@ -150,8 +150,8 @@ Public Sub Form_Open()
         If Exist("/tmp/LastLinuxStore.gambas") Then 'Downloaded, install update     
           Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
           Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
-          Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
-          Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+          Shell "mv -f /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
+          Shell "mv -f /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
           Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
           
           '------------------------------
@@ -168,8 +168,8 @@ Public Sub Form_Open()
           If Exist("/tmp/LLApp.gambas") Then 'Downloaded, install update
             Shell "chmod +x /tmp/LLApp.gambas" Wait
             Chmod "/tmp/LLApp.gambas" To "rwxrwxr--" 'Make file executable
-            Shell "mv /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
-            Shell "mv /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
+            Shell "mv -f /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
+            Shell "mv -f /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
             Shell "chmod +x /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
           End If
           '-----------------------------
@@ -192,6 +192,15 @@ Public Sub Form_Open()
       Installing = False
     End If
   End If 
+  
+  'Clean Up, if ran Store as root, then when you run as standard user these files are not writable
+  Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+  Try Kill "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+  Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+  Try Kill "/tmp/version" ' Clear previous checks
+  Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
+  Try Kill "/tmp/LLApp.gambas" ' Clear previous download
+  
   'Process Arguments passed from terminal  
   Dim PresetToLoad As String
   
@@ -3064,7 +3073,7 @@ Public Sub DownTime_Timer()
     
     'Check Remote file exist, else it'll fail
     Shell "curl --head --silent " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " | head -n 1" To Test 'This is slow at times, but it's the only way
-    Print "Curl Test: P" & Test & "P"
+    'Print "Curl Test: P" & Test & "P"
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
       'QueueUpTo = 0
       'QueueCount = 0
@@ -3087,7 +3096,10 @@ Public Sub DownTime_Timer()
           Wait (0.01)
           If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
         Wend
-        If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "mv " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait
+        If Exist(QueueLocal[QueueUpTo] & ".partial") Then 'If you don't have access to the file then it's better to try to delete it and then not move/overwrite as it asks if you want to try, this stops automation.
+          If Exist(QueueLocal[QueueUpTo]) Then Try Kill QueueLocal[QueueUpTo]
+          Shell "mv -f " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait          
+        End If
         If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
       End If
     End If    

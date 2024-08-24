@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.2 2024-08-24-03
+'LastOS v1.1.2 2024-08-24-05
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -945,7 +945,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       If Exist(InstallToPath & "LLScript.sh") Then
         ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
-        Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) Wait  'I now wait as I'll do my best to not use sudo things that stop the installs 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && bash " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) Wait  'I now wait as I'll do my best to not use sudo things that stop the installs 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If  
     Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
@@ -953,7 +953,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       If Exist(TmpPath & "LLScript.sh") Then
         'ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
-        Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
       End If  
@@ -977,7 +977,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         If LnkPanel[I] = True Then 'Make it on panel too (Default cinnamon Panel Only so far)
           '~/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json
           PanelPath = User.Home & "/.config/cinnamon/spices/grouped-window-list@cinnamon.org/"
-          Shell "jq '." & Chr(34) & "pinned-apps" & Chr(34) & "[" & Chr(34) & "value" & Chr(34) & "] += [" & Chr(34) & DesktopFile & Chr(34) & "]' " & PanelPath & "2.json > " & PanelPath & "2.tmp && mv " & PanelPath & "2.tmp " & PanelPath & "2.json" '& " && cinnamon --replace" 'Replacing the panel is the only way to show Panel icons, Moved to only do once per MiniInstaller
+          Shell "jq '." & Chr(34) & "pinned-apps" & Chr(34) & "[" & Chr(34) & "value" & Chr(34) & "] += [" & Chr(34) & DesktopFile & Chr(34) & "]' " & PanelPath & "2.json > " & PanelPath & "2.tmp && mv -f " & PanelPath & "2.tmp " & PanelPath & "2.json" '& " && cinnamon --replace" 'Replacing the panel is the only way to show Panel icons, Moved to only do once per MiniInstaller
           RefreshPanel = True
         End If
         
@@ -1314,7 +1314,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   APP = Replace(APP, " ", ".") 'Remove Spaces
   
   'MIME Type
-  Print "MIME Output"
+  'Print "MIME Output"
   
   Shell "gsettings get org.gnome.desktop.interface icon-theme" To CurrentIconTheme
   CurrentIconTheme = Replace(CurrentIconTheme, "'", "")  
@@ -1354,7 +1354,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   
   If Right(PathIn, 1) = "/" Then PathIn = Left(PathIn, Len(PathIn) - 1) 'Remove Slash
   
-  Print "Desktop Output"
+  'Print "Desktop Output"
   'Desktop Association
   FileOut = "/tmp/" & APP & ".desktop"
   FileContent = "[Desktop Entry]" & Chr(10)
@@ -1374,6 +1374,6 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   Shell "update-desktop-database $HOME/.local/share/applications" Wait
   Shell "xdg-mime default " & APP & ".desktop application/x-" & APP Wait
   Shell "update-icon-caches $HOME/.local/share/icons/*" Wait
-  Print "MIME Done"
+  'Print "MIME Done"
 End
 
