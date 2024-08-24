@@ -109,10 +109,6 @@ sudo gsettings set org.nemo.window-state network-expanded false
 #Fractional Scaling Enabled (Breaks VirtualBox, which is why they don't enable it by default)
 #gsettings set org.cinnamon.muffin experimental-features "['scale-monitor-framebuffer', 'x11-randr-fractional-scaling']"
 
-#Change Main Menu icon to LastOS
-sudo cd $HOME/.config/cinnamon/spices/menu@cinnamon.org/
-sudo grep -lZ '"value": "linuxmint-logo-ring-symbolic"' 0.json | xargs -0 sed -i 's|"value": "linuxmint-logo-ring-symbolic"|"value": "/usr/share/icons/Start Button.png"|g'
-
 
 #Add LastOS File Types for LLApp/Game files
 sudo ./Tools/AddLastOSFileTypes.sh

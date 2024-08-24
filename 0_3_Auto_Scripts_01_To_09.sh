@@ -1,6 +1,7 @@
 #!/bin/bash
 
 bash 01_Configure_LastOS_Mint.sh
+bash 01_Copy_ToOverlay.sh
 bash 02_Copy_Overlay.sh
 bash 03_Get_Packages.sh
 bash 04_Get_WINE.sh
