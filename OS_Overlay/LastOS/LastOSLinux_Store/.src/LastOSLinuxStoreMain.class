@@ -111,15 +111,42 @@ Public Sub Form_Open()
   
   Try Kill "/tmp/version" ' Clear previous checks
   GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
-  Try RemoteVersion = Trim(File.Load("/tmp/version"))
+  While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+    Wait (0.01)
+    If ForceClose = True Then Quit ' No point in looping the user already quit
+    If Exist("/tmp/version") Then Break 'Gets out of While, it's downloaded
+  Wend
+  Try RemoteVersion = Trim(File.Load("/tmp/version"))  
   LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
   RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
-  If LocalVersion <> "" And RemoteVersion <> "" Then    
+  If LocalVersion <> "" And RemoteVersion <> "" Then
+    
+    Installing = True
     'Message(LocalVersion & " = " & RemoteVersion)
     If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
-      Print LocalVersion & " = " & RemoteVersion
+      LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
+      Wait (0.03)
+      Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
+      Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+      GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
+      While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+        Wait (0.01)
+        If ForceClose = True Then Quit ' No point in looping the user already quit
+        If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
+      Wend
       
+      If Exist("/tmp/LastLinuxStore.gambas") 'Downloaded, install update Then
+        Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old"
+        Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
+        Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
+        Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
+        Wait (10)
+        Quit
+      End If
     End If
+    
+    
+    Installing = False
   End If
   
   
@@ -3009,6 +3036,7 @@ Public Sub DownTime_Timer()
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
         Test = ""
         Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
         Print "Skipping Missing Item: " & QueueURL[QueueUpTo]
       Else ' It exist, download it
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
