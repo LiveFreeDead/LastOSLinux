@@ -135,10 +135,12 @@ Public Sub Form_Open()
         If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
       Wend
       
-      If Exist("/tmp/LastLinuxStore.gambas") 'Downloaded, install update Then
-        Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old"
-        Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
-        Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
+      If Exist("/tmp/LastLinuxStore.gambas") 'Downloaded, install update Then Then        
+        Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
+        Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
+        Shell "mv /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
+        Shell "mv /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+        Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
         Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
         Wait (10)
         Quit
