@@ -781,6 +781,13 @@ Public Sub GetFromLocalDB(InPath As String)
         
           Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
           Data.Items[DRows, Data.CIconRef].Text = "0"
+          Data.Items[DRows, Data.CSelected].Text = "F"
+          
+          If Exist(LLMod.ExpPath(Data.Items[DRows, Data.CPathApp].Text)) = True Then
+            Data.Items[DRows, Data.CInstalled].Text = "T" 'Hide installed items if picked to
+          Else
+            Data.Items[DRows, Data.CInstalled].Text = "F" ' Show not installed items
+          End If
           
         End If
       End If
@@ -2620,11 +2627,16 @@ Public Sub RunMiniInstaller()
     ItemLocal = Replace(Data.Items[ItemToInstall, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)
     
     If Not Exist(ItemLocal) Then 'Get it
+      OldTitle = Title.Text
+      Title.Text = "Downloading " & Data.Items[ItemToInstall, Data.CTitleName].Text
+      Wait (0.01)
+    
       GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
       While Downloading = True 'Can't do more until it's fully downloaded
         Wait (0.01)
       Wend
     End If      
+    Title.Text = OldTitle
   
     If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
       OldTitle = Title.Text
@@ -3042,6 +3054,13 @@ Public Sub LoadRepositoryDatabase()
         
           Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
           Data.Items[DRows, Data.CIconRef].Text = "0"
+          Data.Items[DRows, Data.CSelected].Text = "F"
+          
+          If Exist(LLMod.ExpPath(Data.Items[DRows, Data.CPathApp].Text)) = True Then
+            Data.Items[DRows, Data.CInstalled].Text = "T" 'Hide installed items if picked to
+          Else
+            Data.Items[DRows, Data.CInstalled].Text = "F" ' Show not installed items
+          End If
           
         End If
       End If

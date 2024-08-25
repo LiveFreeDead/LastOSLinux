@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.2 2024-08-24-06
+'LastOS v1.1.2 2024-08-25-01
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -640,7 +640,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         LnkActive[LnkEditing] = True
         ReadMode = 1
       End If
-      If ReadMode = 1 Then 'Fixed the exp paths (they are in the AddItem now)
+      If ReadMode = 1 Then 'Glenn 2025 Fix the exp paths (they are in the AddItem now)
         If LineID = "exec" Then
           LnkExec[LnkEditing] = Trim(LineData) 'Check Path is happy
           'If LnkExec[LnkEditing] <> "" Then 

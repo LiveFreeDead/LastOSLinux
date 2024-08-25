@@ -27,6 +27,7 @@ Public Sub Form_Open()
   If LLMod.AppPath = "/usr/bin" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
   If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
   LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
+  If Not Exist(LLMod.Linux7z) Then LLMod.Linux7z = "7z" 'Fall back to built in 7z if not available
 
   LLMod.HomePath = LLMod.Slashed(Application.Env["HOME"])
 
