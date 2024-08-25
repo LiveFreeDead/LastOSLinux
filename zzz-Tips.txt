@@ -1,0 +1,1 @@
+The date format I like is %l:%M %p = 3:21 PM, if you use %H it's 24h time and %I has leading = 03
