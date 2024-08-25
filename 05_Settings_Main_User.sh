@@ -96,6 +96,7 @@ gsettings set org.nemo.preferences show-computer-icon-toolbar true
 
 gsettings set org.cinnamon.sounds login-enabled false
 gsettings set org.cinnamon.sounds logout-enabled false
+gsettings set org.cinnamon.sounds notification-enabled false
 
 #Show hover tooltips on files/folders (Not everyone will want this, I should make a Settings choices app)
 gsettings set org.nemo.preferences tooltips-show-file-type true
@@ -115,7 +116,7 @@ grep -lZ '"value": "linuxmint-logo-ring-symbolic"' 0.json | xargs -0 sed -i 's|"
 
 
 #Add LastOS File Types for LLApp/Game files
-./Tools/AddLastOSFileTypes.sh
+bash ./Tools/AddLastOSFileTypes.sh
 
 #####################################################################################################################################
 
