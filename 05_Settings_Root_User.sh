@@ -15,14 +15,15 @@ sudo gsettings set org.cinnamon.desktop.background picture-uri 'file:///usr/shar
 #Set Login Background
 sudo gsettings set x.dm.slick-greeter background '/usr/share/backgrounds/lastos/Login.jpg'
 
-#Desktop Icon Grid Size and disable sorting by default
-sudo gsettings set org.nemo.desktop use-desktop-grid false
-sudo gsettings set org.nemo.desktop horizontal-grid-adjust 0.4
-sudo gsettings set org.nemo.desktop vertical-grid-adjust 0.4
-
-#Really disable Auto-Arrange
-# change the setting in the metadata file
-sudo sed -i 's/view-auto-layout=true/view-auto-layout=false/g' "$HOME/.config/nemo/desktop-metadata"
+#Disabled for now, need to find better solution
+##Desktop Icon Grid Size and disable sorting by default
+#sudo gsettings set org.nemo.desktop use-desktop-grid false
+#sudo gsettings set org.nemo.desktop horizontal-grid-adjust 0.4
+#sudo gsettings set org.nemo.desktop vertical-grid-adjust 0.4
+#
+##Really disable Auto-Arrange
+## change the setting in the metadata file
+#sudo sed -i 's/view-auto-layout=true/view-auto-layout=false/g' "$HOME/.config/nemo/desktop-metadata"
 
 #Desktop Icons
 sudo gsettings set org.nemo.desktop computer-icon-visible true

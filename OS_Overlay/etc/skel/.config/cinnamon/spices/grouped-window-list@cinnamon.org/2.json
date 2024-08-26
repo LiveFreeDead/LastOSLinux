@@ -142,7 +142,7 @@
             "Toggle activation of last focused window": 2,
             "Cycle windows": 3
         },
-        "value": 3
+        "value": 2
     },
     "middle-click-action": {
         "type": "combobox",
