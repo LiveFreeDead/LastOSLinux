@@ -1327,10 +1327,10 @@ Public Sub RedrawTheme()
   Try StartButton.Picture = LLM.StartButton.Stretch(StartButton.W, StartButton.H)
   
   'Move/Size Description
-  Description.Left = Screenshot.Left + 5  'Padding for text
-  Description.Width = Screenshot.Width - 5
-  Description.Top = Screenshot.Top + Screenshot.Height + 5 'Add Padding
-  Description.Height = IconPic.Top - Description.Top - 5
+  Description.Left = Screenshot.Left + 10  'Padding for text
+  Description.Width = Screenshot.Width - 10
+  Description.Top = Screenshot.Top + Screenshot.Height + 10 'Add Padding
+  Description.Height = IconPic.Top - Description.Top - 10
   
   'MetaData
   Dim FH As Integer

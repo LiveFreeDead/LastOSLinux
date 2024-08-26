@@ -5,7 +5,7 @@
   Text = ("LastOSLinux Store")
   Icon = Picture["Themes/LLOSStore.png"]
   { Screenshot PictureBox
-    MoveScaled(46.2857,5,43.2857,30)
+    MoveScaled(47,4,42,30)
     Alignment = Align.Center
     Border = Border.Plain
   }
@@ -16,40 +16,43 @@
     MoveScaled(76,48,13.7143,13.7143)
   }
   { !Items ListView
-    MoveScaled(16,5,28.7143,55)
+    MoveScaled(16.2857,4,28.7143,55)
     #Public = True
     Background = Color.Transparent
+    Border = False
   }
   { Description TextArea
     MoveScaled(46.2857,35,43.2857,13)
     Background = Color.Transparent
     NoTabFocus = True
     ReadOnly = True
+    Wrap = True
     Border = False
     ScrollBar = Scroll.Vertical
   }
   { !Category ListView
-    MoveScaled(1.2857,5,15,55)
+    MoveScaled(1.2857,4,15,55)
     #Public = True
     Background = Color.Transparent
+    Border = False
     ScrollBar = Scroll.Vertical
   }
   { Title Label
-    MoveScaled(47,0,43,4)
-    Alignment = Align.Center
+    MoveScaled(47,0.2857,43,4)
+    Alignment = Align.Top
   }
   { Stats Label
-    MoveScaled(1,59,44,4)
-    Alignment = Align.Center
+    MoveScaled(1,60,44,3)
+    Alignment = Align.Top
   }
   { Categories Label
-    MoveScaled(0,0,16,4)
-    Alignment = Align.Center
+    MoveScaled(0,0.2857,16,4)
+    Alignment = Align.Top
     Text = ("Categories")
   }
   { ItemTitle Label
-    MoveScaled(16,0,29,4)
-    Alignment = Align.Center
+    MoveScaled(16,0.2857,29,4)
+    Alignment = Align.Top
     Text = ("Items")
   }
   { StartButTab Button

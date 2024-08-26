@@ -45,8 +45,8 @@ sudo dconf write /org/cinnamon/desktop/wm/preferences/mouse-button-modifier "'<S
 sudo gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Super>'
 sudo gsettings set org.cinnamon.desktop.wm.preferences mouse-button-modifier '<Super>'
 
-#Acount picture
-sudo cp /usr/share/icons/LastOS.png $HOME/.face
+#Acount picture (From skel)
+sudo cp ./OS_Overlay/etc/skel/.face $HOME/.face
 
 #Disable Lock when Screensaver
 sudo gsettings set org.cinnamon.desktop.screensaver lock-enabled false
