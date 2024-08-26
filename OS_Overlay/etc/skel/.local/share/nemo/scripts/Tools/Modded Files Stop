@@ -1,3 +1,0 @@
-#!/bin/bash
-
-find ~ -type f -newer ~/.a > ~/Desktop/Modded_Files_$(date +%Y-%m-%d_%H-%M-%S).txt
