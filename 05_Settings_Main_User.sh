@@ -66,10 +66,10 @@ gsettings set org.gnome.desktop.interface monospace-font-name 'DejaVu Sans Mono 
 gsettings set org.cinnamon.desktop.wm.preferences titlebar-font 'Ubuntu Medium 9'
 
 #Set Dark Theme
-gsettings set org.cinnamon.desktop.interface gtk-theme "LastOS"
+gsettings set org.cinnamon.desktop.interface gtk-theme "LastOS-Orchis-Dark-Compact"
 gsettings set org.cinnamon.desktop.interface icon-theme "Windows-10-master"
-gsettings set org.cinnamon.theme name "LastOS"
-gsettings set org.gnome.desktop.interface gtk-theme "LastOS"
+gsettings set org.cinnamon.theme name "LastOS-Orchis-Dark-Compact"
+gsettings set org.gnome.desktop.interface gtk-theme "LastOS-Orchis-Dark-Compact"
 
 #Set White Mouse Cursor
 gsettings set org.cinnamon.desktop.interface cursor-theme "DMZ-White"

@@ -1,0 +1,19 @@
+/* Switches */
+
+.toggle-switch {
+  width: 44px;
+  height: 26px;
+  background-size: contain;
+  background-image: url("assets/toggle-off.svg");
+
+  &:checked { background-image: url("assets/toggle-on.svg"); }
+
+  @if $submenu_style == 'false' and $variant == 'dark' {
+    .popup-sub-menu &,
+    .quick-toggle-menu & {
+      background-image: url("assets/menu-toggle-off.svg");
+
+      &:checked { background-image: url("assets/toggle-on.svg") !important; }
+    }
+  }
+}

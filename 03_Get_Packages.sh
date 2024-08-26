@@ -28,6 +28,7 @@ sudo apt install -y steam protontricks lutris playonlinux ffmpeg mint-meta-codec
 
 #Nemo Customised
 sudo apt install -y nemo-media-columns
+sudo apt install -y sassc
 # Nemo Terminal is for advanced users, quite handy for me though
 #nemo-terminal
 
