@@ -3,5 +3,5 @@
 # This script will change the video mode to terminal (80 column mode) then back to the desktop, I found this make waking the PC up so much more reliable, if it causes any problems then delete this script.
 sleep 1
 xdotool key control+alt+F2
-sleep 1
+sleep 2
 xdotool key control+alt+F7

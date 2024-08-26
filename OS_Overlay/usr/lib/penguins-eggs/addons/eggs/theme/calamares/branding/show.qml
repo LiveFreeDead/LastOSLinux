@@ -43,159 +43,25 @@ Presentation
     Slide {
         Image {
             id: reproductiveSystem
-            source: "1-reproductive-system.png"
+            source: "Screen1.png"
             anchors.centerIn: parent
             anchors.top: background.bottom
             width: 810
             height: 485
             fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            color: "#ffffff"
-            anchors.horizontalCenter: reproductiveSystem.horizontalCenter
-            anchors.top: background.top
-            text: qsTr("<h1>LastOSLinux</h1><br/>"+
-                  "<h2>Installing the LastOSLinux OS</h2>"+
-                  "<h3>https://www.lastos.org</h3>")
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
+        }         
     }
     Slide {
         Image {
             id: startReproduction
-            source: "2-start-reproduction.png"
+            source: "Screen2.png"
             anchors.centerIn: parent
             anchors.top: background.bottom
             width: 810
             height: 485
             fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            // color: "#002439"
-            color: "#ffffff"
-            anchors.horizontalCenter: startReproduction.horizontalCenter
-            anchors.top: background.top            
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
-    }
-    Slide {
-        Image {
-            id: itsYourSystem
-            source: "3-its-your-system.png"
-            anchors.centerIn: parent
-            anchors.top: background.bottom
-            width: 810
-            height: 485
-            fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            // color: "#002439"
-            color: "#ffffff"
-            anchors.horizontalCenter: startReproduction.horizontalCenter
-            anchors.top: background.top            
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
-    }
-    Slide {
-        Image {
-            id: eggsPresentation
-            source: "4-eggs-presentation.png"
-            anchors.centerIn: parent
-            anchors.top: background.bottom
-            width: 810
-            height: 485
-            fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            // color: "#002439"
-            color: "#ffffff"
-            anchors.horizontalCenter: startReproduction.horizontalCenter
-            anchors.top: background.top            
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
-    }
-    Slide {
-        Image {
-            id: waitHatching
-            source: "5-wait-hatching.png"
-            anchors.centerIn: parent
-            anchors.top: background.bottom
-            width: 810
-            height: 485
-            fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            // color: "#002439"
-            color: "#ffffff"
-            anchors.horizontalCenter: startReproduction.horizontalCenter
-            anchors.top: background.top            
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
-    }
-    Slide {
-        Image {
-            id: followPenguins
-            source: "6-follow-penguins.png"
-            anchors.centerIn: parent
-            anchors.top: background.bottom
-            width: 810
-            height: 485
-            fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            // color: "#002439"
-            color: "#ffffff"
-            anchors.horizontalCenter: startReproduction.horizontalCenter
-            anchors.top: background.top            
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
-    }
-    Slide {
-        Image {
-            id: createdBy
-            source: "7-created-by.png"
-            anchors.centerIn: parent
-            anchors.top: background.bottom
-            width: 810
-            height: 485
-            fillMode: Image.PreserveAspectFit
-        }
-         Text {
-            font.family: "Helvetica"
-            font.pixelSize : 22
-            // color: "#002439"
-            color: "#ffffff"
-            anchors.horizontalCenter: startReproduction.horizontalCenter
-            anchors.top: background.top            
-            wrapMode: Text.WordWrap
-            width: 800
-            horizontalAlignment: Text.Center
-        }
-    }
+        }        
+    }    
    
     // When this slideshow is loaded as a V1 slideshow, only
     // activatedInCalamares is set, which starts the timer (see above).
