@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=LLApp Editor
-Exec="/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas"
+Exec="/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" -e
 Path=/LastOS/LastOSLinux_Store/Tools/LLApp/
 Comment=Insert LastOS DVD or USB to show items
 Terminal=false

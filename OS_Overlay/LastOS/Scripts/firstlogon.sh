@@ -72,7 +72,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  notify-send --hint=int:transient:1  "Please wait, Installing Linux App:" "$f"
+  #notify-send --hint=int:transient:1  "Please wait, Installing Linux App:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -82,7 +82,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
+  #notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -93,7 +93,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  notify-send --hint=int:transient:1  "Please wait, Installing Linux Game:" "$f"
+  #notify-send --hint=int:transient:1  "Please wait, Installing Linux Game:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -103,7 +103,7 @@ for f in $FILES
 do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
-  notify-send --hint=int:transient:1  "Please wait, Installing Windows Game:" "$f"
+  #notify-send --hint=int:transient:1  "Please wait, Installing Windows Game:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -118,6 +118,7 @@ wine regedit /s "/LastOS/Scripts-Wine/LastOS-Tweaks.reg"
 gio trash --empty
 
 #Run Updates off USB/ISO and Copy Update Overlays
+notify-send --hint=int:transient:1  "Installing any Updates off the Installation Disk"
 for d in /media/*/ ; do
 for g in $d*/ ; do
 if [ -f "$g"LastOS_Update/LastOS_Update.sh ] ; then
@@ -131,11 +132,12 @@ if [ -f "/LastOS/Scripts/AddLastOSFileTypes.sh" ] ; then
 bash "/LastOS/Scripts/AddLastOSFileTypes.sh"
 fi
 
-mintupdate &
-sleep 5
-xdotool windowactivate $(xdotool search "Update Manager") && xdotool key ctrl+r
-
-xdotool windowminimize $(xdotool search "Update Manager")
+#No longer required, you just have to reboot the VM, re-run Calamares Prep and then capture the ISO and Updates/APT work as expectd.
+#mintupdate &
+#sleep 5
+#xdotool windowactivate $(xdotool search "Update Manager") && xdotool key ctrl+r
+#
+#xdotool windowminimize $(xdotool search "Update Manager")
 
 ##Close all notifications (Fails)
 #killall notify-osd
