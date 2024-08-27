@@ -27,7 +27,7 @@ Issues:------
 
 Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences now.
 
-
+If you have a problem with your screen not waking up, press Ctrl + Alt + F2 to switch to a terminal window, then once you see the terminal press Ctrl + Alt + F7 to switch back to the desktop. this works 99.9% of the time, the other .1% you will have to go back to terminal and type reboot as the x server crashes (but it's rare).
 
 -------------
 

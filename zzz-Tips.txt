@@ -2,3 +2,8 @@ The date format I like is %l:%M %p = 3:21 PM, if you use %H it's 24h time and %I
 
 https://superuser.com/questions/186026/photoshop-wine-tooltip-doesnt-go-away-problem
 Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences now.
+
+https://christitus.com/fix-screen-tearing-linux/
+
+nVidia: *Note this WILL require a reboot, it can even crash the PC, so do it from Ctrl + Alt + F2 to give it a better chance of not crashing things, SAVE your work first.
+nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
