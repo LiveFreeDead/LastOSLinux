@@ -47,6 +47,10 @@ dconf write /org/cinnamon/desktop/wm/preferences/mouse-button-modifier "'<Super>
 gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Super>'
 gsettings set org.cinnamon.desktop.wm.preferences mouse-button-modifier '<Super>'
 
+#Panel to Center (Instead of Menu etc being far left)
+dconf write /org/cinnamon/enabled-applets "['panel1:center:0:menu@cinnamon.org:0', 'panel1:center:1:separator@cinnamon.org:1', 'panel1:center:2:grouped-window-list@cinnamon.org:2', 'panel1:right:0:systray@cinnamon.org:3', 'panel1:right:1:xapp-status@cinnamon.org:4', 'panel1:right:2:notifications@cinnamon.org:5', 'panel1:right:3:printers@cinnamon.org:6', 'panel1:right:4:removable-drives@cinnamon.org:7', 'panel1:right:5:keyboard@cinnamon.org:8', 'panel1:right:6:favorites@cinnamon.org:9', 'panel1:right:7:network@cinnamon.org:10', 'panel1:right:8:sound@cinnamon.org:11', 'panel1:right:9:power@cinnamon.org:12', 'panel1:right:10:calendar@cinnamon.org:13', 'panel1:right:11:cornerbar@cinnamon.org:14']"
+
+
 #Acount picture (I use the /etc/skel folder now)
 #cp /usr/share/icons/LastOS.png $HOME/.face
 

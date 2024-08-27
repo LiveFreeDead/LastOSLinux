@@ -1,9 +1,0 @@
-#!/bin/bash
-
-dir=$*
-subdir="${dir##*/}"
-
-cd "$*"
-cd ..
-
-zip -r --symlinks "$*".zip "./$subdir"

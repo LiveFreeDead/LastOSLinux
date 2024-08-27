@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ -d "$*" ]; then 
+
+dir=$*
+subdir="${dir##*/}"
+
+cd "$*"
+cd ..
+UpOne=$(pwd)
+
+cd "$*"
+
+tar -cf "$UpOne/$subdir".tar *
+else
+zenity --timeout 10 --info --text "MUST only give a single path to compress it's contents" &
+fi
