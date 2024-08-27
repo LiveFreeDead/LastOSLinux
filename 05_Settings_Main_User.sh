@@ -17,10 +17,10 @@ gsettings set x.dm.slick-greeter background '/usr/share/backgrounds/lastos/Login
 
 #Disabled below, need to play more and find better solution
 
-##Desktop Icon Grid Size and disable sorting by default
-#gsettings set org.nemo.desktop use-desktop-grid false
-#gsettings set org.nemo.desktop horizontal-grid-adjust 0.4
-#gsettings set org.nemo.desktop vertical-grid-adjust 0.4
+##Desktop Icon Grid Size and disable sorting by default (The first line case to be true for Customie to show in the Context Menu)
+####gsettings set org.nemo.desktop use-desktop-grid false
+gsettings set org.nemo.desktop horizontal-grid-adjust 0.40000000000000002
+gsettings set org.nemo.desktop vertical-grid-adjust 0.40000000000000002
 
 ##Really disable Auto-Arrange
 ## change the setting in the metadata file
@@ -111,6 +111,21 @@ gsettings set org.nemo.window-state network-expanded false
 
 #Fractional Scaling Enabled (Breaks VirtualBox, which is why they don't enable it by default)
 #gsettings set org.cinnamon.muffin experimental-features "['scale-monitor-framebuffer', 'x11-randr-fractional-scaling']"
+
+#Change default Time on lock screen to have date
+#Lock Screen Formatting
+gsettings set org.cinnamon.desktop.screensaver use-custom-format true
+gsettings set org.cinnamon.desktop.screensaver time-format "%l:%M %p"
+gsettings set org.cinnamon.desktop.screensaver date-format "            %A, %b %d"
+
+#Disable Screen Lock and Resume With Lock
+gsettings set org.cinnamon.settings-daemon.plugins.power lock-on-suspend false
+gsettings set org.cinnamon.desktop.screensaver lock-enabled false
+gsettings set org.cinnamon.desktop.screensaver lock-delay 0
+
+#Screen Sleep after 15 Minutes
+gsettings set org.cinnamon.desktop.session idle-delay 900
+
 
 #Change Main Menu icon to LastOS
 cd $HOME/.config/cinnamon/spices/menu@cinnamon.org/
