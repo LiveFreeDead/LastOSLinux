@@ -25,6 +25,8 @@ Issues:------
 
 * Following on from above, if you hold Alt when you drag a file or folder, it'll bring up a menu asking if you want to move, copy or link to the location you drop it. Ctrl (Copy) and Shift (Move) offer move or copy shown on the mouse cursor as + for copy, arrow for move.
 
+Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences now.
+
 
 
 -------------
@@ -35,6 +37,7 @@ Holding Shift of system boot will open the GRUB menu to pick/repair booting.
 
 To close Plank Dock, hold Ctrl and Right click the dock.
 
+The date format I like is %l:%M %p = 3:21 PM, if you use %H it's 24h time and %I has leading = 03
 
 --- Introduction to the GUI ---
 
@@ -158,8 +161,6 @@ Firewall Configuration - Manually control what internet traffic does and which a
 
 FlameShot - Screen Capture tool
 
-Focuswriter - Full screen writing without any distractions
-
 Font Selection - Change the Desktop fonts for Windows, folders, apps etc (you can control which fonts the system uses)
 
 Games Launcher - WINE This is a LastOS tool that will list any ppGames you have installed and let you read about them before you run them
@@ -178,10 +179,6 @@ Graphics Tablet - Configure Pen Support if found hardware
 
 Grub Customizer - Chnage the Order and Timer of your boot menu, handy for Dual Boot machines
 
-Handbreak - Convert or compress video files
-
-HexChat - Mint chat group (and can have other groups), quite handy to chat to other people, offer support etc
-
 Hot Corners - Make the corners of the desktop do actions
 
 HTop - Process Monitor but Terminal Based
@@ -192,17 +189,15 @@ Image Viewer - Irfanview but different
 
 Input Method - Allows writing non english character if needed
 
-Irfanview - WINE Like Irfanview :) Picture Viewer
+Install Steam - This is the best way to install steam on Mint Linux
 
-ISO Master - UltraISO (Manage and create ISO and CD/DVD type files
+Irfanview - WINE Like Irfanview :) Picture Viewer
 
 jstest-gtk - Joystick Check, test your gamepads buttons and sticks etc
 
 Kbreakout - Game, Bat and Ball to break bricks
 
 KDE Connect - Connect your phone to your Linux
-
-Kdenlive - Video Editor
 
 Keyboard - Set the delays for repeat, Shortcut Keys and change layouts
 
@@ -214,11 +209,13 @@ KMines - Game, Minesweeper
 
 KPatience - Game, Card Games
 
-Krita - Photoshop type tool, the brush method is weird compared to PS, but once you figure it out, it's capable (More than GIMP)
-
 Ksudoku - Game, Sodoku Number Grid
 
 Languages - Change your OS's set language
+
+LastOSLinux Launcher - This will show all the games you have installed with LLApp or from the LastOSLinux Store
+
+LastOSLinux Store - Install more applications from an online or local repository
 
 Lbreakout2 - Game, Bat and Ball to break bricks
 
@@ -226,11 +223,15 @@ Library - Display your recent and Favourited Documents
 
 LibreOffice - Microsoft Office but free and less features, also less virus and dangerous scripts too
 
+LLApp Editor - Use this to Package new Apps and Game to use with the LastOSLinux Store
+
 Login Window - Change the background of your Login screen nd other settings
 
 Logs - This has me stumped :P But I think it shows anything thats ever been logged on your system, including error logs etc
 
 Lutris - This consolidates all your games into one launcher, including from GOG, Steam, WINE etc, has so many settings to fix games
+
+Matrix - Mint chat group (and can have other groups), quite handy to chat to other people, offer support etc
 
 MediaInfo - Shows you what type of media/compression your file has
 
@@ -258,15 +259,11 @@ Online Accounts - If you need features of Google or Microsoft or a few others, o
 
 Panel - Change settings on your desktop Panel(s)
 
-Parcellite - Clipboard Manager
-
 Passwords and Keys - I think this stores your passwords and keys
 
 PDF Arranger - Merge or split pdf documents and rotate, crop and rearrange their pages
 
 Penguins Eggs - This is a shortcut to the tool used to Make a respin/remaster of Linux, it allows LastOSLinux to exist
-
-Pinta - Paint program, more tools than original MS Paint
 
 Pix - Picture Viewer with Folder Browser
 
@@ -294,8 +291,6 @@ QT5 Settings - Set the QT5 theme and settings to QT designed apps
 
 Rapid Photo Downloader - Import photos from USB/SD or other places into one location
 
-RedShift - Blue Light reducer (Doesn't work in VM)
-
 Rhythmbox - Music Player
 
 Remmina - RDP and remote desktop connections
@@ -317,8 +312,6 @@ SimpleScreenRecorder - Capture a video of your screen to save/share
 Software Manager - App Store
 
 Software Sources - This is where you set your App Store and OS Update Mirror to use, if you pick the closest and fastest Mirror, things will download much faster, this tool can also repair corrupted apt cache etc
-
-Solaar - Pair and View Logitec Devies
 
 Sound - Configure your PC Sound input/output and applications as well as Sound FX
 
@@ -415,6 +408,8 @@ DropBox - Cloud Storage
 
 Emby Server/Theater - Like Plex but not Plex
 
+Focuswriter - Full screen writing without any distractions (It takes all the file associations, so I didn't include it)
+
 Foliate - Clean eBook Reader
 
 Gambas3 - Visual Basic 6 like Programming Language
@@ -425,15 +420,23 @@ Godot - Game Making, Programming Language
 
 Gscan2pdf - Multipage scanning direct to PDF
 
+Handbreak - Convert or compress video files (This is a FlatPak so is too large to include, but pretty essential if you work with videos)
+
 Hedgewars - Game, Clone of Worms (Not installed) 
 
 Heroic Games Launcher - Another games store manager for multiple stores (Not installed) 
 
-Inkscape - Vector Graphics Editing (Not installed) 
+Inkscape - Vector Graphics Editing (Not installed)
 
-Joplin - Note taking and To Do List (Not installed) 
+ISO Master - UltraISO (Manage and create ISO and CD/DVD type files, not in repository anymore 
+
+Joplin - Note taking and To Do List (Not installed)
+
+Kdenlive - Video Editor
 
 Kazam - Screen recording and voice capture made simple (No Wayland Support)
+
+Krita - Photoshop type tool, the brush method is weird compared to PS, but once you figure it out, it's capable (More than GIMP)
 
 Lightzone - RAW Photograph Editing 16bit support
 
@@ -445,9 +448,13 @@ Nicotine+ - Peer to Peer Search and Download Client
 
 OpenShot Video Editor - Edit videos
 
+Parcellite - Clipboard Manager
+
 PdfSam -  Merge or split pdf documents and rotate, crop and rearrange their pages
 
 PeaZip - Archive Manager like WinRAR and 7Zip
+
+Pinta - Paint program, more tools than original MS Paint
 
 PokerTH - Game, Poker Card Game
 
@@ -456,6 +463,8 @@ Reaper - Digital Audio Workstation, audio production application for computers, 
 SendAnywhere - Send files/folders to your Phone/Tablet or other PC's
 
 Skype - Video/Voice Chat Client
+
+Solaar (Logitec) - Pair and View Logitec Devies (Shows Battery percentage in Taskbar)
 
 Spotify - Music Streaming Service
 
