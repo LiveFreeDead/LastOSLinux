@@ -1,0 +1,6 @@
+#!/bin/bash
+
+bash ~/.local/bin/nemo_restore.sh
+
+#http://wuff.dyndns.org/doku.php?id=config:nemo-performance
+
