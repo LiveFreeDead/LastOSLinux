@@ -5,15 +5,18 @@ User: live Password: live
 User: root Paddword: root
 Do NOT ever use " " (space) as a password it breaks things, you can use single letters or numbers in LastOSLinux
 
+Find out more about LastOSLinux at: https://forum.lastos.org/index.php?forums/lastoslinux.216/
+Find Penguins-Eggs: https://penguins-eggs.net/ thanks to Piero Proietti and his community.
+
 Issues:------
 
-* This OS works much better on real hardware.
+* This OS works much better on real hardware, as with all new releases of Linux it takes time for the Virtual Machines to properly support them, as such using real hardware makes it work as it's intended.
 
 *VirtualBox v7.0.20 and below Must be installed with 128mb of VRam and 3D Acceleration disabled (until the Guest Addition Tools get installed) you can not run LastOSStore or Launcher, unless you install the Guest Addition Tools and then enable 3D Acceleration once you shut the VM down.
 
-* If the Update Shield is red you need to open it and press "Refresh" (With internet connected). It defaults to the Australian Servers, you can change to a closer one if wanted.
+* If the Update Shield is red you need to open it and press "Refresh" (With internet connected). It defaults to the Australian Servers, you can change to a closer one if wanted. If it still has problems open a terminal and type without quotes "sudo apt update -y" this will download the latest repositories of apps and libraries.
 
-* If WINE is tiny on your 4k screen you can run /LastOS/Tools/WINE_HighDPIFix.sh to make it bigger, you can also manually open "Configure Wine" Tool from the Main Menu and in the Graphics Tab, slide the ScreenResolution up until it looks right. This make still cause apps to redraw bigger than expected or cut off, you can read the /LastOS/WineDPI-Alternative.txt to see a method that worked for someone else, or you can even change the screen resolution before you run your Wine app if it's only temporary.
+* If WINE is tiny on your 4k screen you can find tools in the LastOSLinux Store or run them manually from /LastOS/Extra_Tools/WINE_HighDPIFix.sh to make it bigger, you can also manually open "Configure Wine" Tool from the Main Menu and in the Graphics Tab, slide the ScreenResolution up until it looks right. This make still cause apps to redraw bigger than expected or cut off, you can read the /LastOS/WineDPI-Alternative.txt to see a method that worked for someone else, or you can even change the screen resolution before you run your Wine app if it's only temporary.
 
 * If you don't want Chrome to ask for a password each time, don't type in any password and accept the warning, this will let you run it without having to type in a keyring password every time, if you forget to use an empty password you can follow these steps:
 1. Close Chrome
@@ -52,6 +55,7 @@ Other Terminology:
 LastOS - The team's name behind your modded OS, Wanting to be the LastOS you'll ever need
 LastOSLinux Store - The tool used to install apps and games from the CDRom/USB
 LastOSLinux Launcher - This will let you see the Linux and Windows games you have installed using the store and launch them.
+LLApp Editor - This tool can create new App and Game packages to include in the LastOSLinux Store.
 SetupS - Setup Silent (This is LastOS's very own Silent Setup for Windows Apps)
 ssApp - A single app that will install silently onto your operating system
 ppApp - This is the same as a ssApp but will extract to the ppApps folder and not require installing, it will make shortcuts etc
@@ -59,6 +63,8 @@ ppGame - This is the same as ppApps, but for Games, not apps
 LLApp - This is a Linux app that is able to be installed to your users folder instead of system wide.
 LLGame - This is a Linux Game that is able to be installed to your users folder instead of system wide. It is able to launch these games from LastOSLinux Launcher.
 WINE - This will emulate (:P) windows API's meaning you can run Windows Apps and Games from their .EXE files as they would run in windows
+
+All LastOS app/game packages can be installed from the Context Menu, right click on a ssApp, ppApp, LLApp, ppGame or LLGame and use Scripts/LastOS/ and the action you wish to do ("LLApp Install" to install them). Currently LLApp will call SetupS to install ssApps as these require extra steps that LLApp can not handle, so if your using a Non LastOS, you'll need to install wine and then install SetupS from https://www.lastos.org/files/SetupS-files.htm or by getting it off /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe
 
 -------------------------------------------------------------------------------
 --- Included items and what they are ---
@@ -489,8 +495,8 @@ Zoom - Video/Voice Chat Client
 
 --- Other Software you may use ---
 
-Handbreak - This is for converting Video formats or recompressing them  (Not installed) 
-
 AnyDesk - Remote Desktop Access/Support (But be careful scammers will try to trick you into letting them use your computer)
 
 TeamViewer - Remote Desktop Access/Support (" Above)
+
+-------------------------------------------------------------------------------
