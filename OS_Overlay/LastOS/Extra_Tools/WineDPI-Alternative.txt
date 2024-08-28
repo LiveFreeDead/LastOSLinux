@@ -1,0 +1,24 @@
+https://bbs.archlinux.org/viewtopic.php?pid=1656143
+
+
+
+I'll post my solution for other people that come by. You can accomplish this by running X inside X, and then connecting to it over VNC.
+
+First I start an X that is about 1/2 the size of a full screen window on my machine:
+
+Xephyr -once -screen 1594x876 :1
+
+Then I share it over VNC, but scale it to 2x:
+
+x11vnc -localhost -display :1 -scale 2:nb -repeat
+
+Then I start the program on that display:
+
+DISPLAY=:1 wine  ...
+
+and finally I connect to it with VNC:
+
+vncviewer localhost
+
+For really old games (like You Don't Know Jack) you can adjust the values to get a 3x zoom.
+

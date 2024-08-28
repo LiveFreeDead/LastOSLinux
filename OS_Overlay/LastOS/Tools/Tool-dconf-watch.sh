@@ -1,2 +1,0 @@
-[Trash Info]
-Path=LastOSLi

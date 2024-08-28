@@ -26,9 +26,9 @@ sudo apt install -y steam protontricks lutris playonlinux ffmpeg mint-meta-codec
 
 #krita <-This needs resources, so not including it as default
 
-#Nemo Customised
+#Nemo Customised, webp gives convert to png ability
 sudo apt install -y nemo-media-columns
-sudo apt install -y sassc
+sudo apt install -y sassc webp
 # Nemo Terminal is for advanced users, quite handy for me though
 #nemo-terminal
 

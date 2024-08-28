@@ -565,15 +565,18 @@ Public Sub BuildBut_Click()
     'STOP * If the user makes a script only build then this will remove important files, need a checkbox for them Glenn 2024
     
     If NoInstall.Value = False Then
-      If IncludeFolder.Text = BuildToFolder.Text Then      
-        If Exist(OutFile) 'Now if compressed file is in tact, remove all other files except LLMod.LLBuildType.* Then
-          For Each IsLLFile In Dir(BuildToFolder.Text, "*")
-            If Left(IsLLFile, 6) <> LLMod.LLBuildType Then
-              'Delete non LLFile from here
-              'Message(BuildToFolder.Text & IsLLFile)
-              Try Shell "rm -r " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait
-            End If
-          Next      
+      If Not Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".tar.gz") Then 'Don't delete anything if no .tar.gz file as it's most likely a NoInstall app as well
+        If IncludeFolder.Text = BuildToFolder.Text Then      
+          If Exist(OutFile) 'Now if compressed file is in tact, remove all other files except LLMod.LLBuildType.* Then
+            For Each IsLLFile In Dir(BuildToFolder.Text, "*")
+              If Left(IsLLFile, 6) <> LLMod.LLBuildType Then
+                'Delete non LLFile from here
+                'Message(BuildToFolder.Text & IsLLFile)
+                Try Shell "rm -r " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait 'Trash didn't work, will just have to be careful
+                'Try Shell "gio trash -f " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait 'Trying to recycle files instead of delete to make it safer
+              End If
+            Next      
+          End If
         End If
       End If
     End If

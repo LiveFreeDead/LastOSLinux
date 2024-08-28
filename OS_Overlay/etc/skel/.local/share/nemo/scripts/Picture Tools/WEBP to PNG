@@ -1,0 +1,7 @@
+#!/bin/bash
+
+files="$*"
+filesout=$(basename "$files" .webp)
+dwebp "$files" -o "$filesout.png"
+
+
