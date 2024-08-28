@@ -1,0 +1,6 @@
+#!/bin/bash
+
+files="$*"
+fileshalf="$*"_256x256.png
+
+convert "$files" -resize "256>" "$fileshalf"

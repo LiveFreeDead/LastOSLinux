@@ -1,0 +1,7 @@
+#!/bin/bash
+
+files="$*"
+fileshalf="$*"80.jpg
+
+mogrify "$files" -quality 80 "$fileshalf"
+

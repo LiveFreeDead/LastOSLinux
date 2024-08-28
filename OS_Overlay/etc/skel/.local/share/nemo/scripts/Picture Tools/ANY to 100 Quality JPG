@@ -1,0 +1,8 @@
+#!/bin/bash
+
+files="$*"
+filesout=$(basename "$files")
+noext="${filesout%.*}"
+
+ffmpeg -i "$files" "$noext.jpg"
+
