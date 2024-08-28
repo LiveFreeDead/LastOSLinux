@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.2 2024-08-25-01
+'LastOS v1.1.3 2024-08-28-01
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -17,7 +17,7 @@ Public LLDescription As String
 Public LLURL As String
 Public LLCategory As String
 Public LLBuildType As String
-Public LLFlags As String 'This allows Hiding items from Launcher Mode etc
+Public LLFlags As String 'This allows Hiding items from Launcher Mode, NoInstall etc
 Public LLPriority As String
 Public LLCompressed As Boolean
 Public LLArch As String 
@@ -29,6 +29,7 @@ Public LLHideInLaunch As Boolean
 Public LLShowAlways As Boolean
 Public LLShowSetupOnly As Boolean
 Public LLInternetRequired As Boolean
+Public LLNoInstall As Boolean
 
 'Meta-data
 Public LLTags As String
@@ -124,6 +125,7 @@ Public Sub ClearLLData()
   LLHideInLaunch = False
   LLShowAlways = False
   LLShowSetupOnly = False
+  LLNoInstall = False
   LLArch = ""
   LLOS = ""
 
@@ -380,6 +382,8 @@ Public Function LoadSSFile(FileIn As String) As Boolean
       
       If InStr(LLFlags, "hidden") Then LLHideInLaunch = True Else LLHideInLaunch = False
       If InStr(LLFlags, "internetrequired") Then LLInternetRequired = True Else LLInternetRequired = False
+      If InStr(LLFlags, "noinstall") Then LLNoInstall = True Else LLNoInstall = False
+      
       
       If LineID = "tags" Then LLTags = LineData
       If LineID = "publisher" Then LLPublisher = LineData
@@ -615,6 +619,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
       
       If InStr(LLFlags, "hidden") Then LLHideInLaunch = True Else LLHideInLaunch = False
       If InStr(LLFlags, "internetrequired") Then LLInternetRequired = True Else LLInternetRequired = False
+      If InStr(LLFlags, "noinstall") Then LLNoInstall = True Else LLNoInstall = False
       
       If LineID = "tags" Then LLTags = LineData
       If LineID = "publisher" Then LLPublisher = LineData
@@ -742,6 +747,8 @@ Public Function SaveLLFile(FileOut As String) As Boolean
   LLFlags = "" 'Clear it in case
   If LLHideInLaunch = True Then LLFlags = "Hidden " 'First Flags clears the lot
   If LLInternetRequired = True Then LLFlags &= "InternetRequired " 
+  If LLNoInstall = True Then LLFlags &= "NoInstall "   
+  
   If Trim(LLFlags) <> "" Then LLFileContent &= "Flags=" & Trim(LLFlags) & Chr(10) 'Only add if not Empty
   
   LLAppPath = Replace(LLAppPath, User.Home, "$HOME") ' Convert Home directory To Variable
@@ -921,22 +928,25 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     InstallToPath = Replace(LLAppPath, "$HOME", User.Home)
     
     'Check for a LLApp.tar.gz or a LLGame.tag.gz and if not found, it's not installable, just runs scripts etc
-    If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then
-      'Make install to folder and copy LLApp files accross
-      If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
-      If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-      If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
-      If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
-      If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
-      
-      'Extract Archive to the Install Folder
-      If LLBuildType = "LLApp" Then 
-        'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
-        Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
-      End If
-      If LLBuildType = "LLGame" Then 
-        'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
-        Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
+    If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then LLNoInstall = True 'Doesn't have one, it must just be a script
+    If LLNoInstall = False Then 'Glenn 2024 - this is to make sure we don't extract to a path, just run the scripts (Sometimes the builder like to add them anyway)
+      If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then      
+        'Make install to folder and copy LLApp files accross
+        If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
+        If Exist(InstallToPath) Then Shell "chmod 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+        If LLBuildType = "LLApp" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLApp.tar.gz" Wait
+        If LLBuildType = "LLGame" Then Shell "rsync -a " & Chr(34) & LLINIPath & "." & Chr(34) & " " & Chr(34) & InstallToPath & Chr(34) & " --exclude=LLGame.tar.gz" Wait
+        If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait
+        
+        'Extract Archive to the Install Folder      
+        If LLBuildType = "LLApp" Then 
+          'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLApp.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+          Extract(LLINIPath & "LLApp.tar.gz", InstallToPath, "")
+        End If
+        If LLBuildType = "LLGame" Then 
+          'Shell "tar -xzf " & Chr(34) & LLINIPath & Chr(34) & "LLGame.tar.gz -C " & Chr(34) & InstallToPath & Chr(34) Wait
+          Extract(LLINIPath & "LLGame.tar.gz", InstallToPath, "")
+        End If
       End If
       
       'Below is done in Extract Routine, not needed here

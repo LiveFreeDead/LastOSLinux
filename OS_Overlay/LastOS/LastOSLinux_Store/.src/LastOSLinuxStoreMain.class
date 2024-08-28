@@ -864,6 +864,8 @@ Public Sub AddItem()
   If LLMod.LLHideInLaunch = True Then Data.Items[DRows, Data.CHidden].Text = "T" Else Data.Items[DRows, Data.CHidden].Text = "F"
   If LLMod.LLShowAlways = True Then Data.Items[DRows, Data.CShowAlways].Text = "T" Else Data.Items[DRows, Data.CShowAlways].Text = "F"
   If LLMod.LLShowSetupOnly = True Then Data.Items[DRows, Data.CShowSetupOnly].Text = "T" Else Data.Items[DRows, Data.CShowSetupOnly].Text = "F"
+  If LLMod.LLNoInstall = True Then Data.Items[DRows, Data.CNoInstall].Text = "T" Else Data.Items[DRows, Data.CNoInstall].Text = "F"
+  
   Data.Items[DRows, Data.CInstalled].Text = LLMod.LLInstalled ' Checks if installed
   Data.Items[DRows, Data.CArch].Text = LLMod.LLArch 'Arch not yet added
   Data.Items[DRows, Data.COS].Text = LLMod.LLOS 'Arch not yet added

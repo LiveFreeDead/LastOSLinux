@@ -56,6 +56,7 @@ Public CLnkAssociations As Integer
 Public CLnkTerminal As Integer
 Public CLnkMultiple As Integer
 Public CLnkParentRef As Integer
+Public CNoInstall As Integer
 
 Public Sub Form_Resize()
 Items.Width = Me.W - Items.Left
@@ -251,5 +252,8 @@ Public Sub ClearDataFields()
     HeaderCount = HeaderCount + 1
     Items.AddColumn("LnkIcon", 60, 1)
     CLnkIcon = HeaderCount
+    HeaderCount = HeaderCount + 1
+    Items.AddColumn("NoInstall", 60, 1)
+    CNoInstall = HeaderCount    
   End If
 End

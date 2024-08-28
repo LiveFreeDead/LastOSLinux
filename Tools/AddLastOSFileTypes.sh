@@ -18,6 +18,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
         <comment>$COMMENT</comment>
         <icon name=\"application-x-$APP\"/>
         <glob pattern=\"*.lla\"/>
+        <glob pattern=\"*.LLApp.tar\"/>
         <glob pattern=\"ppApp.app\"/>
         <glob pattern=\"*ppApp.apz\"/>
     </mime-type>
@@ -63,6 +64,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
         <comment>$COMMENT</comment>
         <icon name=\"application-x-$APP\"/>
         <glob pattern=\"*.llg\"/>
+        <glob pattern=\"*.LLGame.tar\"/>
         <glob pattern=\"*.ppg\"/>
         <glob pattern=\"*.pgz\"/>
     </mime-type>

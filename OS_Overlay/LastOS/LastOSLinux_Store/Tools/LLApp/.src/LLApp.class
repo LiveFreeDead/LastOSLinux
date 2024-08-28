@@ -360,6 +360,8 @@ Public Sub LoadFileIn(FileIn As String)
     If LLMod.LLHideInLaunch = True Then HideLaunchCheck.Value = True Else HideLaunchCheck.Value = False
     If LLMod.LLInternetRequired = True Then InternetRequiredCheck.Value = True Else InternetRequiredCheck.Value = False
     
+    If LLMod.LLNoInstall = True Then NoInstall.Value = True Else NoInstall.Value = False
+    
     TitleText.Text = LLMod.LLTitle
     VersionText.Text = LLMod.LLVersion
     DescriptionText.Text = LLMod.LLDescription
@@ -1035,5 +1037,5 @@ End
 
 
 Public Sub NoInstall_Click()
-  'LLMod.LLNoInstall = NoInstall.Value
+  LLMod.LLNoInstall = NoInstall.Value
 End
