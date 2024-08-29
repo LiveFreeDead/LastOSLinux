@@ -32,7 +32,13 @@ Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tool
 
 If you have a problem with your screen not waking up, press Ctrl + Alt + F2 to switch to a terminal window, then once you see the terminal press Ctrl + Alt + F7 to switch back to the desktop. this works 99.9% of the time, the other .1% you will have to go back to terminal and type reboot as the x server crashes (but it's rare).
 
--------------
+Tips:-------------
+
+Pressing Ctrl + Alt + Escape will reload the whole desktop, handy when things aren't drawing properly etc, try this fix first
+
+Pressing Ctrl + Alt + Backspace will log you out and let you log back in (good when the desktop crashes)
+
+Pressing Ctrl + Alt + Delete or Ctrl + Shift + Escape will bring up Gnome System Monitor, this lets you quit hung tasks
 
 In Terminal you don't use Ctrl + C/V to copy and paste, it's actually Ctrl + Shift + C/V this is because they are Linux shortcut that have been used since 1972, so you will have to learn to hold shift when working with the terminal to copy and paste. Home and End also dont work as expected, so you have to cursor to where you want or use the mouse to select things. This is all a learning curve, but once you get used to it, it's not so bad.
 
