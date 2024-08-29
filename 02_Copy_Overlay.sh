@@ -73,3 +73,7 @@ sudo cp -rf /etc/skel/* /root
 sudo fc-cache -f -v
 fc-cache -f -v
 
+#Copy shortcuts to menu (Just in case)
+sudo cp -a /LastOS/*.desktop $HOME/.local/share/applications
+sudo cp -a /LastOS/Tools/*.desktop $HOME/.local/share/applications
+
