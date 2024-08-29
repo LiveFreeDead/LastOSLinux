@@ -10,17 +10,17 @@
     Delay = 30
   }
   { !Statusold Label
-    MoveScaled(0,9,63,5)
+    MoveScaled(1,20,61,7)
     #Public = True
-    Visible = False
     Font = Font["+1"]
     Alignment = Align.Top
     Text = ("Loading") & "..."
   }
   { !Status TextArea
-    MoveScaled(1,20,61,8)
+    MoveScaled(1,10,61,8)
     #Public = True
     #Translate = False
+    Visible = False
     Background = Color.Transparent
     Foreground = Color.White
     NoTabFocus = True

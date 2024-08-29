@@ -23,6 +23,7 @@
   }
   { Description TextArea
     MoveScaled(46.2857,35,43.2857,13)
+    Visible = False
     Background = Color.Transparent
     NoTabFocus = True
     ReadOnly = True
@@ -142,5 +143,16 @@
   { DownTime #Timer
     #MoveScaled(0,56)
     Delay = 100
+  }
+  { !DescriptionV GridView
+    MoveScaled(45,35,40,13)
+    #Public = True
+    Background = Color.Transparent
+    NoTabFocus = True
+    Border = False
+    Grid = False
+    ScrollBar = Scroll.Vertical
+    AutoResize = False
+    Resizable = False
   }
 }
