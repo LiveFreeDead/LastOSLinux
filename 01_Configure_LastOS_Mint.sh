@@ -26,6 +26,7 @@ nohup ./Tools/RestartCinnamon.sh  > /dev/null 2>&1&
 #xdo allow things to be automated, much like how AutoIt has system API calls system wide, I use it in /usr/lib/pm-utils/sleep.d/999lastosvidfix
 sudo apt install -y spice-vdagent qemu-guest-agent
 sudo apt install -y wget numlockx xclip xdotool
+sudo apt install -y 7zip
 
 #turn on numlock
 numlockx on
