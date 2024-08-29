@@ -67,7 +67,6 @@ Public CurrentItemKey As Integer = -1
 Public CurrentItem As String
 Public CurrentCat As String
 Public ScaleItems As Integer
-Public ScaleDescription As Integer
 Public IconSize As Integer
 Public SelectedItems As Integer = 0
 Public FirstRun As Boolean = True
@@ -246,11 +245,6 @@ Public Sub Form_Open()
   
   Category.Foreground = CategoryCol
   Description.Foreground = DescriptionCol
-  Description.Background = BGCol
-  
-  DescriptionV.Foreground = DescriptionCol
-  'DescriptionV.Background = BGCol
-  
   
   Data.Background = BGCol
   Data.Items.Background = BGCol
@@ -267,17 +261,11 @@ Public Sub Form_Open()
   Data.ScanPaths.Background = BGCol
   Data.ScanPaths.Foreground = FGCol
   
-  'Use saved ScaleItems and Description
-  ScaleItems = Settings["ScaleItems", ScaleItems]
-  ScaleDescription = Settings["ScaleDescription", ScaleDescription]
-  
-  If ScaleItems = 0 Then ScaleItems = Items.Font.Size + 1 '(Makes it 10 Default)
-    Items.Font.Size = ScaleItems
+  ScaleItems = Items.Font.Size + 1 '(Makes it 10 Default)
+  Items.Font.Size = ScaleItems
   Items.Foreground = ItemCol
   Category.Font.Size = ScaleItems
-  If ScaleDescription = 0 Then ScaleDescription = 11
-  DescriptionV.Font.Size = ScaleDescription
-  Description.Font.Size = ScaleDescription
+  Description.Font.Size = 11
   
   LoadFavorites
   
@@ -310,7 +298,7 @@ Public Sub Form_Open()
   Me.Top = Settings["Window/Top", Me.Top]
   Me.Left = Settings["Window/Left", Me.Left]
   Me.Height = Settings["Window/Height", Me.Height]
-  Me.Width = Settings["Window/Width", Me.Width] 
+  Me.Width = Settings["Window/Width", Me.Width]
   
   'Make StartButton a Tab Stop
   StartButton.NoTabFocus = False
@@ -348,7 +336,6 @@ Public Sub Form_Open()
   End If
     
   'FirstRun.Enabled = True
-  Description.Text = "Welcome to LastOSLinux Store, it can be used as an installer or a launcher.\n\nEnjoy"
   FirstRun = False
   'LLM.Loaded = True 'Make LoadingScreen not called from the other functions 'Kept this active so I can use the Loading form to rescan items
   'LoadingScreen.Close 'Can close it now we've got the main form 'Don't can use to re-scan items
@@ -1089,8 +1076,6 @@ Public Sub GenerateMainList()
   Items.Clear() 'Safe for ListView (Not Tables)  
   SelectedItems = 0
   
-  Description.Text = Description.Text 'Redraw Description so DescriptionV redraws 
-  
   'Sort List here
   If SortMethod = 0 Then Items.Sorted = True ' Alphabetical
   If SortMethod = 1 Then Items.Sorted = False 'UnSorted
@@ -1348,13 +1333,6 @@ Public Sub RedrawTheme()
   Description.Width = Screenshot.Width - 10
   Description.Top = Screenshot.Top + Screenshot.Height + 10 'Add Padding
   Description.Height = IconPic.Top - Description.Top - 10
-  
-  DescriptionV.Left = Screenshot.Left + 10  'Padding for text
-  DescriptionV.Width = Screenshot.Width - 10
-  DescriptionV.Top = Screenshot.Top + Screenshot.Height + 10 'Add Padding
-  DescriptionV.Height = IconPic.Top - Description.Top - 10
-  
-  Description.Text = Description.Text
   
   'MetaData
   Dim FH As Integer
@@ -1655,8 +1633,6 @@ Public Sub Form_Close()
   Settings["Window/Left"] = Me.Left
   Settings["Window/Height"] = Me.Height
   Settings["Window/Width"] = Me.Width
-  Settings["ScaleItems"] = ScaleItems
-  Settings["ScaleDescription"] = ScaleDescription
   
   ForceClose = True
   Data.Close
@@ -1833,6 +1809,8 @@ Public Sub LoadTheme()
   Try LLM.Screenshot = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Screenshot.jpg")
   Try LLM.Icon = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Icon.png")
   Try LLM.StartButton = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/StartButton.png")
+  
+  Description.Text = "Welcome to LastOSLinux Store, it can be used as an installer or a launcher.\n\nEnjoy"
   
   'Store Theme files in a hidden form
   Theme.Res.Clear 'NEVER use clear???
@@ -3221,56 +3199,3 @@ Public Function IsTrue(TestIn As String) As Boolean
   Return WasItTrue
 End
 
-Public Sub Description_Change()
-  DescriptionV.Columns.Count = 1
-  DescriptionV.Rows.Count = 2
-  DescriptionV.Columns.Width = DescriptionV.Width - 20
-  DescriptionV.Rows[0].Height = 1999'DescriptionV.Height 'Disabled to make it autoexpand using max size I can think of
-  DescriptionV.Rows[1].Height = 1
-  
-  
-  DescriptionV.ScrollY = 0
-  DescriptionV[0, 0].WordWrap = True
-  DescriptionV[0, 0].Text = Description.Text 'WordWrap(Description.Text, 24)
-  DescriptionV[0, 0].Alignment = Align.TopLeft
-  
-  'DescriptionV[0, 0].Text = WordWrap(Description.Text, 24)
-  
-  'DescriptionV.Font = Items.Font 'Matches size and font of Items
-  
-End
-
-Public Sub DescriptionV_MouseWheel()
-  If CtrlPressed Then
-    If Mouse.Delta > 0 Then
-      ScaleDescription = ScaleDescription + 1
-    Else If Mouse.Delta < 0 Then
-      ScaleDescription = ScaleDescription - 1
-    End If
-    If ScaleDescription > 20 Then ScaleDescription = 20
-    If ScaleDescription < 5 Then ScaleDescription = 5
-    
-    DescriptionV.Font.Size = ScaleDescription
-    Description.Text = Description.Text 'Redraw Description
-    Stop Event
-  Else 'Just Scroll Text
-    'If Mouse.Delta > 0 Then
-    '  DescriptionV.ScrollBar = 1
-    'Else If Mouse.Delta < 0 Then
-    '  DescriptionV.ScrollBar = -1
-    'End If    
-  End If
-End
-
-Public Function WordWrap(TextToWrap As String, LengthToWrap As Integer) As String
-    If TextToWrap = "" Then Return ""
-    Dim iCount As Integer
-     
-    iCount = LengthToWrap
-    While Mid$(TextToWrap, iCount, 1) <> " "        'find first white space backward from LenghtToWrap to make the split
-        Dec iCount
-    Wend
-  
-    Return Subst("&1\n&2", Mid$(TextToWrap, 1, iCount), Mid(TextToWrap, iCount + 1))
-  
-End

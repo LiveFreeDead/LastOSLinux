@@ -6,9 +6,6 @@ Public Sub Form_Open()
   Me.Foreground = &hFFFFFF
   Status.Foreground = &hFFFFFF
   Status.Top = Me.Height - Status.Height - 5
-  'Status.Background = -16777216
-  'Status.Background = &h181818
-  
   
   'Get App's Folder
   LLM.AppPath = Application.Path ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
@@ -44,9 +41,4 @@ Public Sub Timer1_Timer()
   LastOSLinuxStoreMain.Show
   'LLM.Loaded = True 'Moved this to main form too
   'Me.Close 'Moved this to the end ofthe Main form loading, so can display up until it it ready
-End
-
-Public Sub Status_Change()
-  Statusold.Text = Status.Text
-
 End
