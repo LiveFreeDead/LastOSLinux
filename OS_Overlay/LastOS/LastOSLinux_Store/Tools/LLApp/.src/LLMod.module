@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.3 2024-08-28-01
+'LastOS v1.1.3 2024-08-30-01
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -928,7 +928,11 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     InstallToPath = Replace(LLAppPath, "$HOME", User.Home)
     
     'Check for a LLApp.tar.gz or a LLGame.tag.gz and if not found, it's not installable, just runs scripts etc
-    If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then LLNoInstall = True 'Doesn't have one, it must just be a script
+    If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then
+      'Has one, so we continue as a normal install
+    Else
+      LLNoInstall = True 'Doesn't have one, it must just be a script installer
+    End If
     If LLNoInstall = False Then 'Glenn 2024 - this is to make sure we don't extract to a path, just run the scripts (Sometimes the builder like to add them anyway)
       If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then      
         'Make install to folder and copy LLApp files accross
