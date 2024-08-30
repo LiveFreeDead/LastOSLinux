@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.3 2024-08-30-01
+'LastOS v1.1.3 2024-08-30-02
 
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
@@ -959,6 +959,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       If Exist(InstallToPath & "LLScript.sh") Then
         ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        'MakeAllEXE(TmpPath)
         Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && bash " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) Wait  'I now wait as I'll do my best to not use sudo things that stop the installs 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If  
@@ -967,6 +968,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       If Exist(TmpPath & "LLScript.sh") Then
         'ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        'MakeAllEXE(TmpPath)
         Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
@@ -1151,6 +1153,7 @@ Public Function Extract(Archive As String, OutPath As String, ExcludesIncludes A
     
   End If
   If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait
+  MakeAllEXE(OutPath)
   Return True ' Success
 End
 
@@ -1169,9 +1172,9 @@ Public Function ExtractFast(Archive As String, OutPath As String, ExcludesInclud
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
     'Shell "7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
     Shell Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
-    
   End If
   If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait
+  MakeAllEXE(OutPath)
   Return True ' Success
 End
 
@@ -1391,3 +1394,13 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   'Print "MIME Done"
 End
 
+Public Sub MakeAllEXE(MakeExePath As String)
+  If MakeExePath = "" Then Return
+  MakeExePath = Slashed(MakeExePath)
+  Dim FileInPath As String
+  For Each FileInPath In Dir(MakeExePath, "[^.]*", gb.File) ' Check all mounted and sub mounts Media also 
+      If Access(MakeExePath & FileInPath) = True Then ' Only do ones with access to them        
+        Try Chmod MakeExePath & FileInPath To "rwxrwxr--" 'Make script files executable
+      End If
+  Next
+End
