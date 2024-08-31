@@ -1,8 +1,9 @@
 ' Gambas module file
 
-'LastOS v1.1.3 2024-08-30-02
-
+'LastOS v1.1.5 2024-08-31-09
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
+
+Public InstallingMulti As Boolean
 
 Public RefreshPanel As Boolean = False
 
@@ -74,6 +75,10 @@ Public LLScreenshot As Image
 'Post Install Script
 Public LLScript As String 'Post Processing Script
 Public LLScriptFile As String
+
+Public LLScriptSudo As String 'Post Processing Script
+Public LLScriptSudoFile As String = "/tmp/LastOSLinuxStore_Sudo.sh"
+Public LLScriptSudoContent As String
 
 'Others
 Public LLBuildPath As String 'Default folder offered to save LLApp.lla file etc
@@ -175,6 +180,8 @@ Public Sub ClearLLData()
 'Post Install Script
   LLScript = ""
   LLScriptFile = ""
+  
+  LLScriptSudo = ""
   
 'Other
   LLInstalled = "F"
@@ -558,6 +565,15 @@ Public Function LoadLLFile(FileIn As String) As Boolean
     LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
     hFile.close
   End If
+  
+   'Get Sudo Script File
+   LLScriptSudo = ""
+  If Exist(DirIn & "LLScript_Sudo.sh") = True Then 
+    LLScriptSudoFile = DirIn & "LLScript_Sudo.sh"
+    hFile = Open LLMod.LLScriptSudoFile For Input
+    LLScriptSudo = Trim(hFile.Load(LLMod.LLScriptSudoFile))
+    hFile.close
+  End If
 
   'Load whole file and Split it into individual Lines      
   Dim LLFile As String[]
@@ -849,6 +865,11 @@ Public Function SaveLLFile(FileOut As String) As Boolean
     If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 'Remove existing Script if found (Always will, you can only protect users so much without it being annoying for power users)
     File.Save(OutFile, LLScript)
   End If
+  If LLScriptSudo <> "" And LLScriptSudo <> "#!/bin/bash" Then
+    OutFile = LLBuildPath & "LLScript_Sudo.sh" 'Do Scipt  
+    If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 'Remove existing Script if found (Always will, you can only protect users so much without it being annoying for power users)
+    File.Save(OutFile, LLScriptSudo)
+  End If
   File.Save(FileOut, LLFileContent)
   Return True 'If made it this far, it worked
 End
@@ -962,6 +983,13 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         'MakeAllEXE(TmpPath)
         Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && bash " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) Wait  'I now wait as I'll do my best to not use sudo things that stop the installs 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+      End If
+      If Exist(InstallToPath & "LLScript_Sudo.sh") Then
+        ExpandScript(InstallToPath & "LLScript_Sudo.sh")          
+        Try Chmod InstallToPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
+        'MakeAllEXE(TmpPath)        
+        LLScriptSudoContent &= AddSudoScript(InstallToPath & "LLScript_Sudo.sh") 'Make all Sudo work go into a new script file        
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If  
     Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
       If TmpPath = "" Then TmpPath = LLINIPath 'If not a tar then it uses the current path off USB or DVD etc
@@ -970,6 +998,14 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)
         Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+        'Message(TmpPath)
+      End If
+      If Exist(TmpPath & "LLScript_Sudo.sh") Then
+        'ExpandScript(InstallToPath & "LLScript.sh")          
+        Try Chmod TmpPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
+        'MakeAllEXE(TmpPath)
+        LLScriptSudoContent &= AddSudoScript(TmpPath & "LLScript_Sudo.sh") 'Always make a new Sudo Script and run at the end        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
       End If  
@@ -1404,3 +1440,29 @@ Public Sub MakeAllEXE(MakeExePath As String)
       End If
   Next
 End
+
+Public Function AddSudoScript(SudoFileIn As String) As String
+  Dim hFile As File
+  Dim Pathed As String
+  Pathed = Left(SudoFileIn, InStrRevSingle(SudoFileIn, "/"))
+  'Message(Pathed)
+   'Get Sudo Script File
+   Dim TxtIn As String
+  If Exist(SudoFileIn) = True Then 
+    hFile = Open SudoFileIn For Input
+    TxtIn = Trim(hFile.Load(SudoFileIn))
+    hFile.close
+    
+    If Left(TxtIn, 11) = "#!/bin/bash" Then 'Add cd to the long script so it runs ffrom the right locations
+      TxtIn = Replace(TxtIn, "#!/bin/bash", "cd " & Pathed)
+    Else
+      TxtIn = "cd " & Pathed & Chr(10) & TxtIn    
+    End If 
+    
+    TxtIn = TxtIn & Chr(10) 'Make sure it ends on a new line
+    Return TxtIn
+  End If
+  
+  
+End
+

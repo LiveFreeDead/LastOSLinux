@@ -20,6 +20,7 @@ Public InstallThisApp As String
 Public CurrentPath As String
 Public ForceInstall As Boolean
 
+
 Public Sub Form_Open()
   Dim S As String
   Dim OldLineFileIn As String
@@ -258,6 +259,18 @@ Public Sub Form_Open()
     If LLMod.LLTitle <> "" Then 'Only install items with a Title (else it's probably a dud item anyway)
       If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing LLApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
       LLMod.InstallLLFile(LineFileIn)
+      
+      'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+      'Message(LLMod.LLScriptSudoContent)
+      If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
+        File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
+        
+        LLMod.LLScriptSudoContent = "" 'Clear it once done.
+        
+        Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
+        LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
+      End If  
+      
       If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)    
     End If
     Me.Close
@@ -292,7 +305,7 @@ Public Sub Form_Close()
   Metadata.Close
 End
 
-Public Sub File_Click()
+Public Sub Files_Click()
   'Dim bIsButton As Boolean = Last Is Button  
   Select Last.Name
     Case "Open"
@@ -393,6 +406,11 @@ Public Sub LoadFileIn(FileIn As String)
     If LLMod.LLScript <> "" Then
       PostScript.Text = LLMod.LLScript 'Show Loaded Script
       PostScript.Pos = 0
+    End If
+    
+    If LLMod.LLScriptSudo <> "" Then
+      PostScriptSudo.Text = LLMod.LLScriptSudo 'Show Loaded Script
+      PostScriptSudo.Pos = 0
     End If
     
     For I = 1 To LLMod.LnkCount
@@ -523,6 +541,16 @@ Public Sub BuildBut_Click()
         Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".mp4" & Chr(34) Wait
       End If
       
+      If Exist(LLMod.LLBuildPath & "LLScript.sh") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript.sh" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript.sh" & Chr(34) Wait
+      End If
+      
+      If Exist(LLMod.LLBuildPath & "LLScript_Sudo.sh") Then
+        Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript_Sudo.sh" & Chr(34) Wait
+        Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript_Sudo.sh" & Chr(34) Wait
+      End If
+      
       BuildBut.Text = "Build"
       BuildBut.Enabled = True
       If LineBuild = False Then
@@ -574,10 +602,12 @@ Public Sub BuildBut_Click()
           If Exist(OutFile) 'Now if compressed file is in tact, remove all other files except LLMod.LLBuildType.* Then
             For Each IsLLFile In Dir(BuildToFolder.Text, "*")
               If Left(IsLLFile, 6) <> LLMod.LLBuildType Then
-                'Delete non LLFile from here
-                'Message(BuildToFolder.Text & IsLLFile)
-                Try Shell "rm -r " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait 'Trash didn't work, will just have to be careful
-                'Try Shell "gio trash -f " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait 'Trying to recycle files instead of delete to make it safer
+                If Left(IsLLFile, 6) <> "LLScri" Then 'Also keep scripts in the folder 
+                  'Delete non LLFile from here
+                  'Message(BuildToFolder.Text & IsLLFile)
+                  Try Shell "rm -r " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait 'Trash didn't work, will just have to be careful
+                  'Try Shell "gio trash -f " & Chr(34) & BuildToFolder.Text & IsLLFile & Chr(34) Wait 'Trying to recycle files instead of delete to make it safer
+                End If
               End If
             Next      
           End If
@@ -806,10 +836,17 @@ Public Sub LoadScriptBut_Click()
   PostScript.Text = LLMod.LLScript
   PostScript.Pos = 0
 
+  PostScriptSudo.Text = LLMod.LLScriptSudo
+  PostScriptSudo.Pos = 0
+
 End
 
 Public Sub PostScript_Change()
   LLMod.LLScript = Trim(PostScript.Text)
+End
+
+Public Sub PostScriptSudo_Change()
+  LLMod.LLScriptSudo = Trim(PostScriptSudo.Text)
 End
 
 Public Sub AddMenuBut_Click()

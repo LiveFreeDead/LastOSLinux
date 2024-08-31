@@ -5,8 +5,8 @@
   Text = ("LLAppEditor")
   Icon = Picture["Tools/LastOS.png"]
   Resizable = False
-  { File Menu File
-    Name = "File"
+  { Files Menu Files
+    Name = "Files"
     Text = ("File")
     { Open Menu File
       Name = "Open"
@@ -227,12 +227,21 @@
     Index = 2
     Text = ("Post-Processing")
     { PostScript TextArea
-      MoveScaled(0,1,89,42)
+      MoveScaled(0,3,45,40)
       Text = ("#!/bin/bash\n")
     }
     { LoadScriptBut Button
       MoveScaled(76,44,13,4)
       Text = ("Load Script")
+    }
+    { PostScriptSudo TextArea
+      MoveScaled(45,3,45,40)
+      Text = ("#!/bin/bash\n")
+    }
+    { Label20 Label
+      MoveScaled(63,0,14,3)
+      Alignment = Align.Center
+      Text = ("Sudo Script")
     }
     Index = 3
     Text = ("Graphics")

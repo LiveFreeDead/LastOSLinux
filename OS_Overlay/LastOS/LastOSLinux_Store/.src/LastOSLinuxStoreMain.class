@@ -2598,6 +2598,9 @@ Public Sub RunMiniInstaller()
   Dim ItemToInstall As Integer
   
   If LLMod.StoreMode = 0 Then Installing = True
+  
+  LLMod.InstallingMulti = False ' Make it False until it's true
+  
   Dim I As Integer
   Dim BT As String
   
@@ -2655,8 +2658,21 @@ Public Sub RunMiniInstaller()
     Else 'Linux Item
       OldTitle = Title.Text
       Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text    
-      Wait (0.07) ' Lets the form Redraw before it starts installing  
+      Wait (0.07) ' Lets the form Redraw before it starts installing
       LLMod.InstallLLFile(ItemLocal) ' Need to use FileINI not PathINI ' Uses Current Item value
+      
+        'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+        'Message(LLMod.LLScriptSudoContent)
+        If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
+          File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
+          
+          LLMod.LLScriptSudoContent = "" 'Clear it once done.
+          
+          Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
+          LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
+        End If  
+      
+      
       Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
       Wait (0.07) 'Redraw
     End If
@@ -2667,6 +2683,7 @@ Public Sub RunMiniInstaller()
   'Build install list and go through them all  
   LastOSLinuxStoreMain.Hide 'Hide Main Form
   MiniInstaller.ListInstall.Clear ' This was used for ListView and not TableView
+  LLMod.InstallingMulti = True
 
   'Glenn 2026
   'Change Category to All, Generate Main List and step through them, else all the hidden items you previously selected install too.
@@ -2775,6 +2792,18 @@ Public Sub RunMiniInstaller()
     Wend
     If LLM.ClosedMini = True Then Break 'Closed Form check 3 (want to make 100% sure we exit asap)
   Next
+  
+  'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+  'Message(LLMod.LLScriptSudoContent)
+  If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
+    File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
+    
+    LLMod.LLScriptSudoContent = "" 'Clear it once done.
+    
+    Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
+    LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
+  End If  
+  
   If LLMod.RefreshPanel = True Then
     LLMod.RefreshPanel = False
     Shell "cinnamon --replace" 'Refresh applets so the panel shortcuts show without rebooting
@@ -2807,6 +2836,7 @@ Public Sub RunMiniInstaller()
   LastOSLinuxStoreMain.Show
   Installing = False 'Job done   
   Title.Text = "Installed " & Str(InstallCount) & " Items"
+  LLMod.InstallingMulti = False
 End
 
 Public Sub Screenshot_MouseUp()
