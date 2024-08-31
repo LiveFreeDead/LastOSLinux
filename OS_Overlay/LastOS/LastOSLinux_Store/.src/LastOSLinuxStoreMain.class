@@ -3031,7 +3031,7 @@ Public Sub GetRepositoryDatabase()
       'Get new Repo DB or keep old one otherwise
       Shell "wget -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
       If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db-new") Then
-        'Try Kill(RepositoryPathLocal & "LastOSLinuxRepository.db")
+        Try Kill RepositoryPathLocal & "LastOSLinuxRepository.db" 'Kill any existing DB's if a new one is downloaded, just to make sure we aren't using an out of date DB
         Shell "mv -f " & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & " " & RepositoryPathLocal & "LastOSLinuxRepository.db" Wait
       End If
       
