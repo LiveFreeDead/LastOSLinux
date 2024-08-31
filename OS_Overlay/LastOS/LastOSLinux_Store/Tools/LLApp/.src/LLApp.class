@@ -594,14 +594,15 @@ Public Sub BuildBut_Click()
     
     'STOP * If the user makes a script only build then this will remove important files, need a checkbox for them Glenn 2024
     
-    If NoInstall.Value = False Then
-      
+    If NoInstall.Value = True Then
+      'No install, do nothing??
+    Else ' Is installer, clean up?
       'Disabled below check because it's leaving stuff behind on Not NoInstall items (test fix)
       'If Not Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".tar.gz") Then 'Don't delete anything if no .tar.gz file as it's most likely a NoInstall app as well
         If IncludeFolder.Text = BuildToFolder.Text Then      
           If Exist(OutFile) 'Now if compressed file is in tact, remove all other files except LLMod.LLBuildType.* Then
             For Each IsLLFile In Dir(BuildToFolder.Text, "*")
-              If Left(IsLLFile, 6) <> LLMod.LLBuildType Then
+              If Left(IsLLFile, 5) <> LLMod.LLBuildType Then
                 If Left(IsLLFile, 6) <> "LLScri" Then 'Also keep scripts in the folder 
                   'Delete non LLFile from here
                   'Message(BuildToFolder.Text & IsLLFile)
