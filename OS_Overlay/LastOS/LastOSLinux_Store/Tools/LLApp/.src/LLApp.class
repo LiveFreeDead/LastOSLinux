@@ -602,7 +602,7 @@ Public Sub BuildBut_Click()
         If IncludeFolder.Text = BuildToFolder.Text Then      
           If Exist(OutFile) 'Now if compressed file is in tact, remove all other files except LLMod.LLBuildType.* Then
             For Each IsLLFile In Dir(BuildToFolder.Text, "*")
-              If Left(IsLLFile, 5) <> LLMod.LLBuildType Then
+              If Left(IsLLFile, 5) <> Left(LLMod.LLBuildType, 5) Then
                 If Left(IsLLFile, 6) <> "LLScri" Then 'Also keep scripts in the folder 
                   'Delete non LLFile from here
                   'Message(BuildToFolder.Text & IsLLFile)
