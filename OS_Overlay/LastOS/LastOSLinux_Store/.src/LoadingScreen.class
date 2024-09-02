@@ -2,6 +2,7 @@
 
 
 Public Sub Form_Open()
+  Dim S As String
   Me.Background = &h000000
   Me.Foreground = &hFFFFFF
   Status.Foreground = &hFFFFFF
@@ -21,16 +22,39 @@ Public Sub Form_Open()
   LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
   If Not Exist(LLMod.Linux7z) Then LLMod.Linux7z = "7z" 'Fall back to built in 7z if not available
   
+  'Parse args to see if launcher
+  For Each S In Args
+    S = Trim(S)
+    If S <> "" Then 
+      If S = "-launcher" Or S = "-l" Then
+        LLMod.StoreMode = 1        
+        Break 'only need one
+      End If
+    End If
+  Next
+  
+  'Get LLM.AppPath & "LastOSLinuxSettings.ini" 'SETTINGS HERE
+  LoadSettings(LLMod.Slashed(LLM.AppPath) & "LastOSLinuxStoreSettings.ini")
+  
   'Load Theme.ini
   Dim hFile As File
   Dim sLine As String
   
-  hFile = Open LLM.AppPath & "/Themes/Theme.ini" For Input
+  Dim ThemeFile As String
+  ThemeFile = LLM.AppPath & "/Themes/Theme.ini"
+  If LLMod.StoreMode = 1 Then
+    If Exist(LLM.AppPath & "/Themes/ThemeLauncher.ini") Then
+      ThemeFile = LLM.AppPath & "/Themes/ThemeLauncher.ini"
+      'Message(ThemeFile)
+      End If
+  End If
+  hFile = Open ThemeFile For Input
   Line Input #hFile, sLine
   hFile.Close
   LLM.ThemeName = Trim$(sLine)
 
   Try Me.Picture = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Loading.png").Stretch(Me.Width, Me.Height) 'Scale form and stretch wallpaper to fit
+  'Message(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Loading.png")
   
   LoadStyle(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Style.ini")
 
@@ -158,4 +182,45 @@ Public Sub LoadStyle(StyleFile As String)
     Next
   End If  
   
+End
+
+Public Sub LoadSettings(SettingsFile As String)
+  If Exist(SettingsFile) Then
+    Dim I As Integer
+    'Load in Settings  
+    Dim InSet As String
+    Dim InSetSp As String[]
+    Dim LineSet As String
+    Dim LineData As String
+      
+    Try InSet = File.Load(SettingsFile)
+    InSet = Replace(InSet, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+    InSetSp = Split(InSet, Chr(10))
+    For I = 0 To InSetSp.Count - 1
+      LineSet = Trim(InSetSp[I])
+      If Trim(LineSet) <> "" Then
+        If InStr(LineSet, "=", 1) >= 1 Then 'Only do items with = in them      
+          LineData = Right(LineSet, Len(LineSet) - InStr(LineSet, "=", 1))
+          LineSet = Left(LineSet, Len(LineSet) - Len(LineData))
+          LineSet = Lower(Left(LineSet, Len(LineSet) - 1)) 'Lowercase and Remove =
+          Select Case LineSet
+          Case "LLM.QuitOnComplete"
+            If LLM.QuitOnComplete = False Then LLM.QuitOnComplete = LLMod.IsTrue(LineData) 'If it's already tru then it was given in the command line, so leave it set to that
+          Case "LLM.UseOnlineRepository"
+            LLM.UseOnlineRepository = LLMod.IsTrue(LineData)
+            If LLM.UseOnlineRepository = False Then LLM.HideOnline = True ' No point in showing the items if they are turned of, but the user still can if they want (local cached items etc), if LLM.UseCacheRepository it will still show them ones
+          Case "LLM.UseCacheRepository" 
+            LLM.UseCacheRepository = LLMod.IsTrue(LineData)
+          Case "LLM.UseLocalDBFiles"
+            LLM.UseLocalDBFiles = LLMod.IsTrue(LineData)
+          Case "LLM.UseVideoPlayback"
+            LLM.UseVideoPlayback = LLMod.IsTrue(LineData)
+          Case "LLM.VideoVolume"
+            LLM.VideoVolume = Val(LineData) / 100 '(0.1 To 1.0 Is Full volume)so divide 100 by 100 To get 1(100%)
+            If LLM.VideoVolume > 1 Then LLM.VideoVolume = 1
+          End Select
+        End If
+      End If
+    Next
+  End If
 End

@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.5 2024-08-31-09
+'LastOS v1.1.5 2024-09-03-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -1462,7 +1462,15 @@ Public Function AddSudoScript(SudoFileIn As String) As String
     TxtIn = TxtIn & Chr(10) 'Make sure it ends on a new line
     Return TxtIn
   End If
-  
-  
 End
 
+Public Function IsTrue(TestIn As String) As Boolean
+  Dim WasItTrue As Boolean = False
+  TestIn = Trim(Lower(TestIn))
+  If TestIn = "yes" Then WasItTrue = True
+  If TestIn = "true" Then WasItTrue = True
+  If TestIn = "t" Then WasItTrue = True
+  If TestIn = "y" Then WasItTrue = True  
+  If TestIn = "1" Then WasItTrue = True  
+  Return WasItTrue
+End

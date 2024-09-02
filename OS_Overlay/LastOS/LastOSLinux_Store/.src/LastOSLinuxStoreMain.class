@@ -66,21 +66,11 @@ Public ContextMenu As Menu
 
 Public SortMethod As Integer = 0
 Public HideInstalled As Boolean
-Public HideOnline As Boolean
 Public HideWindows As Boolean
 Public HideLinux As Boolean
 Public HideApps As Boolean
 Public HideGames As Boolean
 Public HidePaid As Boolean
-
-Public QuitOnComplete As Boolean
-Public UseOnlineRepository As Boolean = True ' Default to using online repo
-Public UseCacheRepository As Boolean = True
-
-Public UseLocalDBFiles As Boolean = True
-
-Public UseVideoPlayback As Boolean = True
-Public VideoVolume As Float = 0.2 '20%
 
 Public AutoInstall As Boolean
 
@@ -193,7 +183,7 @@ Public Sub Form_Open()
   'If Args[0] = "LastOSLinux_Store" Then 'Remark this and unremark below to disable testing argument options
   If 1 = 2 Then
     AutoInstall = True
-    QuitOnComplete = True
+    LLM.QuitOnComplete = True
     PresetToLoad = "Preset.ini"    
   Else
    For Each S In Args
@@ -204,8 +194,8 @@ Public Sub Form_Open()
         If S = "-l" Then LLMod.StoreMode = 1
         If S = "-autoinstall" Then AutoInstall = True
         If S = "-a" Then AutoInstall = True
-        If S = "-quitoncomplete" Then QuitOnComplete = True
-        If S = "-q" Then QuitOnComplete = True
+        If S = "-LLM.QuitOnComplete" Then LLM.QuitOnComplete = True
+        If S = "-q" Then LLM.QuitOnComplete = True
         Else
           PresetToLoad = S
         End If
@@ -287,9 +277,7 @@ Public Sub Form_Open()
   
   Wait (0.01) 'Lets loading screen show
   
-  'Get LLM.AppPath & "LastOSLinuxSettings.ini" 'SETTINGS HERE
-  LLSettingsFile = LLMod.Slashed(LLM.AppPath) & "LastOSLinuxStoreSettings.ini"  
-  LoadSettings(LLSettingsFile)
+
  
   'Get Local Items
   GetExcludedMounts() 'So My HDD's can sleep well knowing they have no items to scan
@@ -421,10 +409,10 @@ Public Sub GetItemPaths()
   End If
   
   'Use the local Repository cache and see what goodies it has before defaulting to using the online one?
-  If UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
+  If LLM.UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
   
   'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
-  If LLMod.StoreMode = 0 And UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode  
+  If LLMod.StoreMode = 0 And LLM.UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode  
   
 End
 
@@ -719,7 +707,7 @@ Public Sub GetFromLocalDB(InPath As String)
   
   LocalDB = InPath & LocalDBFile
   
-  If UseLocalDBFiles = False Then ForceReScanItems = True ' If disabled DB's then force rescan
+  If LLM.UseLocalDBFiles = False Then ForceReScanItems = True ' If disabled DB's then force rescan
   
   If Exist(LocalDB) And ForceReScanItems = False Then 'Scan in Database
     
@@ -1082,8 +1070,8 @@ Public Sub GenerateMainList()
       If CurrentCat = "" Or CurrentCat = "All" Or CatFound >= 1 Then  'Only add if in the cat
         If Data.Items[I, Data.CTitleName].Text = "" Then Continue 'Don't show dead items, even if the data is in tact and error may occur
         If HideInstalled = True And Data.Items[I, Data.CInstalled].Text = "T" Then Continue 'Jumps to Next For
-        If HideOnline = True And Left(Data.Items[I, Data.CPathINI].Text, 4) = "http" Then 
-          If UseCacheRepository = False Then Continue 'Skip showing Online Items at all when showing online and cache is off          
+        If LLM.HideOnline = True And Left(Data.Items[I, Data.CPathINI].Text, 4) = "http" Then 
+          If LLM.UseCacheRepository = False Then Continue 'Skip showing Online Items at all when showing online and cache is off          
           If Not Exist(Replace(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)) Then Continue 'Don't show uncached items when Online is off and Cache not shown          
         End If
         If LLMod.StoreMode = 1 And Data.Items[I, Data.CHidden].Text = "T" Then Continue 'Skip hidden Items in Launcher Mode
@@ -1442,7 +1430,7 @@ Public Sub Items_Click()
   End If
   
   'Try Movie here
-  If UseVideoPlayback = True And Exist(Data.Items[RefsID, Data.CFileMovie].Text) Then
+  If LLM.UseVideoPlayback = True And Exist(Data.Items[RefsID, Data.CFileMovie].Text) Then
     Try MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text ' Load the movie in case the users starts it    
     Try MoviePlayer.Play
     Wait (0.01) ' Let it do a quick play so it caches
@@ -1774,7 +1762,12 @@ Public Sub LoadTheme()
   'Load Theme.ini
   Dim hFile As File
   Dim sLine As String
-  hFile = Open LLM.AppPath & "/Themes/Theme.ini" For Input
+  Dim ThemeFile As String
+  ThemeFile = LLM.AppPath & "/Themes/Theme.ini"
+  If LLMod.StoreMode = 1 Then
+   ThemeFile = LLM.AppPath & "/Themes/ThemeLauncher.ini"
+  End If
+  hFile = Open ThemeFile For Input
   Line Input #hFile, sLine
   hFile.Close
   LLM.ThemeName = Trim$(sLine)
@@ -1787,8 +1780,11 @@ Public Sub LoadTheme()
   Try LLM.Icon = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Icon.png")
   Try LLM.StartButton = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/StartButton.png")
   
-  Description.Text = "Welcome to LastOSLinux Store, it can be used as an installer or a launcher.\n\nEnjoy"
-  
+  If LLMod.StoreMode = 0 Then
+    Description.Text = "Welcome to LastOSLinux Store, install your apps and games."
+  Else
+    Description.Text = "Welcome to LastOSLinux Launcher, play the games you've installed from the LastOSLinux Store.\n\nEnjoy"
+  End If
   'Store Theme files in a hidden form
   Theme.Res.Clear 'NEVER use clear???
   
@@ -2258,9 +2254,9 @@ Public Sub DoContextMenu()
     hMenu.Text = "Installed"
     If HideInstalled = True Then hMenu.Checked = True
     hMenu = New Menu(HideMenu) As "POP"
-    hMenu.Name = "HideOnline"
+    hMenu.Name = "LLM.HideOnline"
     hMenu.Text = "Online"
-    If HideOnline = True Then hMenu.Checked = True
+    If LLM.HideOnline = True Then hMenu.Checked = True
     hMenu = New Menu(HideMenu) As "POP"
   End If
   
@@ -2357,11 +2353,11 @@ Public Sub POP_Click()
       End If
       'GenerateCategoryList()
       GenerateMainList()
-    Case "HideOnline"            
-      If HideOnline = False Then ' Toggle Showing Online items
-        HideOnline = True
+    Case "LLM.HideOnline"            
+      If LLM.HideOnline = False Then ' Toggle Showing Online items
+        LLM.HideOnline = True
       Else
-        HideOnline = False
+        LLM.HideOnline = False
       End If
       'GenerateCategoryList()
       GenerateMainList()
@@ -2858,7 +2854,7 @@ Public Sub RunMiniInstaller()
     Shell "cinnamon --replace" 'Refresh applets so the panel shortcuts show without rebooting
   End If
   
-  If QuitOnComplete = True Then
+  If LLM.QuitOnComplete = True Then
     Me.Close
     Quit
   End If
@@ -2936,7 +2932,7 @@ Public Sub MovieTimer_Timer()
   If Exist(Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text) Then 
     Screenshot.Visible = False
     MoviePlayer.Visible = True
-    MoviePlayer.Volume = VideoVolume '0.2 '20%
+    MoviePlayer.Volume = LLM.VideoVolume '0.2 '20%
     'MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text 'Moved this back to item click so it can preload the movie
     MoviePlayer.Play
   Else
@@ -3225,59 +3221,6 @@ Public Sub DownTime_Timer()
   
   If ForceClose = True Then Quit 'This is just a precaution for if the wget loop keeps the app from quiting if a problem or forced quit occurs
   If Installing = False And Test <> "" Then Items_Click() 'Reload item once queue completes, if not installing items currently
-End
-
-
-Public Sub LoadSettings(SettingsFile As String)
-  
-  If Exist(SettingsFile) Then
-  Dim I As Integer
-  'Load in Settings  
-  Dim InSet As String
-  Dim InSetSp As String[]
-  Dim LineSet As String
-  Dim LineData As String
-    
-  Try InSet = File.Load(SettingsFile)
-  InSet = Replace(InSet, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
-  InSetSp = Split(InSet, Chr(10))
-  For I = 0 To InSetSp.Count - 1
-    LineSet = Trim(InSetSp[I])
-    If Trim(LineSet) <> "" Then
-      If InStr(LineSet, "=", 1) >= 1 Then 'Only do items with = in them      
-        LineData = Right(LineSet, Len(LineSet) - InStr(LineSet, "=", 1))
-        LineSet = Left(LineSet, Len(LineSet) - Len(LineData))
-        LineSet = Lower(Left(LineSet, Len(LineSet) - 1)) 'Lowercase and Remove =
-        Select Case LineSet
-        Case "quitoncomplete"
-          If QuitOnComplete = False Then QuitOnComplete = IsTrue(LineData) 'If it's already tru then it was given in the command line, so leave it set to that
-        Case "useonlinerepository"
-          UseOnlineRepository = IsTrue(LineData)
-          If UseOnlineRepository = False Then HideOnline = True ' No point in showing the items if they are turned of, but the user still can if they want (local cached items etc), if UseCacheRepository it will still show them ones
-        Case "usecacherepository" 
-          UseCacheRepository = IsTrue(LineData)
-        Case "uselocaldbfiles"
-          UseLocalDBFiles = IsTrue(LineData)
-        Case "usevideoplayback"
-          UseVideoPlayback = IsTrue(LineData)
-        Case "videovolume"
-          VideoVolume = Val(LineData) / 100 '(0.1 To 1.0 Is Full volume)so divide 100 by 100 To get 1(100%)
-          If VideoVolume > 1 Then VideoVolume = 1
-        End Select
-      End If
-    End If
-  Next
-End If
-End
-
-Public Function IsTrue(TestIn As String) As Boolean
-  Dim WasItTrue As Boolean = False
-  TestIn = Trim(Lower(TestIn))
-  If TestIn = "yes" Then WasItTrue = True
-  If TestIn = "true" Then WasItTrue = True
-  If TestIn = "t" Then WasItTrue = True
-  If TestIn = "y" Then WasItTrue = True  
-  Return WasItTrue
 End
 
 
