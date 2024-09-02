@@ -36,21 +36,6 @@ Public Installing As Boolean
 
 Public ScreenShotCounter As Integer
 
-Public TitleCol As Integer = &hFFFFFF
-Public CategoryCol As Integer = &hFFFFFF
-Public DescriptionCol As Integer = &hFFFFFF
-Public ItemCol As Integer = &hFFFFFF
-
-Public ItemColssApp As Integer = &hFFFFFF
-Public ItemColppApp As Integer = &hFFFF50
-Public ItemColppGame As Integer = &hAAFF40
-Public ItemColLLApp As Integer = &hAAFFAA
-Public ItemColLLGame As Integer = &h88FF20
-
-Public BGCol As Integer = &h202020
-Public FGCol As Integer = &hFFFFFF
-
-
 Public CtrlPressed As Boolean
 
 Public RunningItemKey As Integer
@@ -67,6 +52,7 @@ Public CurrentItemKey As Integer = -1
 Public CurrentItem As String
 Public CurrentCat As String
 Public ScaleItems As Integer
+Public ScaleDescription As Integer
 Public IconSize As Integer
 Public SelectedItems As Integer = 0
 Public FirstRun As Boolean = True
@@ -229,44 +215,28 @@ Public Sub Form_Open()
   'Set Title
   Title.Text = "LastOSLinux Store v" & Application.Version
   LastOSLinuxStoreMain.Text = Title.Text
+  
+  
+  'Defaults
   Title.Font.Bold = True
   Title.Font.Size = 12
-  Title.Foreground = TitleCol
   
   Categories.Font.Bold = True
   Categories.Font.Size = 12
-  Categories.Foreground = TitleCol
-  
+    
   ItemTitle.Font.Bold = True
   ItemTitle.Font.Size = 12
-  ItemTitle.Foreground = TitleCol
   
-  Stats.Foreground = TitleCol
+  Data.Background = LLM.SetBGCol
+  Data.Items.Background = LLM.SetBGCol
+  Data.Items.Foreground = LLM.SetFGCol
   
-  Category.Foreground = CategoryCol
-  Description.Foreground = DescriptionCol
+  Data.Cats.Background = LLM.SetBGCol
+  Data.Cats.Foreground = LLM.SetFGCol
   
-  Data.Background = BGCol
-  Data.Items.Background = BGCol
-  Data.Items.Foreground = FGCol
-  
-  MiniInstaller.Background = Data.Background 
-  MiniInstaller.ListInstall.Background = Data.Background
-  MiniInstaller.ListInstall.Foreground = Data.Items.Foreground
-  
-  
-  Data.Cats.Background = BGCol
-  Data.Cats.Foreground = FGCol
-  
-  Data.ScanPaths.Background = BGCol
-  Data.ScanPaths.Foreground = FGCol
-  
-  ScaleItems = Items.Font.Size + 1 '(Makes it 10 Default)
-  Items.Font.Size = ScaleItems
-  Items.Foreground = ItemCol
-  Category.Font.Size = ScaleItems
-  Description.Font.Size = 11
-  
+  Data.ScanPaths.Background = LLM.SetBGCol
+  Data.ScanPaths.Foreground = LLM.SetFGCol
+
   LoadFavorites
   
   'Get default positions to scale with
@@ -294,12 +264,17 @@ Public Sub Form_Open()
   Me.Center
   Me.Top = 15
   
+  ScaleItems = Items.Font.Size + 1 '(Makes it 10 Default)
+  ScaleDescription = Items.Font.Size + 2
+  
   'Try to use inbuilt Settings file to store things
   Me.Top = Settings["Window/Top", Me.Top]
   Me.Left = Settings["Window/Left", Me.Left]
   Me.Height = Settings["Window/Height", Me.Height]
   Me.Width = Settings["Window/Width", Me.Width]
-  
+  ScaleItems = Settings["ScaleItems", ScaleItems]
+  ScaleDescription = Settings["ScaleDescription", ScaleDescription]
+    
   'Make StartButton a Tab Stop
   StartButton.NoTabFocus = False
   
@@ -999,12 +974,12 @@ Public Sub GenerateCategoryList()
   LastAddedCat = LastAddedCat + 1
   If LLMod.StoreMode = 1 Then 'If Launcher mode add Favorites Category
     Category.Add(LastAddedCat, "Favorites")
-    Category.Item.Foreground = &h00FF00
+    Category.Item.Foreground = &h00FF00    
     LastAddedCat = LastAddedCat + 1
   End If
-  Category.Add(LastAddedCat, "Linux")
+  Category.Add(LastAddedCat, "Linux")  
   LastAddedCat = LastAddedCat + 1
-  Category.Add(LastAddedCat, "Windows")
+  Category.Add(LastAddedCat, "Windows")  
   LastAddedCat = LastAddedCat + 1
   
   'Add To Data form so can sort
@@ -1046,7 +1021,7 @@ Public Sub GenerateCategoryList()
     'Now add Categories to main form from Sorted List
     Data.Cats.MoveFirst
     For I = 1 To Data.Cats.Count 'This now reads the sorted order from Data.Cats
-      Category.Add(LastAddedCat, Data.Cats.Item.Text)
+      Category.Add(LastAddedCat, Data.Cats.Item.Text)      
       Data.Cats.MoveNext
       LastAddedCat = LastAddedCat + 1
     Next
@@ -1211,20 +1186,20 @@ Public Sub GenerateMainList()
         If LLMod.StoreMode = 0 Then 'Only show colours for Installer, Had a crash here, check Glenn 2025
           Select Case Lower(Data.Items[I, Data.CBuildType].Text)
           Case "ssapp"
-            Try Items[Data.Items[I, 0].Text].Foreground = ItemColssApp
+            Try Items[Data.Items[I, 0].Text].Foreground = LLM.SetItemColssApp
           Case "ppapp"
-            Try Items[Data.Items[I, 0].Text].Foreground = ItemColppApp
+            Try Items[Data.Items[I, 0].Text].Foreground = LLM.SetItemColppApp
           Case "ppgame"
-            Try Items[Data.Items[I, 0].Text].Foreground = ItemColppGame
+            Try Items[Data.Items[I, 0].Text].Foreground = LLM.SetItemColppGame
           Case "llapp"
-            Try Items[Data.Items[I, 0].Text].Foreground = ItemColLLApp
+            Try Items[Data.Items[I, 0].Text].Foreground = LLM.SetItemColLLApp
           Case "llgame"
-            Try Items[Data.Items[I, 0].Text].Foreground = ItemColLLGame
+            Try Items[Data.Items[I, 0].Text].Foreground = LLM.SetItemColLLGame
           End Select
         End If
         'Select if set to selected
         If Data.Items[I, Data.CSelected].Text = "T" Then
-          Items[Data.Items[I, 0].Text].Background = &h664411 'Highlight Selected
+          Items[Data.Items[I, 0].Text].Background = LLM.SetSelectCol 'Highlight Selected
           SelectedItems = SelectedItems + 1
         End If       
       End If      
@@ -1633,6 +1608,8 @@ Public Sub Form_Close()
   Settings["Window/Left"] = Me.Left
   Settings["Window/Height"] = Me.Height
   Settings["Window/Width"] = Me.Width
+  Settings["ScaleItems"] = ScaleItems
+  Settings["ScaleDescription"] = ScaleDescription
   
   ForceClose = True
   Data.Close
@@ -1829,6 +1806,78 @@ Public Sub LoadTheme()
   
   Theme.ResCount = Theme.ResCount + 1
   Try Theme.Res.Add(Theme.ResCount, Theme.ResCount, TmpImage.Picture)
+  
+  'Set Fonts and Colors  
+  Categories.Foreground = LLM.SetTitleCol
+  ItemTitle.Foreground = LLM.SetTitleCol  
+    
+  Title.Font = Font[LLM.SetTitleFont]
+  Title.Foreground = LLM.SetTitleCol    
+  Categories.Font = Font[LLM.SetTitleFont]
+  Categories.Foreground = LLM.SetTitleCol
+  ItemTitle.Font = Font[LLM.SetTitleFont]
+  ItemTitle.Foreground = LLM.SetTitleCol
+    
+  Stats.Foreground = LLM.SetStatsCol
+  Stats.Font = Font[LLM.SetStatsFont]
+  
+  Category.Font = Font[LLM.SetListFont]
+  Category.Foreground = LLM.SetCategoryCol
+    
+  Description.Font = Font[LLM.SetDescriptionFont]
+  Description.Foreground = LLM.SetDescriptionCol
+    
+  Items.Foreground = LLM.SetItemCol
+  Items.Font = Font[LLM.SetListFont]
+  
+  'Meta Fonts
+  URLTit.Font = Font[LLM.SetMetaFont]
+  CategoryTit.Font = Font[LLM.SetMetaFont]
+  PublisherTit.Font = Font[LLM.SetMetaFont]
+  ReleasedTit.Font = Font[LLM.SetMetaFont]
+  InstallSizeTit.Font = Font[LLM.SetMetaFont]
+  URLTit.Foreground = LLM.SetMetaCol
+  CategoryTit.Foreground = LLM.SetMetaCol
+  PublisherTit.Foreground = LLM.SetMetaCol
+  ReleasedTit.Foreground = LLM.SetMetaCol
+  InstallSizeTit.Foreground = LLM.SetMetaCol
+  
+  ItemURL.Font = Font[LLM.SetMetaFont]
+  ItemCategory.Font = Font[LLM.SetMetaFont]
+  ItemPublisher.Font = Font[LLM.SetMetaFont]
+  ItemReleased.Font = Font[LLM.SetMetaFont]
+  ItemInstallSize.Font = Font[LLM.SetMetaFont]
+  
+  ItemURL.Foreground = LLM.SetMetaCol
+  ItemCategory.Foreground = LLM.SetMetaCol
+  ItemPublisher.Foreground = LLM.SetMetaCol
+  ItemReleased.Foreground = LLM.SetMetaCol
+  ItemInstallSize.Foreground = LLM.SetMetaCol
+  
+  
+  'Set any to bold
+  Categories.Font.Bold = LLM.SetTitlesBold
+  ItemTitle.Font.Bold = LLM.SetTitlesBold
+  Title.Font.Bold = LLM.SetTitlesBold
+  
+  Category.Font.Bold = LLM.SetListBold
+  Items.Font.Bold = LLM.SetListBold
+  
+  Description.Font.Bold = LLM.SetDescriptionBold
+  
+  
+  MiniInstaller.Background = LLM.SetBGCol
+  MiniInstaller.ListInstall.Background = LLM.SetBGCol
+  MiniInstaller.ListInstall.Foreground = LLM.SetItemCol
+  MiniInstaller.ListInstall.Font = Font[LLM.SetListFont]
+  
+  If FirstRun = False Then LoadingScreen.LoadStyle(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Style.ini") ' The loading screen loads it in the first run to make the loading screen display correctly (doesn't hurt to load it twice, but may as well skip it)
+  
+  'Set Font heights last
+  Items.Font.Size = ScaleItems
+  Category.Font.Size = ScaleItems
+  Description.Font.Size = ScaleDescription      
+  
 End
 
 Public Sub AddFavorite()
@@ -2504,7 +2553,7 @@ Public Sub Items_DblClick()
   End If
   If Data.Items[RefsID, 1].Text = "F" Then
     Data.Items[RefsID, 1].Text = "T"
-    Items[Data.Items[RefsID, 0].Text].Background = &h664411 'Highlight Selected
+    Items[Data.Items[RefsID, 0].Text].Background = LLM.SetSelectCol 'Highlight Selected
     SelectedItems = SelectedItems + 1
     Items.Refresh 'So draws change
   Else 
@@ -3231,3 +3280,22 @@ Public Function IsTrue(TestIn As String) As Boolean
   Return WasItTrue
 End
 
+
+Public Sub Description_MouseWheel()
+
+    If CtrlPressed Then
+    If Mouse.Delta > 0 Then
+      ScaleDescription = ScaleDescription + 1
+    Else If Mouse.Delta < 0 Then
+      ScaleDescription = ScaleDescription - 1
+    End If
+    If ScaleDescription > 20 Then ScaleDescription = 20
+    If ScaleDescription < 5 Then ScaleDescription = 5
+    
+    Description.Font.Size = ScaleDescription
+    
+    Stop Event
+  
+  End If
+
+End

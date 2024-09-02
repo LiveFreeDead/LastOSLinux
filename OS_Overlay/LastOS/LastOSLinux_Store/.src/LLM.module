@@ -17,6 +17,34 @@ Public Screenshot As Picture = New Picture
 Public Icon As Picture
 Public StartButton As Picture
 
+Public SetTitleCol As Integer = &hFFFFFF
+Public SetCategoryCol As Integer = &hFFFFFF
+Public SetDescriptionCol As Integer = &hFFFFFF
+Public SetItemCol As Integer = &hFFFFFF
+Public SetItemColssApp As Integer = &hFFFFFF
+Public SetItemColppApp As Integer = &hFFFF50
+Public SetItemColppGame As Integer = &hAAFF40
+Public SetItemColLLApp As Integer = &h80B0FF
+Public SetItemColLLGame As Integer = &hff55ff
+Public SetStatsCol As Integer = &hFFFFFF
+Public SetMetaCol As Integer = &hFFFFFF
+Public SetBGCol As Integer = &h202020
+Public SetFGCol As Integer = &hFFFFFF
+Public SetSelectCol As Integer = &h2a4aaa
+Public SetLoadingCol As Integer = &hFFFFFF
+
+Public SetTitleFont As String = "Ubuntu"
+Public SetListFont As String = "Ubuntu"
+Public SetDescriptionFont As String = "Ubuntu"
+Public SetStatsFont As String = "Ubuntu"
+Public SetMetaFont As String = "Ubuntu"
+Public SetLoadingFont As String = "Ubuntu"
+
+Public SetTitlesBold As Boolean = True
+Public SetListBold As Boolean = False
+Public SetDescriptionBold As Boolean = False
+
+
 'Scale Variables
 Public ScaleX As Float = 0
 Public ScaleY As Float = 0

@@ -38,7 +38,7 @@
     ScrollBar = Scroll.Vertical
   }
   { Title Label
-    MoveScaled(47,0.2857,43,4)
+    MoveScaled(47,1,43,4)
     Alignment = Align.Top
   }
   { Stats Label
