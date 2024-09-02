@@ -1,7 +1,9 @@
 [Nemo Action]
 Name=Copy path to clipboard
 Name[ca]=Copia la ruta al porta-papers
+Name[de]=Pfad in die Zwischenablage kopieren
 Name[es]=Copiar ruta al portapapeles
+Name[eu]=Kopiatu bidea arbelera
 Name[fi]=Kopioi polku leikepöydälle
 Name[fr]=Copier le chemin dans le presse-papier
 Name[hu]=Útvonal másolása a vágólapra
@@ -10,7 +12,9 @@ Name[nl]=Kopieer pad naar klembord
 Name[zh_CN]=将路径复制到剪贴板
 Comment=Copy the full path of the selected item to the clipboard
 Comment[ca]=Copia la ruta completa de l'element seleccionat al porta-papers
+Comment[de]=Kopiert den vollen Pfad der ausgewählten Datei in die Zwischenablage
 Comment[es]=Copia la ruta completa del elemento seleccionado en el portapapeles
+Comment[eu]=Kopiatu hautatutako elementuaren bide osoa arbelean
 Comment[fi]=Kopioi kohteen koko polku leikepöydälle
 Comment[fr]=Copie le chemin complet de l'élément sélectionné dans le presse-papiers
 Comment[hu]=A kijelölt elem teljes elérési útvonalának másolása a vágólapra
