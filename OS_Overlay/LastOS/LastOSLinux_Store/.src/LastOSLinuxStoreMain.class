@@ -3036,8 +3036,10 @@ Public Sub GetRepositoryDatabase()
       End If
       
       'Load in DB
-      CurrentRepositoryURL = Replace(RepositoryList[I], "/database/LastOSLinuxRepository.db", "") 'Used In Sub Below (Without database for main file
-      If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db") Then LoadRepositoryDatabase()
+      If Left(RepositoryList[I], 1) <> "#" Then 'Lets users remark out unwanted repositories temporary
+        CurrentRepositoryURL = Replace(RepositoryList[I], "/database/LastOSLinuxRepository.db", "") 'Used In Sub Below (Without database for main file
+        If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db") Then LoadRepositoryDatabase()
+      End If
       
     Next
   End If
