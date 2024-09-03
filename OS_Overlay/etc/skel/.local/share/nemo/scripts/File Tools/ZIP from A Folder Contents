@@ -10,7 +10,7 @@ UpOne=$(pwd)
 
 cd "$*"
 
-zip -r  "$UpOne/$subdir".zip *
+zip -r  "$UpOne/$subdir".zip .
 
 else
 zenity --timeout 10 --info --text "MUST only give a single path to compress it's contents" &

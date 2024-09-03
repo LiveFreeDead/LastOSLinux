@@ -4,6 +4,7 @@ files=$(echo $NEMO_SCRIPT_SELECTED_URIS | sed -e 's/file:\/\///g' -e 's/\%20/\\ 
 
 echo chmod -x "$files" > /tmp/changeit
 
-pkexec sh /tmp/changeit 
+#pkexec sh /tmp/changeit 
+sh /tmp/changeit 
 
 rm /tmp/changeit
