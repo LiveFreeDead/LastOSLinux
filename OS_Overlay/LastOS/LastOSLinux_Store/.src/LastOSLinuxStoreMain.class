@@ -2584,6 +2584,7 @@ Public Sub StartButton_MouseUp()
   If LLMod.StoreMode = 0 And CtrlPressed = True Then 'Only make Repo's out of Install Mode items (not Launcher)
     CtrlPressed = False ' Just make sure it resets  
     BuildRepository()
+    Stop Event
     Return
   End If
   
@@ -2597,6 +2598,7 @@ Public Sub StartButton_MouseUp()
       RunMiniInstaller()       
     End If
   End If
+  Stop Event
 End
 
 Public Sub RunGame(GameID As Integer)
