@@ -65,10 +65,6 @@ grep "Downloads" ~/.config/gtk-3.0/bookmarks > out && grep -v "Downloads" ~/.con
 #Install Vulkan to make Wine games run better
 bash /LastOS/Scripts-Wine/vulkan/setup-vulkan.sh
 
-#install SetupS
-notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
-wine /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe
-
 #install Apps
 FILES="/LastOS/LinuxApps/*"
 for f in $FILES
@@ -76,16 +72,6 @@ do
   echo "Processing $f file..."
   # take action on each file. $f store current file name
   #notify-send --hint=int:transient:1  "Please wait, Installing Linux App:" "$f"
-  #wine "$f"
-  llapp -install "$f"
-done
-
-FILES="/LastOS/WindowsApps/*"
-for f in $FILES
-do
-  echo "Processing $f file..."
-  # take action on each file. $f store current file name
-  #notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
   #wine "$f"
   llapp -install "$f"
 done
@@ -146,6 +132,23 @@ fi
 #killall notify-osd
 killall zenity
 
+
+#install SetupS (Do this last as it has been known to stop installing and we don't want it to interfere with the other stuff
+notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
+wine /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe
+
+FILES="/LastOS/WindowsApps/*"
+for f in $FILES
+do
+  echo "Processing $f file..."
+  # take action on each file. $f store current file name
+  #notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
+  #wine "$f"
+  llapp -install "$f"
+done
+
+#trash-empty
+gio trash --empty
 
 #notify-send --hint=int:transient:1  "Finnished Installing" "Enjoy using LastOSLinux"
 notify-send "Finnished Installing,  Enjoy using LastOSLinux"
