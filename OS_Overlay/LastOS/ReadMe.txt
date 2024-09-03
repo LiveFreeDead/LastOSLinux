@@ -50,6 +50,8 @@ To close Plank Dock, hold Ctrl and Right click the dock.
 
 The date format I like is %l:%M %p = 3:21 PM, if you use %H it's 24h time and %I has leading = 03
 
+Copying to a USB disk that is slow will use the memory to cache the files, showing the copy as completed when it really hasn't finished writing to the USB stick, the onyl way to know if it's done is to safely unmount it, you can disable this but it will affect other things (like the ability to use the OS until all writes have cleared): https://www.reddit.com/r/linux4noobs/comments/bxhnfp/how_to_see_the_real_writing_progress_of_a_usb/
+
 --- Introduction to the GUI ---
 
 Cinnamon - The name of the whole Desktop Experience (others are KDE, Gnome, XCFE)

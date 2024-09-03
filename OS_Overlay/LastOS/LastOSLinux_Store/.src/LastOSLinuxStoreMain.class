@@ -269,7 +269,6 @@ Public Sub Form_Open()
   StartButton.NoTabFocus = False
   
   ContextMenu = New Menu(Me, True)
-  
   'Load Theme here (Moved getting theme.ini to loading form)
   LoadTheme()
   
@@ -283,9 +282,6 @@ Public Sub Form_Open()
   GetExcludedMounts() 'So My HDD's can sleep well knowing they have no items to scan
   GetItemPaths() 'Has the Online Repo in it now
   Wait (0.01) 'Lets loading screen show
-  
-  'ReDraw Form
-  RedrawTheme()
   
   'Generate Categories
   GenerateCategoryList()
@@ -303,12 +299,16 @@ Public Sub Form_Open()
   'LLM.Loaded = True 'Make LoadingScreen not called from the other functions 'Kept this active so I can use the Loading form to rescan items
   'LoadingScreen.Close 'Can close it now we've got the main form 'Don't can use to re-scan items
   LoadingScreen.Hide
+  
   If LLMod.StoreMode = 0 Then 'Only installer mode
     If AutoInstall = True And SelectedItems > 1 Then 'If the preset doesn't load successfully then no items will be selected and it will show the main form like normal
       LastOSLinuxStoreMain.Hide 'Hide Main Form ASAP (less flicker)
       RunMiniInstaller()
     End If
   End If
+  
+  'ReDraw Form (Has to be at the end)
+  RedrawTheme()
 End
 
 Public Sub LoadFavorites()  
@@ -1817,6 +1817,9 @@ Public Sub LoadTheme()
   Stats.Foreground = LLM.SetStatsCol
   Stats.Font = Font[LLM.SetStatsFont]
   
+  MiniInstaller.Stats.Foreground = LLM.SetStatsCol
+  MiniInstaller.Stats.Font = Font[LLM.SetStatsFont]
+    
   Category.Font = Font[LLM.SetListFont]
   Category.Foreground = LLM.SetCategoryCol
     
