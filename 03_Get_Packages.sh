@@ -67,6 +67,9 @@ sudo chmod 777 $HOME/deadbeef.deb
 sudo apt install -y $HOME/deadbeef.deb
 sudo rm -f $HOME/deadbeef.deb
 
+#Install dwarfs mounter, some games.apps require this to run "special" ones
+sudo apt install -y ./debs/dwarfs-bin_0.9.9-1_amd64.deb
+
 #Handbreak, This is very large, This will auto download components in needs via updates (nVidia Module if have that GFX card), Disabled, too large, it's in the Store
 #flatpak install -y flathub fr.handbrake.ghb
 
