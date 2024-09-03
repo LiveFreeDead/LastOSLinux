@@ -2548,6 +2548,7 @@ Public Sub Items_DblClick()
   CurrentItem = Items.Current.Text
   If LLMod.StoreMode = 1 Then
     RunGame(RefsID)
+    Stop Event
     Return 'Goes back to main routine
   End If
   If Data.Items[RefsID, 1].Text = "F" Then
@@ -2609,18 +2610,17 @@ Public Sub RunGame(GameID As Integer)
   Dim RunMe As String
   BT = Data.Items[GameID, Data.CBuildType].Text ' BuildType
   If BT = "ppGame" Then 'It's a ppGame, use WINE
-    'Trying to use actual INI path instead of LNK one until I update it to generate the full path (shouldn't matter for launcher mode)   
+    'Use the Actual install path ?
+    If Right(Data.Items[GameID, Data.CLnkRunPath].Text, 1) <> "/" Then Data.Items[GameID, Data.CLnkRunPath].Text &= "/" 'Add Slash so it works
+    PathToUse = Data.Items[GameID, Data.CLnkRunPath].Text
+    RunMe = LLMod.ExpPath(Data.Items[GameID, Data.CLnkRunPath].Text & Data.Items[GameID, Data.CLnkExec].Text)
     
-    If Right(Data.Items[GameID, Data.CPathINI].Text, 1) <> "/" Then Data.Items[GameID, Data.CPathINI].Text &= "/" 'Add Slash so it works
-    PathToUse = Data.Items[GameID, Data.CPathINI].Text
-    RunMe = "wine " & Chr(34) & LLMod.ExpPath(Data.Items[GameID, Data.CPathINI].Text & Data.Items[GameID, Data.CLnkExec].Text) & Chr(34)
-    
-    If Not Exist(RunMe) Then 'Use the Actual install path otherwise      
-      If Right(Data.Items[GameID, Data.CLnkRunPath].Text, 1) <> "/" Then Data.Items[GameID, Data.CLnkRunPath].Text &= "/" 'Add Slash so it works
-      PathToUse = Data.Items[GameID, Data.CLnkRunPath].Text
-      RunMe = "wine " & Chr(34) & LLMod.ExpPath(Data.Items[GameID, Data.CLnkRunPath].Text & Data.Items[GameID, Data.CLnkExec].Text) & Chr(34)
+    If Not Exist(RunMe) Then 'Use actual INI path instead Of LNK one Until I update it To generate the full path(shouldn't matter for launcher mode)
+      If Right(Data.Items[GameID, Data.CPathINI].Text, 1) <> "/" Then Data.Items[GameID, Data.CPathINI].Text &= "/" 'Add Slash so it works
+      PathToUse = Data.Items[GameID, Data.CPathINI].Text
+      RunMe = LLMod.ExpPath(Data.Items[GameID, Data.CPathINI].Text & Data.Items[GameID, Data.CLnkExec].Text)
     End If
-    
+    RunMe = "wine z:/" & Chr(34) & RunMe & Chr(34) 'adding Z: allows it to use ANY case letters in the path or file
     LLMod.Execute(RunMe, PathToUse)
   Else 'Linux game
     RunMe = LLMod.ExpPath(Data.Items[GameID, Data.CLnkExec].Text) 'Expand $HOME path

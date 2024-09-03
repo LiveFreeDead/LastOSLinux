@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.5 2024-08-31-09
+'LastOS v1.1.6 2024-09-03-02
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -987,9 +987,9 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       If Exist(InstallToPath & "LLScript_Sudo.sh") Then
         ExpandScript(InstallToPath & "LLScript_Sudo.sh")          
         Try Chmod InstallToPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
-        'MakeAllEXE(TmpPath)
-        LLScriptSudoContent &= AddSudoScript(InstallToPath & "LLScript_Sudo.sh") 'Always make a new Sudo script to run at the end
-                'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
+        'MakeAllEXE(TmpPath)        
+        LLScriptSudoContent &= AddSudoScript(InstallToPath & "LLScript_Sudo.sh") 'Make all Sudo work go into a new script file        
+        'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If  
     Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
       If TmpPath = "" Then TmpPath = LLINIPath 'If not a tar then it uses the current path off USB or DVD etc
@@ -1004,8 +1004,8 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       If Exist(TmpPath & "LLScript_Sudo.sh") Then
         'ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod TmpPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
-        'MakeAllEXE(TmpPath)        
-        LLScriptSudoContent &= AddSudoScript(TmpPath & "LLScript_Sudo.sh") 'Always make a new sudo script to run at the end        
+        'MakeAllEXE(TmpPath)
+        LLScriptSudoContent &= AddSudoScript(TmpPath & "LLScript_Sudo.sh") 'Always make a new Sudo Script and run at the end        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
       End If  
@@ -1462,7 +1462,15 @@ Public Function AddSudoScript(SudoFileIn As String) As String
     TxtIn = TxtIn & Chr(10) 'Make sure it ends on a new line
     Return TxtIn
   End If
-  
-  
 End
 
+Public Function IsTrue(TestIn As String) As Boolean
+  Dim WasItTrue As Boolean = False
+  TestIn = Trim(Lower(TestIn))
+  If TestIn = "yes" Then WasItTrue = True
+  If TestIn = "true" Then WasItTrue = True
+  If TestIn = "t" Then WasItTrue = True
+  If TestIn = "y" Then WasItTrue = True  
+  If TestIn = "1" Then WasItTrue = True  
+  Return WasItTrue
+End
