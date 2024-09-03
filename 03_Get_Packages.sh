@@ -40,6 +40,9 @@ sudo apt install -y qemu-utils nbd-client
 #Install Samba so Windows Network shares are accessible
 sudo apt install -y samba wsdd 
 
+#Allows mounting a FS Used by some games
+sudo apt install -y fuse-overlayfs
+
 #These ones aren't in mint v22 yet, so exclude from main list for now
 #sudo apt install -y pinta isomaster brave-browser
 

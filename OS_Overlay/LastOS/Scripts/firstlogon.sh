@@ -62,6 +62,9 @@ grep -qF '/.wine/drive_c' ~/.config/gtk-3.0/bookmarks || echo file://$HOME/.wine
 #Move Downloads to the top of the pinned items
 grep "Downloads" ~/.config/gtk-3.0/bookmarks > out && grep -v "Downloads" ~/.config/gtk-3.0/bookmarks >> out && mv out ~/.config/gtk-3.0/bookmarks
 
+#Install Vulkan to make Wine games run better
+bash /LastOS/Scripts-Wine/vulkan/setup-vulkan.sh
+
 #install SetupS
 notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
 wine /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe

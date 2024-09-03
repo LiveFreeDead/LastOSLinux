@@ -14,6 +14,8 @@ Issues:------
 
 *VirtualBox v7.0.20 and below Must be installed with 128mb of VRam and 3D Acceleration disabled (until the Guest Addition Tools get installed) you can not run LastOSStore or Launcher, unless you install the Guest Addition Tools and then enable 3D Acceleration once you shut the VM down.
 
+* If Setup gets stuck on SetupS Installation, open System Monitor and kill ssControlPanel.exe (it only happens every now and then so I haven't been able to stop it gettin stuck yet).
+
 * If the Update Shield is red you need to open it and press "Refresh" (With internet connected). It defaults to the Australian Servers, you can change to a closer one if wanted. If it still has problems open a terminal and type without quotes "sudo apt update -y" this will download the latest repositories of apps and libraries.
 
 * If WINE is tiny on your 4k screen you can find tools in the LastOSLinux Store or run them manually from /LastOS/Extra_Tools/WINE_HighDPIFix.sh to make it bigger, you can also manually open "Configure Wine" Tool from the Main Menu and in the Graphics Tab, slide the ScreenResolution up until it looks right. This make still cause apps to redraw bigger than expected or cut off, you can read the /LastOS/WineDPI-Alternative.txt to see a method that worked for someone else, or you can even change the screen resolution before you run your Wine app if it's only temporary.
