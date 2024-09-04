@@ -1582,6 +1582,7 @@ Public Sub Items_Click()
     ItemInstallSize.Visible = False
     InstallSizeTit.Visible = False
   End If
+  Stop Event
 End
 
 Public Sub Form_Close()
@@ -2111,7 +2112,7 @@ Public Sub Items_MouseUp() 'Resets mouse checks
     DoContextMenu() 'Move to mouse up so item changes first so context menu for items work as expected
   End If
   MouseRight = False
-  'Stop Event
+  Stop Event
 End
 
 Public Sub WaitJustASecond_Timer()
@@ -2543,7 +2544,7 @@ End
 
 Public Sub Items_DblClick()
   If WaitASec = True Then
-    'Stop Event
+    Stop Event
     Return
   End If
   Dim RefsID As Integer
@@ -2574,7 +2575,7 @@ Public Sub Items_DblClick()
   Else 
     Stats.Text = Str(Items.Count) & " Items"
   End If
-  'Stop Event
+  Stop Event
 End
 
 
@@ -2587,7 +2588,7 @@ Public Sub StartButton_MouseUp()
   End If
 
   StartPushed()
-  'Stop Event
+  Stop Event
 End
 
 Public Sub RunGame(GameID As Integer)
@@ -3251,13 +3252,14 @@ Public Sub StartButTab_KeyPress()
   If Key.Code = Key.Enter Or If Key.Code = Key.Return Then
     If LLMod.StoreMode = 0 Then
       Title.Text = "Install Started" 'This is the best I can do as the form doesn't refresh/redraw until the key release event returns, but it does between them
-      'Wait (0.01)
+      Wait (0.01)
     End If
   End If
 End
 
 
-Public Sub StartPushed()  
+Public Sub StartPushed()
+  
   'Don't allow pressing start on a Item and have it play the movie in the background
   MoviePlayer.Stop ' Just In Case
   MovieTimer.Enabled = False 'Just in case
@@ -3271,10 +3273,8 @@ Public Sub StartPushed()
   If CurrentItemKey <> Null And CurrentItemKey > 0 Then
     If Data.Items.Rows.Count = 0 Then Return 'No Items to run, quit        
     If LLMod.StoreMode = 1 Then
-      If WaitASec = True Then Return
+      If WaitASec Then Return
       RunGame(CurrentItemKey - 1)
-      WaitASec = True
-      WaitJustASecond.Enabled = True
     Else 'Installer Mode
       RunMiniInstaller()       
     End If
@@ -3288,15 +3288,8 @@ Public Sub StartButTab_KeyRelease()
   'Stats.Text = Str(Key.Code)
   If Key.Code = Key.Enter Or If Key.Code = Key.Return Or Key.Code = 16777221 Then    
     StartPushed() 
-    'Stop Event
+    Stop Event
   End If
   ForceStart = False
-
-End
-
-Public Sub Form_GotFocus()
-  WaitASec = True 'Make it ignore everything until is's had a sec to recover, so it doesn't re-run items etc
-  WaitJustASecond.Enabled = True
-  
 
 End

@@ -16,7 +16,7 @@
     MoveScaled(76,48,13.7143,13.7143)
   }
   { !Items ListView
-    MoveScaled(17,4,28.7143,55)
+    MoveScaled(16.2857,4,28.7143,55)
     #Public = True
     Background = Color.Transparent
     Border = False
@@ -66,10 +66,8 @@
     #MoveScaled(48,-3)
     Delay = 500
   }
-  { !WaitJustASecond #Timer
+  { WaitJustASecond #Timer
     #MoveScaled(17,-3)
-    #Public = True
-    Delay = 100
   }
   { URLTit Label
     MoveScaled(61,48,9,3)
