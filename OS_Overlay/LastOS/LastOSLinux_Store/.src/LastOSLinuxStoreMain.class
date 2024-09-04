@@ -3249,13 +3249,12 @@ Public Sub Description_MouseWheel()
 End
 
 Public Sub StartButTab_KeyPress()
-  ForceStart = True
   If Key.Code = Key.Enter Or If Key.Code = Key.Return Then
-    If LLMod.StoreMode = 0 Then Title.Text = "Install Started"  
-    StartPushed() 
-    Stop Event
+    If LLMod.StoreMode = 0 Then
+      Title.Text = "Install Started" 'This is the best I can do as the form doesn't refresh/redraw until the key release event returns, but it does between them
+      Wait (0.01)
+    End If
   End If
-  ForceStart = False
 End
 
 
@@ -3281,4 +3280,16 @@ Public Sub StartPushed()
     End If
   End If
   
+End
+
+Public Sub StartButTab_KeyRelease()
+
+  ForceStart = True
+  'Stats.Text = Str(Key.Code)
+  If Key.Code = Key.Enter Or If Key.Code = Key.Return Or Key.Code = 16777221 Then    
+    StartPushed() 
+    Stop Event
+  End If
+  ForceStart = False
+
 End
