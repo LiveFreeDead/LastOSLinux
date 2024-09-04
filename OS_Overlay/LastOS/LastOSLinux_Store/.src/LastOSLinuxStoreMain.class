@@ -1682,7 +1682,9 @@ End
 Public Sub Items_KeyRelease()
   Items_Click() 'Click Item
   If LLMod.StoreMode = 0 And Key.Code = Key.Space Then Items_DblClick()   
-  If LLMod.StoreMode = 1 And Key.Code = Key.Return Then Items_DblClick() 'Pressing Enter on an item in Launch mode will launch it
+  If LLMod.StoreMode = 1 Then 
+    If Key.Code = Key.Enter Or If Key.Code = Key.Return Or Key.Code = 16777221 Then Items_DblClick() 'Pressing Enter on an item in Launch mode will launch it  
+  End If  
     
   If LLMod.StoreMode = 0 And Key.Code = Key["A"] And Key.Control Then SelectAll()
   If LLMod.StoreMode = 0 And Key.Code = Key["N"] And Key.Control Then SelectNone()
@@ -3290,7 +3292,7 @@ End
 Public Sub StartButTab_KeyRelease()
 
   ForceStart = True
-  'Stats.Text = Str(Key.Code)
+  Stats.Text = Str(Key.Code)
   If Key.Code = Key.Enter Or If Key.Code = Key.Return Or Key.Code = 16777221 Then    
     StartPushed() 
     'Stop Event
