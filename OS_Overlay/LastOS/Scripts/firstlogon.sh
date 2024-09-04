@@ -128,10 +128,6 @@ fi
 #
 #xdotool windowminimize $(xdotool search "Update Manager")
 
-##Close all notifications (Fails)
-#killall notify-osd
-killall zenity
-
 
 #install SetupS (Do this last as it has been known to stop installing and we don't want it to interfere with the other stuff
 #notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
@@ -151,6 +147,10 @@ done
 
 #trash-empty
 gio trash --empty
+
+##Close all notifications (Fails)
+#killall notify-osd
+killall zenity
 
 #notify-send --hint=int:transient:1  "Finnished Installing" "Enjoy using LastOSLinux"
 notify-send "Finnished Installing,  Enjoy using LastOSLinux"
