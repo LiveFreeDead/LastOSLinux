@@ -134,8 +134,10 @@ killall zenity
 
 
 #install SetupS (Do this last as it has been known to stop installing and we don't want it to interfere with the other stuff
-notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
-wine /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe
+#notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
+notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe"
+#wine /LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe
+wine /LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe /silent
 
 FILES="/LastOS/WindowsApps/*"
 for f in $FILES
