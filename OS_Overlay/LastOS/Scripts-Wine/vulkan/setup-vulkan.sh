@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 cd "$(dirname "$(readlink -f "$0")")" || exit
 
+WINEPREFIX=$HOME/.wine
+
 wineboot -i
 wineserver -w
 bash "$PWD/dxvk/setup_dxvk.sh" install
