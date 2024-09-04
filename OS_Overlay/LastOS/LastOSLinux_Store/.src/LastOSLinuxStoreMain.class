@@ -1757,7 +1757,7 @@ Public Sub StartButTab_LostFocus()
 End
 
 Public Sub StartButTab_Click()
-  StartButton_MouseUp()
+  StartPushed()
 End
 
 Public Sub LoadTheme()
@@ -2580,33 +2580,14 @@ End
 
 
 Public Sub StartButton_MouseUp()
-  'Don't allow pressing start on a Item and have it play the movie in the background
-  MoviePlayer.Stop ' Just In Case
-  MovieTimer.Enabled = False 'Just in case
-  
   StartButton.Top = StartButton.Top - 1
   StartButton.Left = StartButton.Left - 1
   
-  'Check if ctrl is held to build Repository
-  If LLMod.StoreMode = 0 And CtrlPressed = True Then 'Only make Repo's out of Install Mode items (not Launcher)
-    CtrlPressed = False ' Just make sure it resets  
-    BuildRepository()
-    Stop Event
-    Return
+  If Not Mouse.Inside(Last) Then
+    If ForceStart = False Then Return 'This is the better check to see if inside the control or not, remarked out old if method
   End If
-  
-  If CurrentItemKey <> Null And CurrentItemKey > 0 Then
-    If Not Mouse.Inside(Last) Then
-      If ForceStart = False Then Return 'This is the better check to see if inside the control or not, remarked out old if method
-    End If
-    If Data.Items.Rows.Count = 0 Then Return 'No Items to run, quit        
-    If LLMod.StoreMode = 1 Then
-      If WaitASec Then Return
-      RunGame(CurrentItemKey - 1)
-    Else 'Installer Mode
-      RunMiniInstaller()       
-    End If
-  End If
+
+  StartPushed()
   Stop Event
 End
 
@@ -3270,8 +3251,34 @@ End
 Public Sub StartButTab_KeyPress()
   ForceStart = True
   If Key.Code = Key.Enter Or If Key.Code = Key.Return Then
-    StartButton_MouseUp()  
+    If LLMod.StoreMode = 0 Then Title.Text = "Install Started"  
+    StartPushed() 
     Stop Event
   End If
   ForceStart = False
+End
+
+
+Public Sub StartPushed()
+  
+  'Don't allow pressing start on a Item and have it play the movie in the background
+  MoviePlayer.Stop ' Just In Case
+  MovieTimer.Enabled = False 'Just in case
+  'Check if ctrl is held to build Repository
+  If LLMod.StoreMode = 0 And CtrlPressed = True Then 'Only make Repo's out of Install Mode items (not Launcher)
+    CtrlPressed = False ' Just make sure it resets  
+    BuildRepository()
+    Return
+  End If
+  
+  If CurrentItemKey <> Null And CurrentItemKey > 0 Then
+    If Data.Items.Rows.Count = 0 Then Return 'No Items to run, quit        
+    If LLMod.StoreMode = 1 Then
+      If WaitASec Then Return
+      RunGame(CurrentItemKey - 1)
+    Else 'Installer Mode
+      RunMiniInstaller()       
+    End If
+  End If
+  
 End
