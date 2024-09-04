@@ -6,6 +6,8 @@ Public StartItemCount As Integer
 Public MidItemCount As Integer
 Public FinishItemCount As Integer
 
+Public ForceStart As Boolean
+
 Public LocalDBFile As String = ".LLFileDB/LLFile_DB.ini"
 Public ForceReScanItems As Boolean
 
@@ -1580,7 +1582,7 @@ Public Sub Items_Click()
     ItemInstallSize.Visible = False
     InstallSizeTit.Visible = False
   End If
-  
+  Stop Event
 End
 
 Public Sub Form_Close()
@@ -2110,6 +2112,7 @@ Public Sub Items_MouseUp() 'Resets mouse checks
     DoContextMenu() 'Move to mouse up so item changes first so context menu for items work as expected
   End If
   MouseRight = False
+  Stop Event
 End
 
 Public Sub WaitJustASecond_Timer()
@@ -2540,7 +2543,10 @@ End
 
 
 Public Sub Items_DblClick()
-  If WaitASec = True Then Return
+  If WaitASec = True Then
+    Stop Event
+    Return
+  End If
   Dim RefsID As Integer
   If Items.Current = Null Then Return 'Dead Item
   CurrentItemKey = Items.Current.Key
@@ -2569,6 +2575,7 @@ Public Sub Items_DblClick()
   Else 
     Stats.Text = Str(Items.Count) & " Items"
   End If
+  Stop Event
 End
 
 
@@ -2589,7 +2596,9 @@ Public Sub StartButton_MouseUp()
   End If
   
   If CurrentItemKey <> Null And CurrentItemKey > 0 Then
-    If Not Mouse.Inside(Last) Then Return 'This is the better check to see if inside the control or not, remarked out old if method
+    If Not Mouse.Inside(Last) Then
+      If ForceStart = False Then Return 'This is the better check to see if inside the control or not, remarked out old if method
+    End If
     If Data.Items.Rows.Count = 0 Then Return 'No Items to run, quit        
     If LLMod.StoreMode = 1 Then
       If WaitASec Then Return
@@ -2684,7 +2693,11 @@ Public Sub RunMiniInstaller()
     If Not Exist(ItemLocal) Then 'Get it
       OldTitle = Title.Text
       Title.Text = "Downloading " & Data.Items[ItemToInstall, Data.CTitleName].Text
+      Title.Refresh
+      Title.Visible = False
       Wait (0.01)
+      Title.Visible = True
+      Wait (0.1)
     
       GetOnlineFile(Data.Items[ItemToInstall, Data.CPathINI].Text, ItemLocal)
       While Downloading = True 'Can't do more until it's fully downloaded
@@ -2696,19 +2709,26 @@ Public Sub RunMiniInstaller()
     If BT = "ssApp" Or BT = "ppApp" Or BT = "ppGame" Then 'It's a Windows Things, use WINE      
       OldTitle = Title.Text
       
-      Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text    
-      Wait (0.07) ' Lets the form Redraw before it starts installing  
+      Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text
+      Title.Refresh
+      Title.Visible = False
+      Wait (0.01)
+      Title.Visible = True      
+      Wait (0.1) ' Lets the form Redraw before it starts installing  
       If BT = "ppApp" Or BT = "ppGame" Then
         LLMod.InstallppFile(ItemLocal)
       Else 'ssApp, still uses SetupS
         Shell "wine " & Chr(34) & ItemLocal & Chr(34) Wait 'This ties up the whole Store, no work around yet?
       End If
       Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
-      Wait (0.07) 'Redraw
     Else 'Linux Item
       OldTitle = Title.Text
       Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text    
-      Wait (0.07) ' Lets the form Redraw before it starts installing
+      Title.Refresh
+      Title.Visible = False
+      Wait (0.01)
+      Title.Visible = True      
+      Wait (0.1) ' Lets the form Redraw before it starts installing
       LLMod.InstallLLFile(ItemLocal) ' Need to use FileINI not PathINI ' Uses Current Item value
       
         'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
@@ -2723,8 +2743,7 @@ Public Sub RunMiniInstaller()
         End If  
       
       
-      Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
-      Wait (0.07) 'Redraw
+      Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle            
     End If
     Installing = False 'Job done   
     Return 'Just go back to main store, user can click off the item.
@@ -3246,4 +3265,13 @@ Public Sub Description_MouseWheel()
   
   End If
 
+End
+
+Public Sub StartButTab_KeyPress()
+  ForceStart = True
+  If Key.Code = Key.Enter Or If Key.Code = Key.Return Then
+    StartButton_MouseUp()  
+    Stop Event
+  End If
+  ForceStart = False
 End
