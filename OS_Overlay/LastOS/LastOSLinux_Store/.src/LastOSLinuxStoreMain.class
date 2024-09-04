@@ -2552,27 +2552,29 @@ Public Sub Items_DblClick()
   RefsID = CurrentItemKey - 1 ' Database is 0 based, list is 1 based
   CurrentItem = Items.Current.Text
   If LLMod.StoreMode = 1 Then
-    RunGame(RefsID)
-    Stop Event
-    Return 'Goes back to main routine
-  End If
-  If Data.Items[RefsID, 1].Text = "F" Then
-    Data.Items[RefsID, 1].Text = "T"
-    Items[Data.Items[RefsID, 0].Text].Background = LLM.SetSelectCol 'Highlight Selected
-    SelectedItems = SelectedItems + 1
-    Items.Refresh 'So draws change
-  Else 
-    Data.Items[RefsID, 1].Text = "F"
-    Items[Data.Items[RefsID, 0].Text].Background = Color.Transparent 'Un Highlight
-    SelectedItems = SelectedItems - 1
-    Items.Refresh 'So draws change
-  End If
-  
-    'Update Stats  
-  If SelectedItems > 0 Then 
-    Stats.Text = Str(SelectedItems) & "/" & Str(Items.Count) & " Items"
-  Else 
-    Stats.Text = Str(Items.Count) & " Items"
+    'RunGame(RefsID)
+    'Stop Event
+    RunDelay.Enabled = True
+  Else  
+    
+    If Data.Items[RefsID, 1].Text = "F" Then
+      Data.Items[RefsID, 1].Text = "T"
+      Items[Data.Items[RefsID, 0].Text].Background = LLM.SetSelectCol 'Highlight Selected
+      SelectedItems = SelectedItems + 1
+      Items.Refresh 'So draws change
+    Else 
+      Data.Items[RefsID, 1].Text = "F"
+      Items[Data.Items[RefsID, 0].Text].Background = Color.Transparent 'Un Highlight
+      SelectedItems = SelectedItems - 1
+      Items.Refresh 'So draws change
+    End If
+    
+      'Update Stats  
+    If SelectedItems > 0 Then 
+      Stats.Text = Str(SelectedItems) & "/" & Str(Items.Count) & " Items"
+    Else 
+      Stats.Text = Str(Items.Count) & " Items"
+    End If
   End If
   'Stop Event
 End
@@ -2627,6 +2629,9 @@ Public Sub RunGame(GameID As Integer)
   Items.SetFocus
   Wait (0.03)
   'Items.Refresh 'BAD Idea (Causes a weird delay)
+  'LastOSLinuxStoreMain.Minimized = True
+  'Wait (0.03)
+  'LastOSLinuxStoreMain.Maximized = True
 End
 
 
@@ -3298,5 +3303,11 @@ Public Sub Form_GotFocus()
   WaitASec = True 'Make it ignore everything until is's had a sec to recover, so it doesn't re-run items etc
   WaitJustASecond.Enabled = True
   
+
+End
+
+Public Sub RunDelay_Timer()
+  RunDelay.Enabled = False
+  StartPushed()
 
 End
