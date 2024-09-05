@@ -1,38 +1,101 @@
-LastOSLinux is a build using Penguins-Eggs a remastering tool that captures your currently running OS to share and install on other hardware. It is based on Linux Mint v22 and is fully compatible with it's updates and future upgrades, this version is supported until 2029 and should continue working after too.
+LastOSLinux v1.0
 
-Passwords:
-User: live Password: live
-User: root Paddword: root
-Do NOT ever use " " (space) as a password it breaks things, you can use single letters or numbers in LastOSLinux
+Introduction:
+
+This release is based on Linux Mint v22 with the Ubuntu 24.04 Update 1 applied. It contains WINE v9.16 at the time of building, I used Penguins Eggs to Remaster a running VirtualBox to make a LiveOS that is Installable on any x86_x64 hardware. Mint v22 is supported until 2029 and will continue to work after that or allow it to be upgraded to the next long term release to continue being updated.
+
 
 Find out more about LastOSLinux at: https://forum.lastos.org/index.php?forums/lastoslinux.216/
+
 Find Penguins-Eggs: https://penguins-eggs.net/ thanks to Piero Proietti and his community.
 
-Issues:------
 
-* This OS works much better on real hardware, as with all new releases of Linux it takes time for the Virtual Machines to properly support them, as such using real hardware makes it work as it's intended.
 
-*VirtualBox v7.0.20 and below Must be installed with 128mb of VRam and 3D Acceleration disabled (until the Guest Addition Tools get installed) you can not run LastOSStore or Launcher, unless you install the Guest Addition Tools and then enable 3D Acceleration once you shut the VM down.
+Important:
 
-* If the Update Shield is red you need to open it and press "Refresh" (With internet connected). It defaults to the Australian Servers, you can change to a closer one if wanted. If it still has problems open a terminal and type without quotes "sudo apt update -y" this will download the latest repositories of apps and libraries.
+The LiveOS has the following login credentials: User: live, Password: live, if for any reason you need a root user, they are User: root, Password: root
 
-* If WINE is tiny on your 4k screen you can find tools in the LastOSLinux Store or run them manually from /LastOS/Extra_Tools/WINE_HighDPIFix.sh to make it bigger, you can also manually open "Configure Wine" Tool from the Main Menu and in the Graphics Tab, slide the ScreenResolution up until it looks right. This make still cause apps to redraw bigger than expected or cut off, you can read the /LastOS/WineDPI-Alternative.txt to see a method that worked for someone else, or you can even change the screen resolution before you run your Wine app if it's only temporary.
+This OS works much better on real hardware, as with all new releases of Linux it takes time for the Virtual Machines to properly support them, so using real hardware makes it work as I intended.
 
-* If you don't want Chrome to ask for a password each time, don't type in any password and accept the warning, this will let you run it without having to type in a keyring password every time, if you forget to use an empty password you can follow these steps:
-1. Close Chrome
-2. Navigate to your Home folder in file manager and displayed hidden folders with Ctrl+H
-3. Navigate to .local/share/keyrings/
-4. Deleted all files with ".keyring" file ending.
+* Copying to a USB disk in Linux, especially slow thumb drives, it will use the memory to cache the files it's copying, showing the copy as 100% completed when it really hasn't finished writing to the USB stick, the only way to know if it's fully done is to safely Remove USB (unmount it), it's will not unmount until it's done, you can disable the cache but it will affect other things (like the ability to use the OS until all writes have completed, seams like the OS has crashed/waiting): https://www.reddit.com/r/linux4noobs/comments/bxhnfp/how_to_see_the_real_writing_progress_of_a_usb/
 
-* By default I changed Linux Mint from holding Alt and dragging a window position, to holding Super (Windows) key to move windows.
 
-* Following on from above, if you hold Alt when you drag a file or folder, it'll bring up a menu asking if you want to move, copy or link to the location you drop it. Ctrl (Copy) and Shift (Move) offer move or copy shown on the mouse cursor as + for copy, arrow for move.
 
-Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences now.
+Mission:
+
+I've been a long time Windows user, but found the direction of Windows 11 to be different to my own. I do not want Copilot to be part of my OS and only available through my browser, I do not want ads and bloat from tools I never intend to subscribe to. I really do not want my local file to be transferred to the cloud with monthly subscriptions to keep them there. The fact they keep moving things about, renaming them and hiding tools and options I've been using my whole life, I dislike how many options they are taking away and how they enforce these things by reverting my edits/choices every time they update windows. 
+
+With the decline of Windows usability, I decided it was time to give Linux another chance, see how far it's come since the last time I used it. There is 1001 Distributions and Re-spins of them, but none of them were as feature complete or simple as Last10 modded Windows. So I went about finding ways to make each feature I rely on, available to me in Linux. First thing I had to do was find the best Distribution to base it on, the one with the most support to home users, one that wasn't so locked down that using it becomes a chore. Security is essential, but not when it annoys the end users so much they no longer want to turn it on. After hundreds of hours testing, I found Ubuntu to be the one I was looking for, but it defaulted to gnome, which is too far removed from Windows for my muscle memory to use it, it felt more like Windows 8 and it's full screen tiles. so I tried Linux Mint, with it's cinnamon desktop environment. This instantly felt familiar and was so easy to customise and tweak.
+
+My goal was to pack as much familiarity into my OS, I knew when I started this project that existing Linux users would not like my OS, because it was too much like Windows, it was too bloated with choices already made. Having full control and knowing exactly what is on your system is what a Linux user likes most about their existing setup. But I wasn't trying to make an operating system for them, they have enough lite OS's that they can install. I also didn't want to make a clone of Windows as these often look the part but do not function like windows at all - they are more just a skin on Linux than a Windows Replacement. My OS still has all the default choices found in Linux Mint, with heaps of themes and icons/wallpapers etc, but I've added Windows Icons to make finding things so much easier.
+
+One of the tools I include is Photoshop, this is something I've paid for in the past and now subscribe to, so I simply put the installed version on the ISO in a compressed file with a free tool that disables the online checks that stop it from running, I removed the features that do not work with Linux and now I am able to use it a little without having to boot back in to windows for a minor edit. I do wish companies would support Linux better, really Mac OSX is still just Linux and it runs fine on that, they could support it if they wanted to and I can't live without it, so it's included.
+
+I am not trying to change Linux at all, I am just giving more people an entry point to it, so instead of them having to spend the hundreds of hours learning and fixing things they expect to work (just like they did in Windows), they can just use it all. No need to modify a single thing, not a heap of choices to make before you even know what they mean. Just a OS that has tools you can use and no need to run the terminal (unless you want to). The reason I know this to be one of the biggest things limiting the adoption of Desktop Linux is that ChromeOS, Steam, Android and even Mac OSX are all Linux, they are just made user friendly (limited) but with the ability to unlock more potential using sudo and terminal. At the end of the day, general home users do not care how or why, they just want to do and existing Linux doesn't let them, it felt incomplete and too lite. I understand that many people who are giving their time to improving Linux are very pro open source and want a pure OS, I can respect that, gamers and tinkerers on the other hand do not care about this at all. they just want it to do the thing they want it to do. 
+
+I volunteer at a online centre who also sells refurbished old Laptops and PC's, I used to install Windows 10 on them, but as they are stopping support for that in 2025 (unless you run LTSC IoT which will last until 2029, but isn't technically available to home users to purchase), I needed a better option, Linux was it. Most of the people buying refurbished PC's are not technically inclined and do not wish to spend more than required on them and aren't interesting in knowing how it works. They just want to get on, use the web, type something up, play a game, edit a photo or a simple task. So I spent more time finding which tools could do the jobs I know many home users need and I've included a list of them and what they are below. 
+
+
+
+Features: 
+
+- A simple install, you do have the ability to do advanced installs, but if you are happy to wipe your whole computer then you only need to pick which HDD to install it to.
+
+- A DVD sized image to burn or copy to smaller USB sticks, offering fat32 so it's bootable on more old systems.
+
+- CSM or UEFI bootable, so can be used on older hardware or new PC's.
+
+- A dark theme that's easy on the eyes and doesn't light up a room using it at night.
+
+- Transparent effects, we all know Windows 7 was the best looking OS, I've tried to make this feel as glassy as that but with a darker tint. Windows, Panels, Menu's are all semi transparent.
+
+- Centred Menu and Tasks, this is optional, I found after using it for a few hours it was quite nice to only have to travel to the middle of the screen. I added panel positions in the Right click menu under Scripts - System Tools - Panel to Left, if you don't like this change.
+
+- Scripts, most of the things you do on your computer are repeated often, instead of having to navigate the menu to find the tools or typing in the terminal, I've included a selection of Scripts in the Context menu to do those common tasks with more available from Applets, Extensions, Actions and Desklets. These offer a repository of more that you can easily install and add.
+
+- Windows Icons to make finding what your after as easy as it was in Windows, some are not the same tool, but offer the same functions.
+
+- LastOSLinux Store to make installing things I've curated, easily from USB or online repositories. Some of the items are Windows tools that work well with Linux. Others will tweak your OS or add functionality. There is also games, the store offers Grouped categories so you can find exactly what you need.
+
+- LastOSLinux Launcher makes playing the games you installed from the LastOS Store easy. The Launcher doesn't show the system/steam installed games as these wouldn't have the meta data or screenshots included. Steam is available for all your other gaming needs. I added the ability to press (Ctrl + Break) to close down all WINE apps/games, because sometimes they can cause a problem and this will fix a lot of them without bringing the whole OS down. You can also press (ALT + Break) to just reset the screen resolution if a game messes it up and you dson't want to quit your other windows apps.
+
+- Optional Updates, the red dot on the shield down the bottom right indicates there are updates available, this can be done manually or automated.
+
+- WINE, this is a tool in Linux that allows you to run Windows Apps and games that are only made for windows, in many cases it can run older software better than the newer Windows 10 and 11 could. Apart from low level hardware/HDD access, it can run a large range of software. I have included a thumbnail tool that should extract the Icons of your executables and many of the Store installed items will be sorted into the Linux menus and associations with file types.
+
+
+
+Tips & Info:
+
+- Time Shift - Linux Mint offers this tool to keep a backup of your Installation, I also recommend you setup and use this tool (it is actually required to be able to use the Driver Manager Tool to install Graphics etc". What it does is captures all your OS files into a backup you set, then you can make it backup any changes to this image at a schedual you set (or manually). To restore a backup you simply boot to recovery mode by holding in shift as your computer starts (or pick Advanced in the menu), or you boot from a Linux Live USB (Such as LastOS Linux), this is able to quickly restore your system to running again without touching your user files (if you left them turned off as the default option).
+
+If you don't want Chrome to ask for a password each time, don't type in any password and accept the warning, this will let you run it without having to type in a keyring password every time
+
+VirtualBox v7.0.21 and below Must be installed with 128mb of VRam and 3D Acceleration disabled (until the Guest Addition Tools get installed) you also can not run LastOSStore or Launcher, unless you install the Guest Addition Tools and then enable 3D Acceleration once you shut down the VM down.
+
+If your screen resolution is too tiny you can turn on Fractional Scaling in the Context menu - Display Settings, this allows setting it to 150%.
+
+If WINE apps/games are tiny on your 4k screen you can find tools in the LastOSLinux Store to ajust the DPI to High DPI mode.
+
+I changed Linux Mint from holding Alt to drag a window position, to holding Super (Windows) key to move windows. This was so you can Alt Click in Photoshop to set Clone Brush source locations.
+
+The date format I like is %l:%M %p = 3:21 PM, if you use %H it's 24h time and %I has leading zero = 03
+
+
+
+Bugs and Limitations:
+
+Do NOT ever use " " (space) as a password it breaks things, you can use single letters or numbers in LastOSLinux, just not space.
+
+nVidia Graphics can be problematic with WINE and if you intend to use older games and apps, then you may be better leaving the Noveau Open Sourced drivers installed instead of the nVidia ones. But if you only want to use Steam and Modern games, then you will be better to install the closed sourced nVidia drivers. As the Drivers are only able to access features included in certain kernel version you might find that unless your running a newer kernel, you will not be able to install the newer graphics drivers, on Linux the newer drivers really only add new hardware support, so there isn't a reason to keep your graphics drivers up to date, just find one that works well for you and stick to it.
 
 If you have a problem with your screen not waking up, press Ctrl + Alt + F2 to switch to a terminal window, then once you see the terminal press Ctrl + Alt + F7 to switch back to the desktop. this works 99.9% of the time, the other .1% you will have to go back to terminal and type reboot as the x server crashes (but it's rare).
 
-Tips:-------------
+Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences.
+
+
+
+Hotkeys:
 
 Pressing Ctrl + Alt + Escape will reload the whole desktop, handy when things aren't drawing properly etc, try this fix first
 
@@ -40,30 +103,36 @@ Pressing Ctrl + Alt + Backspace will log you out and let you log back in (good w
 
 Pressing Ctrl + Alt + Delete or Ctrl + Shift + Escape will bring up Gnome System Monitor, this lets you quit hung tasks
 
+Pressing Ctrl + Break will quit all WINE apps and set the screen resolution back to defaults configured at login
+
+Pressing Alt + Break will set the screen resolution back to defaults configured at login
+
 In Terminal you don't use Ctrl + C/V to copy and paste, it's actually Ctrl + Shift + C/V this is because they are Linux shortcut that have been used since 1972, so you will have to learn to hold shift when working with the terminal to copy and paste. Home and End also dont work as expected, so you have to cursor to where you want or use the mouse to select things. This is all a learning curve, but once you get used to it, it's not so bad.
 
-Holding Shift of system boot will open the GRUB menu to pick/repair booting.
+Holding Shift on system boot will open the GRUB menu to pick/repair booting.
 
 To close Plank Dock, hold Ctrl and Right click the dock.
 
-The date format I like is %l:%M %p = 3:21 PM, if you use %H it's 24h time and %I has leading = 03
 
-Copying to a USB disk that is slow will use the memory to cache the files, showing the copy as completed when it really hasn't finished writing to the USB stick, the onyl way to know if it's done is to safely unmount it, you can disable this but it will affect other things (like the ability to use the OS until all writes have cleared): https://www.reddit.com/r/linux4noobs/comments/bxhnfp/how_to_see_the_real_writing_progress_of_a_usb/
 
---- Introduction to the GUI ---
+Introduction to the LastOSLinux:
 
 Cinnamon - The name of the whole Desktop Experience (others are KDE, Gnome, XCFE)
 Nemo - The name of the file manager (Windows Explorer)
 Panels - Like the Taskbar (Start Menu/ Clock/ Running Applications etc)
 Spices - Things that can be added to your panels on the desktop
 Actions - Context menu (Right Click menu)
+Desklets - Widgets like clocks, Disk Uage and calenders etc.
+Extensions - These add functions to Nemo, such as the one I include that makes it show Photo Meta Data as details you can sort by
+Scripts - A list of commands that can be applied to a file(s) or folder, or some way to automate a task.
 
-Other Terminology:
+Other Terminology;
 
 LastOS - The team's name behind your modded OS, Wanting to be the LastOS you'll ever need
 LastOSLinux Store - The tool used to install apps and games from the CDRom/USB
 LastOSLinux Launcher - This will let you see the Linux and Windows games you have installed using the store and launch them.
 LLApp Editor - This tool can create new App and Game packages to include in the LastOSLinux Store.
+LLApp - (Last Linux App) - This tool can be used to install Apps/Games made with the editor or downloaded.
 SetupS - Setup Silent (This is LastOS's very own Silent Setup for Windows Apps)
 ssApp - A single app that will install silently onto your operating system
 ppApp - This is the same as a ssApp but will extract to the ppApps folder and not require installing, it will make shortcuts etc
@@ -72,10 +141,11 @@ LLApp - This is a Linux app that is able to be installed to your users folder in
 LLGame - This is a Linux Game that is able to be installed to your users folder instead of system wide. It is able to launch these games from LastOSLinux Launcher.
 WINE - This will emulate (:P) windows API's meaning you can run Windows Apps and Games from their .EXE files as they would run in windows
 
-All LastOS app/game packages can be installed from the Context Menu, right click on a ssApp, ppApp, LLApp, ppGame or LLGame and use Scripts/LastOS/ and the action you wish to do ("LLApp Install" to install them). Currently LLApp will call SetupS to install ssApps as these require extra steps that LLApp can not handle, so if your using a Non LastOS, you'll need to install wine and then install SetupS from https://www.lastos.org/files/SetupS-files.htm or by getting it off /LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe
+All LastOS app/game packages can be installed from the Context Menu, right click on a ssApp, ppApp, LLApp, ppGame or LLGame and use Scripts/LastOS/ and the action you wish to do ("LLApp Install" to install them). Currently LLApp will call SetupS to install ssApps as these require extra steps that LLApp can not handle.
 
--------------------------------------------------------------------------------
---- Included items and what they are ---
+
+
+Included items and what they are:
 
 Abiword - Word Processor (No DOCX support)
 
@@ -371,11 +441,11 @@ USB Stick Formatter - Erase your data or change Partition Type
 
 Users and Groups - Add or remove users or change their access level or groups they are part of
 
-Virtual Keyboard - This will squash down the screen and make a perminate keyboard that you can use
+Virtual Keyboard - This will squash down the screen and make a On Screen keyboard that you can use
 
 VLC Media Player - Media Player with streaming support
 
-Warpinator - Send and Recieve files accross the network
+Warpinator - Send and Receive files across the network
 
 Web Apps - Turns websites into a windowed application
 
@@ -385,7 +455,7 @@ Windows - Change button position, clicking titlebars, opening positions and Alt-
 
 Window Tiling - Enable snap windows when dragged to an edge or top etc
 
-WineTricks - Help with installing apps/games in linux and othr WINE related tools
+WineTricks - Help with installing apps/games in Linux and other WINE related tools
 
 WinRAR - WINE WinRAR is essential to every OS (Brought it yet?)
 
@@ -432,7 +502,7 @@ GIMP - Photo/Image Editor
 
 Godot - Game Making, Programming Language
 
-Gscan2pdf - Multipage scanning direct to PDF
+Gscan2pdf - Multi-page scanning direct to PDF
 
 Handbreak - Convert or compress video files (This is a FlatPak so is too large to include, but pretty essential if you work with videos)
 
@@ -498,13 +568,3 @@ XnViewMP - Image Viewer (Large for it's purpose)
 
 Zoom - Video/Voice Chat Client
 
-
--------------------------------------------------------------------------------
-
---- Other Software you may use ---
-
-AnyDesk - Remote Desktop Access/Support (But be careful scammers will try to trick you into letting them use your computer)
-
-TeamViewer - Remote Desktop Access/Support (" Above)
-
--------------------------------------------------------------------------------
