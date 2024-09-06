@@ -405,25 +405,21 @@ Public Sub GetItemPaths()
       Next
     End If
     
-    'Get / mnt locations
+    'Get / mnt locations (Only 1 level deep)
     If LLM.MntScan = True Then
       For Each DirInPath In Dir("/mnt", "[^.]*", gb.Directory) ' Check all mounted and sub mounts Media also
         If Access("/mnt/" & DirInPath) = True Then ' Only do ones with access to them
           GetItemsInPath("/mnt/" & DirInPath)
-          If Access("/mnt/" & DirInPath) = True Then ' Only do ones you have access to          
-            For Each DirInSubPath In Dir("/mnt/" & DirInPath, "[^.]*", gb.Directory) ' Check all sub mounted
-              'ExcludeMounts.ini - Excludes checking in some mounts, so not wake up sleeping HDD's
-              Exclude = False
-              For J = 0 To ExcludesCount
-                If Excludes[J] = "/mnt/" & DirInPath & "/" & DirInSubPath Then
-                  Exclude = True
-                  Continue
-                End If
-              Next
-              If Exclude = False Then GetItemsInPath("/mnt/" & DirInPath & "/" & DirInSubPath)
-            Next
-          End If
-        End If
+          'ExcludeMounts.ini - Excludes checking in some mounts, so not wake up sleeping HDD's
+          Exclude = False
+          For J = 0 To ExcludesCount
+            If Excludes[J] = "/mnt/" & DirInPath Then
+              Exclude = True
+              Continue
+            End If
+          Next
+          If Exclude = False Then GetItemsInPath("/mnt/" & DirInPath)            
+        End If        
       Next
     End If
     
