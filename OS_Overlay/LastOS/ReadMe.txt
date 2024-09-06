@@ -19,6 +19,8 @@ This OS works much better on real hardware, as with all new releases of Linux it
 
 * Copying to a USB disk in Linux, especially slow thumb drives, it will use the memory to cache the files it's copying, showing the copy as 100% completed when it really hasn't finished writing to the USB stick, the only way to know if it's fully done is to safely Remove USB (unmount it), it's will not unmount until it's done, you can disable the cache but it will affect other things (like the ability to use the OS until all writes have completed, seams like the OS has crashed/waiting): https://www.reddit.com/r/linux4noobs/comments/bxhnfp/how_to_see_the_real_writing_progress_of_a_usb/
 
+* In Mint not all drives are mounted on boot, using the Disks tool in the menu you can click the disl, press the partition, click the button and choose Edit Mount Options, you can then set mount points and to auto mount on startup if you need it.
+
 
 
 Mission:

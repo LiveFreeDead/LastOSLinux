@@ -8,6 +8,8 @@ Public UseCacheRepository As Boolean = True
 Public UseLocalDBFiles As Boolean = True
 Public UseVideoPlayback As Boolean = True
 Public VideoVolume As Float = 0.2 '20%
+Public MntScan As Boolean = True
+Public MediaScan As Boolean = True
 
 Public ClosedMini As Boolean = False
 

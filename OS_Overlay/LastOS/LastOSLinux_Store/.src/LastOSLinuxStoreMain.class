@@ -383,24 +383,49 @@ Public Sub GetItemPaths()
     
     'GetWineItemsFromPath("/LastOS/") 'for testing, Scans the root of the app path, so if working from /LastOS/LastOS_Store it'll already do it
     
-    For Each DirInPath In Dir("/media", "[^.]*", gb.Directory) ' Check all mounted and sub mounts Media also
-      If Access("/media/" & DirInPath) = True Then ' Only do ones with access to them
-        GetItemsInPath("/media/" & DirInPath)
-        If Access("/media/" & DirInPath) = True Then ' Only do ones you have access to          
-          For Each DirInSubPath In Dir("/media/" & DirInPath, "[^.]*", gb.Directory) ' Check all sub mounted
-            'ExcludeMounts.ini - Excludes checking in some mounts, so not wake up sleeping HDD's
-            Exclude = False
-            For J = 0 To ExcludesCount
-              If Excludes[J] = "/media/" & DirInPath & "/" & DirInSubPath Then
-                Exclude = True
-                Continue
-              End If
+    'Get / media locations
+    If LLM.MediaScan = True Then
+      For Each DirInPath In Dir("/media", "[^.]*", gb.Directory) ' Check all mounted and sub mounts Media also
+        If Access("/media/" & DirInPath) = True Then ' Only do ones with access to them
+          GetItemsInPath("/media/" & DirInPath)
+          If Access("/media/" & DirInPath) = True Then ' Only do ones you have access to          
+            For Each DirInSubPath In Dir("/media/" & DirInPath, "[^.]*", gb.Directory) ' Check all sub mounted
+              'ExcludeMounts.ini - Excludes checking in some mounts, so not wake up sleeping HDD's
+              Exclude = False
+              For J = 0 To ExcludesCount
+                If Excludes[J] = "/media/" & DirInPath & "/" & DirInSubPath Then
+                  Exclude = True
+                  Continue
+                End If
+              Next
+              If Exclude = False Then GetItemsInPath("/media/" & DirInPath & "/" & DirInSubPath)
             Next
-            If Exclude = False Then GetItemsInPath("/media/" & DirInPath & "/" & DirInSubPath)
-          Next
+          End If
         End If
-      End If
-    Next
+      Next
+    End If
+    
+    'Get / mnt locations
+    If LLM.MntScan = True Then
+      For Each DirInPath In Dir("/mnt", "[^.]*", gb.Directory) ' Check all mounted and sub mounts Media also
+        If Access("/mnt/" & DirInPath) = True Then ' Only do ones with access to them
+          GetItemsInPath("/mnt/" & DirInPath)
+          If Access("/mnt/" & DirInPath) = True Then ' Only do ones you have access to          
+            For Each DirInSubPath In Dir("/mnt/" & DirInPath, "[^.]*", gb.Directory) ' Check all sub mounted
+              'ExcludeMounts.ini - Excludes checking in some mounts, so not wake up sleeping HDD's
+              Exclude = False
+              For J = 0 To ExcludesCount
+                If Excludes[J] = "/mnt/" & DirInPath & "/" & DirInSubPath Then
+                  Exclude = True
+                  Continue
+                End If
+              Next
+              If Exclude = False Then GetItemsInPath("/mnt/" & DirInPath & "/" & DirInSubPath)
+            Next
+          End If
+        End If
+      Next
+    End If
     
   End If
   If LLMod.StoreMode = 1 Then 'Get Launchable Game Items
