@@ -1,0 +1,13 @@
+' Gambas class file
+
+
+Public Sub Form_Close()
+  Me.Hide
+  LLM.ScreenResolution = "Closed" 
+  If LastOSLinuxStoreMain.ForceClose = False Then Stop Event 'Cancel Close, we only hide here unless forced
+End
+
+Public Sub Res_MouseUp()
+  ScreenResolution.Hide
+  LLM.ScreenResolution = Last.Tag
+End

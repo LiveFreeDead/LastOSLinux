@@ -16,10 +16,11 @@
     MoveScaled(76,48,13.7143,13.7143)
   }
   { !Items ListView
-    MoveScaled(17,4,28.7143,55)
+    MoveScaled(17,4,27,55)
     #Public = True
     Background = Color.Transparent
     Border = False
+    ScrollBar = Scroll.Vertical
   }
   { Description TextArea
     MoveScaled(46.2857,35,43.2857,13)
@@ -31,7 +32,7 @@
     ScrollBar = Scroll.Vertical
   }
   { !Category ListView
-    MoveScaled(1.2857,4,15,55)
+    MoveScaled(1,4,15,55)
     #Public = True
     Background = Color.Transparent
     Border = False

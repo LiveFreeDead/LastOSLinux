@@ -1,0 +1,46 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,45,18)
+  Visible = False
+  Text = ("Screen Resolution of Game")
+  Resizable = False
+  Centered = True
+  { RadioButton1 RadioButton Res
+    Name = "RadioButton1"
+    MoveScaled(4,1,16,4)
+    Tag = "640x480"
+    Text = ("640x480")
+  }
+  { RadioButton2 RadioButton Res
+    Name = "RadioButton2"
+    MoveScaled(4,6,16,4)
+    Tag = "800x600"
+    Text = ("800x600")
+  }
+  { RadioButton3 RadioButton Res
+    Name = "RadioButton3"
+    MoveScaled(4,11,16,4)
+    Tag = "1024x768"
+    Text = ("1024x768")
+  }
+  { RadioButton4 RadioButton Res
+    Name = "RadioButton4"
+    MoveScaled(26,1,16,4)
+    Tag = "1280x720"
+    Text = ("1280x720")
+  }
+  { RadioButton5 RadioButton Res
+    Name = "RadioButton5"
+    MoveScaled(26,6,16,4)
+    Tag = "1920x1080"
+    Text = ("1920x1080")
+  }
+  { RadioButton6 RadioButton Res
+    Name = "RadioButton6"
+    MoveScaled(26,11,16,4)
+    Tag = "Desktop"
+    Text = ("Desktop")
+    Value = True
+  }
+}
