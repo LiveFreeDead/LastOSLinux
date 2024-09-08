@@ -1075,6 +1075,8 @@ Public Sub GenerateMainList()
       If Lower(Left(CurrentCat, 5)) = "game " Then CurrentCat = Right(CurrentCat, Len(CurrentCat) - 5) 'Makes Installer mode categories check drop "Game " from tests
     End If
     For I = 0 To LLM.DataItemsRows
+      
+      HideItem = False
       Try CatFound = InStr(Data.Items[I, Data.CCategories].Text, CurrentCat, gb.IgnoreCase)
       If CurrentCat = "Favorites" And FavCount >= 1 Then 'Favorites doesn't exist in Install Mode, so will never do this anyway
         For K = 0 To FavCount - 1
@@ -1095,7 +1097,12 @@ Public Sub GenerateMainList()
       
       If CurrentCat = "" Or CurrentCat = "All" Or CatFound >= 1 Then  'Only add if in the cat
         If Data.Items[I, Data.CTitleName].Text = "" Then Continue 'Don't show dead items, even if the data is in tact and error may occur
-        If HideInstalled = True And Data.Items[I, Data.CInstalled].Text = "T" Then Continue 'Jumps to Next For
+        
+        'Print (Data.Items[I, Data.CTitleName].Text & "=" & Data.Items[I, Data.CInstalled].Text)
+        If HideInstalled = True And Data.Items[I, Data.CInstalled].Text = "T" Then
+          HideItem = True        
+          Continue 'Jumps to Next For
+        End If
         If LLM.HideOnline = True And Left(Data.Items[I, Data.CPathINI].Text, 4) = "http" Then 
           If LLM.UseCacheRepository = False Then Continue 'Skip showing Online Items at all when showing online and cache is off          
           If Not Exist(Replace(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)) Then Continue 'Don't show uncached items when Online is off and Cache not shown          
@@ -1119,7 +1126,7 @@ Public Sub GenerateMainList()
         
         
         'Check if duplcated and hide all but the first occurence
-        HideItem = False
+        
         Items.MoveFirst()
         For J = 1 To Items.Count 'This is the only way to access them in order as shown, so doesn't use ref keys
           'Print Data.Items[I, Data.CTitleName].Text & " " & Data.Items[I, Data.CVersion].Text & " = " & Items.Item.Text
@@ -1187,12 +1194,14 @@ Public Sub GenerateMainList()
         
         
         'Add Item 'Did get an error here, so may need to protect it better Glenn 2025
-        If Data.Items[I, Data.CIconRef].Text <> Null Then
-          If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok
-          
-            Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            
-          Else 'If Broken/missing Icon
-            Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
+        If HideItem = False Then ' Just in case it makes its way to here, still hide it
+          If Data.Items[I, Data.CIconRef].Text <> Null Then
+            If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok
+            
+              Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            
+            Else 'If Broken/missing Icon
+              Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
+            End If
           End If
         End If
         

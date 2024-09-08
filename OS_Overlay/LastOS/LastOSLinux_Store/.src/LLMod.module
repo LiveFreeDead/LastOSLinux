@@ -373,7 +373,11 @@ Public Function LoadSSFile(FileIn As String) As Boolean
         WinPath = ExpWinPath(LLAppPath)
         WinPath = Replace(WinPath, Chr(92), "/")
         WinPath = Replace(WinPath, "C:", User.Home & "/.wine/drive_c", gb.IgnoreCase)
-        If Exist(WinPath) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
+        'Message(WinPath)
+        If Exist(WinPath) = True Then
+          LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
+          'Print ("Found " & WinPath)
+        End If
       End If
       If LineID = "url" Then LLURL = Replace(LineData, "|", Chr(13))
       If LineID = "category" Then 
@@ -1256,6 +1260,14 @@ Public Function ExpPath(PathIn As String) As String
   PathIn = Replace(PathIn, "%LLGames%", Homes & "/LLGames", gb.IgnoreCase)
 
   PathIn = Replace(PathIn, "$HOME", Homes, gb.IgnoreCase) ' Do this last, so others longer have time to expand
+  
+    'Test if adding these breaks anything in Linux things, I think I convert it elsewhere, so should work?
+  PathIn = Replace(PathIn, "%ProgramFiles%", Homes & "/.wine/drive_c/" & "Program Files", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%SystemRoot%", Homes & "/.wine/drive_c/" & "Windows", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%SystemDrive%", Homes & "/.wine/drive_c/", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%WinDir%", Homes & "/.wine/drive_c/" & "Windows", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ProgramFiles(x86)%", Homes & "/.wine/drive_c/" & "Program Files (x86)", gb.IgnoreCase)
+  PathIn = Replace(PathIn, "%ProgramData%", Homes & "/.wine/drive_c/" & "ProgramData", gb.IgnoreCase)
   
   Return PathIn
 End
