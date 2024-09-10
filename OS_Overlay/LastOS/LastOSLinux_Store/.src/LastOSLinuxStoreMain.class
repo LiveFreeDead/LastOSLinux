@@ -8,6 +8,8 @@ Public FinishItemCount As Integer
 
 Public ForceStart As Boolean
 
+Public FailedDownload As Boolean
+
 Public ForcedRes As Boolean
 
 Public LocalDBFile As String = ".LLFileDB/LLFile_DB.ini"
@@ -2788,7 +2790,11 @@ Public Sub RunMiniInstaller()
       Else 'ssApp, still uses SetupS
         Shell "wine " & Chr(34) & ItemLocal & Chr(34) Wait 'This ties up the whole Store, no work around yet?
       End If
-      Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
+      If FailedDownload = False Then 'Success
+        Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
+      Else
+        Title.Text = "Failed to Install " & Data.Items[ItemToInstall, Data.CTitleName].Text
+      End If
     Else 'Linux Item
       OldTitle = Title.Text
       Title.Text = "Installing " & Data.Items[ItemToInstall, Data.CTitleName].Text    
@@ -2799,19 +2805,22 @@ Public Sub RunMiniInstaller()
       Wait (0.1) ' Lets the form Redraw before it starts installing
       LLMod.InstallLLFile(ItemLocal) ' Need to use FileINI not PathINI ' Uses Current Item value
       
-        'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
-        'Message(LLMod.LLScriptSudoContent)
-        If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
-          File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
-          
-          LLMod.LLScriptSudoContent = "" 'Clear it once done.
-          
-          Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
-          LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
-        End If  
-      
-      
-      Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle            
+      'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+      'Message(LLMod.LLScriptSudoContent)
+      If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
+        File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
+        
+        LLMod.LLScriptSudoContent = "" 'Clear it once done.
+        
+        Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
+        LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
+      End If  
+    
+      If FailedDownload = False Then 'Success
+        Title.Text = "Installed " & Data.Items[ItemToInstall, Data.CTitleName].Text  'OldTitle
+      Else
+        Title.Text = "Failed to Install " & Data.Items[ItemToInstall, Data.CTitleName].Text
+      End If
     End If
     Installing = False 'Job done   
     Return 'Just go back to main store, user can click off the item.
@@ -3166,7 +3175,7 @@ Public Sub GetRepositoryDatabase()
     For I = 0 To RepositoryListCount - 1
       
       'Get new Repo DB or keep old one otherwise
-      Shell "wget -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
+      Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
       If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db-new") Then
         Try Kill RepositoryPathLocal & "LastOSLinuxRepository.db" 'Kill any existing DB's if a new one is downloaded, just to make sure we aren't using an out of date DB
         Shell "mv -f " & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & " " & RepositoryPathLocal & "LastOSLinuxRepository.db" Wait
@@ -3261,6 +3270,7 @@ End
 
 Public Sub DownTime_Timer()
   Dim Test As String
+  Dim Proc As Process
   QueueUpTo = 0
   DownTime.Enabled = False  
   'DownloadingDone is the gate keeper, it'll make sure only one at a time downloads
@@ -3287,17 +3297,29 @@ Public Sub DownTime_Timer()
         Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
         Print "Skipping Missing Item: " & QueueURL[QueueUpTo]
       Else ' It exist, download it
+        FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
-        Shell "wget -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
           Wait (0.01)
+          'Print "Here: " & Proc.Value
           If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
+          If Proc.Value <> 0 Then 'Errored out
+            Break
+          End If
         Wend
-        If Exist(QueueLocal[QueueUpTo] & ".partial") Then 'If you don't have access to the file then it's better to try to delete it and then not move/overwrite as it asks if you want to try, this stops automation.
-          If Exist(QueueLocal[QueueUpTo]) Then Try Kill QueueLocal[QueueUpTo]
-          Shell "mv -f " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait          
+        If Proc.Value = 0 Then
+          If Exist(QueueLocal[QueueUpTo] & ".partial") Then 'If you don't have access to the file then it's better to try to delete it and then not move/overwrite as it asks if you want to try, this stops automation.
+            If Exist(QueueLocal[QueueUpTo]) Then Try Kill QueueLocal[QueueUpTo]
+            Shell "mv -f " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " " & Chr(34) & QueueLocal[QueueUpTo] & Chr(34) Wait          
+          End If
+          If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
+        Else 'Failed, Clean Up
+          Shell "notify-send " & Chr(34) & "Failed Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
+          Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
+          Print "Failed Downloading Item: " & QueueURL[QueueUpTo]
+          FailedDownload = True
         End If
-        If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
       End If
     End If    
     QueueUpTo = QueueUpTo + 1
