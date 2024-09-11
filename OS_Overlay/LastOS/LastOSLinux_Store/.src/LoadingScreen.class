@@ -186,6 +186,8 @@ End
 
 Public Sub LoadSettings(SettingsFile As String)
   If Exist(SettingsFile) Then
+    
+    Print "Loading Settings: " & SettingsFile
     Dim I As Integer
     'Load in Settings  
     Dim InSet As String
@@ -203,20 +205,22 @@ Public Sub LoadSettings(SettingsFile As String)
           LineData = Right(LineSet, Len(LineSet) - InStr(LineSet, "=", 1))
           LineSet = Left(LineSet, Len(LineSet) - Len(LineData))
           LineSet = Lower(Left(LineSet, Len(LineSet) - 1)) 'Lowercase and Remove =
-          LineSet = Replace(LineSet, "LLM.", "") 'Leftover setting mistake, leave in for now to repair settings file
+          LineSet = Replace(LineSet, "llm.", "") 'Leftover setting mistake, leave in for now to repair settings file
           Select Case LineSet
-          Case "QuitOnComplete"
+          Case "checkforupdate"
+            LLM.CheckForUpdate = LLMod.IsTrue(LineData)            
+          Case "quitoncomplete"
             If LLM.QuitOnComplete = False Then LLM.QuitOnComplete = LLMod.IsTrue(LineData) 'If it's already tru then it was given in the command line, so leave it set to that
-          Case "UseOnlineRepository"
+          Case "useonlinerepository"
             LLM.UseOnlineRepository = LLMod.IsTrue(LineData)
             If LLM.UseOnlineRepository = False Then LLM.HideOnline = True ' No point in showing the items if they are turned of, but the user still can if they want (local cached items etc), if LLM.UseCacheRepository it will still show them ones
-          Case "UseCacheRepository" 
+          Case "usecacherepository" 
             LLM.UseCacheRepository = LLMod.IsTrue(LineData)
-          Case "UseLocalDBFiles"
+          Case "uselocaldbfiles"
             LLM.UseLocalDBFiles = LLMod.IsTrue(LineData)
-          Case "UseVideoPlayback"
+          Case "usevideoplayback"
             LLM.UseVideoPlayback = LLMod.IsTrue(LineData)
-          Case "VideoVolume"
+          Case "videovolume"
             LLM.VideoVolume = Val(LineData) / 100 '(0.1 To 1.0 Is Full volume)so divide 100 by 100 To get 1(100%)
             If LLM.VideoVolume > 1 Then LLM.VideoVolume = 1
           Case "mntscan"

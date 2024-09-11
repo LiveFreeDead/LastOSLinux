@@ -84,6 +84,7 @@ Public AutoInstall As Boolean
 Public WebLinksLink As New String[999]
 Public WebLinksName As New String[999]
 Public WebLinksCount As Integer
+Public OldPathScan As String
 
 
 'LLM = Last Linux Module
@@ -92,6 +93,8 @@ Public Sub Form_Open()
   Dim LocalVersion As String
   Dim OrigArgs As String
   Dim S As String
+  
+  OldPathScan = ""
   
   'Make sure local Repo is in place or DownloadDone will fail to be created and everything breaks.
   If Not Exist(RepositoryPathLocal) Then Shell "mkdir -p " & Chr(34) & RepositoryPathLocal & Chr(34) Wait
@@ -103,92 +106,97 @@ Public Sub Form_Open()
   'Shell "echo " & Chr(34) & Application.Version & Chr(34) & " > " & LLMod.Slashed(LLM.AppPath) & "version"
   'No need for above, we have a .version file made anyway
   
-  Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
-  Try Kill "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
-  Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-  Try Kill "/tmp/version" ' Clear previous checks
-  Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
-  GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
-  While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
-    Wait (0.01)
-    If ForceClose = True Then Quit ' No point in looping the user already quit
-    If Exist("/tmp/version") Then Break 'Gets out of While, it's downloaded
-  Wend
-  If Not Exist(RepositoryPathLocal & "FailedDownload") Then 'If can't download the version file, then there is no internet?
-    Try RemoteVersion = Trim(File.Load("/tmp/version"))  
-    LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
-    RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
-    If LocalVersion <> "" And RemoteVersion <> "" Then
-      
-      Installing = True
-      'Message(LocalVersion & " = " & RemoteVersion)
-      If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
-        LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
-        Wait (0.03)
-        Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
-        Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-        GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
-        While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
-          Wait (0.01)
-          If ForceClose = True Then Quit ' No point in looping the user already quit
-          If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
-        Wend
+  If LLM.CheckForUpdate = True Then
+    Print "Checking for Update..."
+    Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+    Try Kill "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+    Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+    Try Kill "/tmp/version" ' Clear previous checks
+    Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
+    GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
+    While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+      Wait (0.01)
+      If ForceClose = True Then Quit ' No point in looping the user already quit
+      If Exist("/tmp/version") Then Break 'Gets out of While, it's downloaded
+    Wend
+    If Not Exist(RepositoryPathLocal & "FailedDownload") Then 'If can't download the version file, then there is no internet?
+      Try RemoteVersion = Trim(File.Load("/tmp/version"))  
+      LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
+      RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
+      If LocalVersion <> "" And RemoteVersion <> "" Then
         
-        If Exist("/tmp/LastLinuxStore.gambas") Then 'Downloaded, install update     
-          Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
-          Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
-          Shell "mv -f /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
-          Shell "mv -f /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
-          Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
-          
-          '------------------------------
-          'Also Update LLApp.gambas if the store updated
-          Try Kill "/tmp/LLApp.gambas" ' Clear previous download
+        Installing = True
+        'Message(LocalVersion & " = " & RemoteVersion)
+        If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
+          LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
+          Wait (0.03)
+          Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
           Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-          GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas", "/tmp/LLApp.gambas")
+          GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
           While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
             Wait (0.01)
             If ForceClose = True Then Quit ' No point in looping the user already quit
-            If Exist("/tmp/LLApp.gambas") Then Break 'Gets out of While, it's downloaded
+            If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
           Wend
           
-          If Exist("/tmp/LLApp.gambas") Then 'Downloaded, install update
-            Shell "chmod +x /tmp/LLApp.gambas" Wait
-            Chmod "/tmp/LLApp.gambas" To "rwxrwxr--" 'Make file executable
-            Shell "mv -f /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
-            Shell "mv -f /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
-            Shell "chmod +x /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
-          End If
-          '-----------------------------
-          
-          
-          OrigArgs = ""
-          For Each S In Args
-            S = Trim(S)
-            If S <> "" Then 
-              OrigArgs = OrigArgs & " " & S
+          If Exist("/tmp/LastLinuxStore.gambas") Then 'Downloaded, install update     
+            Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
+            Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
+            Shell "mv -f /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
+            Shell "mv -f /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+            Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+            
+            '------------------------------
+            'Also Update LLApp.gambas if the store updated
+            Try Kill "/tmp/LLApp.gambas" ' Clear previous download
+            Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+            GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas", "/tmp/LLApp.gambas")
+            While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+              Wait (0.01)
+              If ForceClose = True Then Quit ' No point in looping the user already quit
+              If Exist("/tmp/LLApp.gambas") Then Break 'Gets out of While, it's downloaded
+            Wend
+            
+            If Exist("/tmp/LLApp.gambas") Then 'Downloaded, install update
+              Shell "chmod +x /tmp/LLApp.gambas" Wait
+              Chmod "/tmp/LLApp.gambas" To "rwxrwxr--" 'Make file executable
+              Shell "mv -f /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
+              Shell "mv -f /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
+              Shell "chmod +x /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
             End If
-          Next
-          Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" & OrigArgs 'The args transfer to next call after update
-          LoadingScreen.Hide 'Just hide the loading screen until we quit after a second, then the new one will start
-          Wait (1)
-          Quit
+            '-----------------------------
+            
+            
+            OrigArgs = ""
+            For Each S In Args
+              S = Trim(S)
+              If S <> "" Then 
+                OrigArgs = OrigArgs & " " & S
+              End If
+            Next
+            Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" & OrigArgs 'The args transfer to next call after update
+            LoadingScreen.Hide 'Just hide the loading screen until we quit after a second, then the new one will start
+            Wait (1)
+            Quit
+          End If
         End If
+        
+        Installing = False
       End If
-      
-      Installing = False
     End If
-  End If 
-  
+  End If 'End of Checking for update
+    
   'Get remote database of online web links to speed up download
-  Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-  Try Kill "/LastOS/LastOSLinux_Store/RemoteWebLinks.db" ' Clear previous checks  
-  GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/WebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
-  While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
-    Wait (0.01)
-    If ForceClose = True Then Quit ' No point in looping the user already quit
-    If Exist("/LastOS/LastOSLinux_Store/RemoteWebLinks.db") Then Break 'Gets out of While, it's downloaded
-  Wend
+  If LLM.UseOnlineRepository = True Then
+    Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+    Try Kill "/LastOS/LastOSLinux_Store/RemoteWebLinks.db" ' Clear previous checks  
+    GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/WebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
+    While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+      Wait (0.01)
+      If ForceClose = True Then Quit ' No point in looping the user already quit
+      If Exist("/LastOS/LastOSLinux_Store/RemoteWebLinks.db") Then Break 'Gets out of While, it's downloaded
+    Wend
+  End If
   
   'Clean Up, if ran Store as root, then when you run as standard user these files are not writable
   Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new version is working, so all good
@@ -299,7 +307,7 @@ Public Sub Form_Open()
     
   'Get WebLinks
   If LLMod.StoreMode = 0 Then
-    LoadWebLinks()
+    If LLM.UseOnlineRepository = True Then LoadWebLinks()
   End If
  
   'Get Local Items
@@ -735,6 +743,9 @@ End
 
 Public Sub GetFromLocalDB(InPath As String)
   
+  If InPath = OldPathScan Then Return 'We just scanned that one, get out
+  OldPathScan = InPath
+  
     'Check DB file here
   Dim LocalDB As String
 
@@ -749,6 +760,9 @@ Public Sub GetFromLocalDB(InPath As String)
   Dim SkipItem As Boolean
   
   Dim LoadedIcon As Image
+  
+  Print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  Print InPath
   
   LocalDB = InPath & LocalDBFile
   
@@ -769,7 +783,7 @@ Public Sub GetFromLocalDB(InPath As String)
             If Data.Items[J, Data.CTitleName].Text & Data.Items[J, Data.CVersion].Text = InRepoSpTx[Data.CTitleName - 1] & InRepoSpTx[Data.CVersion - 1] Then SkipItem = True 'Skip Duplicated Items (Adds different versions though)
           Next
         End If
-        If SkipItem = False Then 'Only add new items
+        If SkipItem = False Then 'Only add new items          
           Data.Items.Rows.Count = Data.Items.Rows.Count + 1 'Always Add a row before starting
           DRows = Data.Items.Rows.Count - 1
           LLM.DataItemsRows = DRows
@@ -778,7 +792,7 @@ Public Sub GetFromLocalDB(InPath As String)
             If K <= Data.Items.Columns.Count - 1 Then 
               'Replace all %dbpath%/ with InPath
               InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "%dbpath%/", InPath) 'Change all to this, Hopefully the sub folders are kept in the wtiring loop below, or I'll have to add it
-              
+              'Print InRepoSpTx[K - 1]
               'If K = Data.CPathINI Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "%dbpath%", CurrentRepositoryURL) 'Adds download URL to item    
               If K = Data.CDescription Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], Chr(30), Chr(13)) 'Testing chr 13 for description, may need 10
               If K = Data.CURL Then InRepoSpTx[K - 1] = Replace(InRepoSpTx[K - 1], "|", Chr(13)) 'Testing chr 13 for description, may need 10
@@ -1440,13 +1454,19 @@ Public Sub Items_Click()
   RealPath = Data.Items[RefsID, Data.CFileFader].Text
   
   If InStr(Data.Items[RefsID, Data.CFileFader].Text, "%dbpath%/", 1) >= 1 Then
+    
+    
     RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
     ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
-    
-    'Now get Fader
-    If Not Exist(RealPath) Then 'Get Fader from online repo if missing
-      GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".png", RealPath)
-    End If  
+    If Left(ItemRepositoryURL, 1) = "/" Then 'Local Database
+      RealPath = Data.Items[RefsID, Data.CFileFader].Text
+      RealPath = Replace(RealPath, "%dbpath%/", ItemRepositoryURL & ".LLFileDB/")
+    Else 'Remote
+      'Now get Fader
+      If Not Exist(RealPath) Then 'Get Fader from online repo if missing
+        GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".png", RealPath)
+      End If
+    End If
   End If
   
   If Exist(RealPath) Then
@@ -1470,11 +1490,16 @@ Public Sub Items_Click()
     RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
     ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
     
-    If Not Exist(RealPath) Then 'Get screenshot from online repo if missing
-      GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".jpg", RealPath)
-    End If  
+    If Left(ItemRepositoryURL, 1) = "/" Then 'Local Database
+      RealPath = Data.Items[RefsID, Data.CFileScreenshot].Text
+      RealPath = Replace(RealPath, "%dbpath%/", ItemRepositoryURL & ".LLFileDB/")
+    Else 'Remote
+      If Not Exist(RealPath) Then 'Get screenshot from online repo if missing
+        GetOnlineFile(ItemRepositoryURL & "database/" & UN & ".jpg", RealPath)
+      End If  
+    End If
   End If
-  
+  'Message(RealPath)
   'Change Screenshot to current
   If Exist(RealPath) Then
     'Must use Try or it will error out on dud pictures
@@ -3300,8 +3325,6 @@ Public Sub DownTime_Timer()
     If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
     
     'Get Weblinks and substitute URL's if found
-    'WebLinksName[WebLinksCount] & " = " & WebLinksLink[WebLinksCount]
-    'Print QueueLocal[QueueUpTo] 
     GetURL = QueueURL[QueueUpTo]
     If WebLinksCount >= 1 Then
       For I = 0 To WebLinksCount - 1
@@ -3314,12 +3337,6 @@ Public Sub DownTime_Timer()
     Shell "curl --head --silent " & Chr(34) & GetURL & Chr(34) & " | head -n 1" To Test 'This is slow at times, but it's the only way
     Print "Curl Test: )" & Test & "("
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
-      'QueueUpTo = 0
-      'QueueCount = 0
-      'Downloading = False
-      'Wait (0.01)
-      'If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
-      'Return
       Print "Failed: " & GetURL
       Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
     Else ' Try to get item

@@ -2,6 +2,7 @@
 
 Public HideOnline As Boolean
 
+Public CheckForUpdate As Boolean = True
 Public QuitOnComplete As Boolean
 Public UseOnlineRepository As Boolean = True ' Default to using online repo
 Public UseCacheRepository As Boolean = True
