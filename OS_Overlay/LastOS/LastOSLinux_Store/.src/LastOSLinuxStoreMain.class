@@ -180,9 +180,19 @@ Public Sub Form_Open()
     End If
   End If 
   
+  'Get remote database of online web links to speed up download
+  Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+  Try Kill "/LastOS/LastOSLinux_Store/RemoteWebLinks.db" ' Clear previous checks  
+  GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/WebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
+  While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+    Wait (0.01)
+    If ForceClose = True Then Quit ' No point in looping the user already quit
+    If Exist("/LastOS/LastOSLinux_Store/RemoteWebLinks.db") Then Break 'Gets out of While, it's downloaded
+  Wend
+  
   'Clean Up, if ran Store as root, then when you run as standard user these files are not writable
-  Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
-  Try Kill "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" ' Clear old version, this can't happen unless the new verwsion is working, so all good
+  Try Kill "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" ' Clear old version, this can't happen unless the new version is working, so all good
+  Try Kill "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" ' Clear old version, this can't happen unless the new version is working, so all good
   Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
   Try Kill "/tmp/version" ' Clear previous checks
   Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous checks
@@ -3263,6 +3273,7 @@ Public Sub GetOnlineFile(URL As String, OutPutFile As String)
       If QueueURL[I] = URL Then Return 'Skip existing URL download already queued up
     Next
   End If
+  Print "Downloading: " & URL & " to " & OutPutFile
   'URL = Replace(URL, "(", Chr(92) & "(") 'Add Break characters for special characters, noit needed as I put quotes around them, so bash ignores special characters now (in shell)
   'URL = Replace(URL, ")", Chr(92) & ")")
   QueueURL[QueueCount] = URL
@@ -3291,7 +3302,7 @@ Public Sub DownTime_Timer()
     'Get Weblinks and substitute URL's if found
     'WebLinksName[WebLinksCount] & " = " & WebLinksLink[WebLinksCount]
     'Print QueueLocal[QueueUpTo] 
-    GetURL = QueueLocal[QueueUpTo]
+    GetURL = QueueURL[QueueUpTo]
     If WebLinksCount >= 1 Then
       For I = 0 To WebLinksCount - 1
         LocalName = Replace(QueueLocal[QueueUpTo], RepositoryPathLocal, "") 'Remove Path, just use File Name
@@ -3299,8 +3310,9 @@ Public Sub DownTime_Timer()
       Next
     End If
     'Check Remote file exist, else it'll fail
+    Print "Cheking: " & GetURL
     Shell "curl --head --silent " & Chr(34) & GetURL & Chr(34) & " | head -n 1" To Test 'This is slow at times, but it's the only way
-    'Print "Curl Test: P" & Test & "P"
+    Print "Curl Test: )" & Test & "("
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
       'QueueUpTo = 0
       'QueueCount = 0
@@ -3308,6 +3320,7 @@ Public Sub DownTime_Timer()
       'Wait (0.01)
       'If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
       'Return
+      Print "Failed: " & GetURL
       Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
     Else ' Try to get item
       If InStr(Test, "404", 1) Then '404 not found
@@ -3319,6 +3332,7 @@ Public Sub DownTime_Timer()
       Else ' It exist, download it
         FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Print "Downloading: " & GetURL
         Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
           Wait (0.01)
@@ -3448,8 +3462,8 @@ Public Sub LoadWebLinks()
   Dim InFavSp As String[]
   Dim TemStrSp As String[]
   If LLMod.StoreMode = 0 Then
-    If Exist(LLM.AppPath & "/WebLinks.db") Then
-      Try InFavs = File.Load(LLM.AppPath & "/WebLinks.db")
+    If Exist(LLM.AppPath & "/RemoteWebLinks.db") Then
+      Try InFavs = File.Load(LLM.AppPath & "/RemoteWebLinks.db")
       InFavs = Replace(InFavs, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
       InFavSp = Split(InFavs, Chr(10))
       For I = 0 To InFavSp.Count - 1
