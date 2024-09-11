@@ -81,6 +81,10 @@ Public HidePaid As Boolean
 
 Public AutoInstall As Boolean
 
+Public WebLinksLink As New String[999]
+Public WebLinksName As New String[999]
+Public WebLinksCount As Integer
+
 
 'LLM = Last Linux Module
 Public Sub Form_Open()
@@ -282,8 +286,11 @@ Public Sub Form_Open()
   Data.ClearDataFields() 'This now does the Column Adding and naming scheme
   
   Wait (0.01) 'Lets loading screen show
-  
-
+    
+  'Get WebLinks
+  If LLMod.StoreMode = 0 Then
+    LoadWebLinks()
+  End If
  
   'Get Local Items
   GetExcludedMounts() 'So My HDD's can sleep well knowing they have no items to scan
@@ -3271,6 +3278,9 @@ End
 Public Sub DownTime_Timer()
   Dim Test As String
   Dim Proc As Process
+  Dim I As Integer
+  Dim LocalName As String
+  Dim GetURL As String
   QueueUpTo = 0
   DownTime.Enabled = False  
   'DownloadingDone is the gate keeper, it'll make sure only one at a time downloads
@@ -3278,8 +3288,18 @@ Public Sub DownTime_Timer()
   While QueueUpTo < QueueCount
     If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
     
+    'Get Weblinks and substitute URL's if found
+    'WebLinksName[WebLinksCount] & " = " & WebLinksLink[WebLinksCount]
+    'Print QueueLocal[QueueUpTo] 
+    GetURL = QueueLocal[QueueUpTo]
+    If WebLinksCount >= 1 Then
+      For I = 0 To WebLinksCount - 1
+        LocalName = Replace(QueueLocal[QueueUpTo], RepositoryPathLocal, "") 'Remove Path, just use File Name
+        If WebLinksName[I] = LocalName Then GetURL = WebLinksLink[I] 'Use WebLinks if file name is found in that list
+      Next
+    End If
     'Check Remote file exist, else it'll fail
-    Shell "curl --head --silent " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " | head -n 1" To Test 'This is slow at times, but it's the only way
+    Shell "curl --head --silent " & Chr(34) & GetURL & Chr(34) & " | head -n 1" To Test 'This is slow at times, but it's the only way
     'Print "Curl Test: P" & Test & "P"
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
       'QueueUpTo = 0
@@ -3293,13 +3313,13 @@ Public Sub DownTime_Timer()
       If InStr(Test, "404", 1) Then '404 not found
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
         Test = ""
-        Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & GetURL & Chr(34)
         Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
-        Print "Skipping Missing Item: " & QueueURL[QueueUpTo]
+        Print "Skipping Missing Item: " & GetURL
       Else ' It exist, download it
         FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
-        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & QueueURL[QueueUpTo] & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
           Wait (0.01)
           'Print "Here: " & Proc.Value
@@ -3315,9 +3335,9 @@ Public Sub DownTime_Timer()
           End If
           If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
         Else 'Failed, Clean Up
-          Shell "notify-send " & Chr(34) & "Failed Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
+          Shell "notify-send " & Chr(34) & "Failed Downloading Item: " & QueueLocal[QueueUpTo] & Chr(34)
           Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
-          Print "Failed Downloading Item: " & QueueURL[QueueUpTo]
+          Print "Failed Downloading Item: " & QueueLocal[QueueUpTo]
           FailedDownload = True
         End If
       End If
@@ -3414,5 +3434,35 @@ End
 Public Sub RunDelay_Timer()
   RunDelay.Enabled = False
   StartPushed()
+End
 
+
+Public Sub LoadWebLinks()  
+  Dim I As Integer
+  
+  WebLinksCount = 0
+  
+  'Load in Favorites if exists
+  FavCount = 0
+  Dim InFavs As String
+  Dim InFavSp As String[]
+  Dim TemStrSp As String[]
+  If LLMod.StoreMode = 0 Then
+    If Exist(LLM.AppPath & "/WebLinks.db") Then
+      Try InFavs = File.Load(LLM.AppPath & "/WebLinks.db")
+      InFavs = Replace(InFavs, Chr(13), Chr(10)) ' Convert to chr(10) not Chr(13)
+      InFavSp = Split(InFavs, Chr(10))
+      For I = 0 To InFavSp.Count - 1
+        If Trim(InFavSp[I]) <> "" Then
+          If InStr(InFavSp[I], "|", 1) >= 2 Then
+            TemStrSp = Split(Trim(InFavSp[I]), "|")
+            WebLinksName[WebLinksCount] = Trim(TemStrSp[0])
+            WebLinksLink[WebLinksCount] = Trim(TemStrSp[1])            
+            'Print WebLinksName[WebLinksCount] & " = " & WebLinksLink[WebLinksCount]
+            WebLinksCount = WebLinksCount + 1
+          End If
+        End If
+      Next
+    End If
+  End If
 End

@@ -332,7 +332,17 @@ Public Function LoadSSFile(FileIn As String) As Boolean
   'Load whole file and Split it into individual Lines      
   Dim LLFile As String[]
   Dim LineID, LineData As String
-  hFile = Open FileIn For Input
+  If IsDir(FileIn) Then 'It's failed to extract the file, so only gives a folder, print error and return
+    ClearLLData()
+    Print "Error: " & FileIn & " Broken"
+    Return False  
+  End If
+  Try hFile = Open FileIn For Input
+  If hFile = Null Then
+    ClearLLData()
+    Print "Error: " & FileIn & " Broken"
+    Return False  
+  End If
   WholeFile = hFile.Load(FileIn)
   WholeFile = Replace(WholeFile, Chr(10), Chr(13)) ' Convert end of line to return (CRLF)
   LLFile = Split(WholeFile, Chr(13))' "\n")
