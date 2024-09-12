@@ -623,7 +623,7 @@ Public Sub GetWineItemsFromPath(InPath As String)
     
   End If
   
-  
+  Print "Here: StaC: " & Str(StartItemCount) & " MidC: " & Str(MidItemCount) & " InP: " & InPath & " Rescan: " & RescanThis
   If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
    'Get Folders then files
    'Compressed ones first, only check the root folders for them though
@@ -734,7 +734,10 @@ Public Sub SaveToLocalDB(InPath As String)
     Next
     If RepoContent <> "" Then 'Don't bother with an empty file
       Try File.Save(LocalDB, RepoContent) 'Save DB File if able to
-      Shell "touch " & Chr(34) & LocalDBCache & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
+      Try Shell "touch " & Chr(34) & LocalDBCache & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
+      If Not Exist(LocalDBCache & ".a") Then 'Touch failed, just make the file with echo
+        Try Shell "echo '.' > " & Chr(34) & LocalDBCache & ".a" & Chr(34) ' Create DB to make it up to date, only if a DB is made and so it skips making a new db unless forced rescan
+      End If
     End If
   End If
 End
@@ -863,6 +866,7 @@ Public Sub AddItem()
   Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
 
   'Load Icon ready to add here
+  'Print "Icon: " & LLMod.LLIconFile
   If LLMod.LLIconFile <> "" And Exist(LLMod.LLIconFile) Then LoadedIcon = Image.Load(LLMod.LLIconFile)
   
   'Add Icon and add ReferenceID       
@@ -3114,6 +3118,7 @@ Public Sub BuildRepository()
     
     'Check if item is local or skip (can't build a repo with remote items)
     If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
+    If InStr(Data.Items[I, Data.CFileScreenshot].Text, "%dbpath%/", 1) Then Continue 'Some of the files are incorrect, so this double checks it's not a remote item
     
     UN = Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "") & Data.Items[I, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[I, Data.CVersion].Text)
     
@@ -3163,6 +3168,23 @@ Public Sub BuildRepository()
         Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
         Tx = Replace(Tx, Chr(10), "|") 'Convert CRLF to Pipe splitter
       End If
+      
+      
+      'Remove Link data, It's not used in Online DB's
+      If J = Data.CLnkArguments Then Tx = ""
+      If J = Data.CLnkAssociations Then Tx = ""
+      If J = Data.CLnkCategories Then Tx = ""
+      If J = Data.CLnkComment Then Tx = ""
+      If J = Data.CLnkDescription Then Tx = ""
+      If J = Data.CLnkExec Then Tx = ""
+      If J = Data.CLnkFlags Then Tx = ""
+      If J = Data.CLnkIcon Then Tx = ""
+      If J = Data.CLnkMultiple Then Tx = ""
+      If J = Data.CLnkParentRef Then Tx = ""
+      If J = Data.CLnkRunPath Then Tx = ""
+      If J = Data.CLnkTerminal Then Tx = ""
+      If J = Data.CLnkTitle Then Tx = ""
+      
             
       RepoLine &= Tx & ",|,"
     Next
@@ -3343,9 +3365,12 @@ Public Sub DownTime_Timer()
       If InStr(Test, "404", 1) Then '404 not found
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
         Test = ""
-        Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & GetURL & Chr(34)
+        If Right(GetURL, 4) = ".jpg" Or Right(GetURL, 4) = ".png" Then
+        Else 'Only show missing for actual Items, not just their screenshots and faders
+          Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & GetURL & Chr(34)        
+          Print "Skipping Missing Item: " & GetURL
+        End If
         Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
-        Print "Skipping Missing Item: " & GetURL
       Else ' It exist, download it
         FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
