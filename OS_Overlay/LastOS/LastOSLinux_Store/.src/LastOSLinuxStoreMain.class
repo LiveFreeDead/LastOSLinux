@@ -1,5 +1,7 @@
 ' Gambas class file
 
+'Adding /LastOS/RepoBuilderNoCache Will make the cache loading always off, so as to not interfere with making repositories
+
 'Public LLMod.StoreMode As Integer = 1 '0 Is Install Mode, 1 Is Launcher Mode (moved to LLMod now)
 
 Public StartItemCount As Integer
