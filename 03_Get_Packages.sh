@@ -22,7 +22,7 @@ sudo apt-get -qq update -y
 
 #Get Apps and Games 
 #To Get Proton working - Steam needs to be ran and logged in, then you need to add a game and configure a game to use Proton compatability, then you can right click a .exe and open it with proton using that games configurations)
-sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-customizer notepadqq bleachbit cpu-x flameshot gparted htop jstest-gtk simplescreenrecorder rar unrar catfish qbittorrent uget dconf-editor meld xfburn asunder qpdfview mediainfo-gui kid3 ffmpegthumbs remmina rapid-photo-downloader pdfarranger soundconverter cherrytree retext stacer makeself archivemount gambas3 fastfetch dos2unix
+sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-customizer notepadqq bleachbit cpu-x flameshot gparted htop jstest-gtk simplescreenrecorder rar unrar catfish qbittorrent uget dconf-editor meld xfburn asunder qpdfview mediainfo-gui kid3 ffmpegthumbs remmina rapid-photo-downloader pdfarranger soundconverter cherrytree retext stacer makeself archivemount gambas3 fastfetch dos2unix nomacs
 
 #krita <-This needs resources, so not including it as default
 

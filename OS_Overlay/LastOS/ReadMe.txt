@@ -89,11 +89,10 @@ Bugs and Limitations:
 
 Do NOT ever use " " (space) as a password it breaks things, you can use single letters or numbers in LastOSLinux, just not space.
 
-nVidia Graphics can be problematic with WINE and if you intend to use older games and apps, then you may be better leaving the Noveau Open Sourced drivers installed instead of the nVidia ones. But if you only want to use Steam and Modern games, then you will be better to install the closed sourced nVidia drivers. As the Drivers are only able to access features included in certain kernel version you might find that unless your running a newer kernel, you will not be able to install the newer graphics drivers, on Linux the newer drivers really only add new hardware support, so there isn't a reason to keep your graphics drivers up to date, just find one that works well for you and stick to it.
 
 If you have a problem with your screen not waking up, press Ctrl + Alt + F2 to switch to a terminal window, then once you see the terminal press Ctrl + Alt + F7 to switch back to the desktop. this works 99.9% of the time, the other .1% you will have to go back to terminal and type reboot as the x server crashes (but it's rare).
 
-Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences.
+Disable ToolTips in Photoshop to stop the annoying ToolTip bug, It's in the Tools section of Edit - Preferences. (This is done by default)
 
 
 
@@ -326,6 +325,8 @@ Meld - Compare file content or folders and compare differences
 Mouse and Touchpad - Change left/right button, speed, cursor size, scroll direction etc
 
 Network - Manage your Network connections and see your IP address etc
+
+nomacs - Much like Irfanview
 
 Notepad - WINE's notepad tool
 
