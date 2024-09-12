@@ -218,6 +218,8 @@ Public Sub LoadSettings(SettingsFile As String)
             LLM.UseCacheRepository = LLMod.IsTrue(LineData)
           Case "uselocaldbfiles"
             LLM.UseLocalDBFiles = LLMod.IsTrue(LineData)
+          Case "uselocal"
+            LLM.UseLocal = LLMod.IsTrue(LineData)
           Case "usevideoplayback"
             LLM.UseVideoPlayback = LLMod.IsTrue(LineData)
           Case "videovolume"

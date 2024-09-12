@@ -490,18 +490,20 @@ Public Sub GetItemsInPath(DirToCheck As String)
     GetLLItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
     GetWineItemsFromPath(DirToCheck) 'Same as above
     If LLMod.StoreMode = 0 Then
-      GetLLItemsFromPath(DirToCheck & "LLAppsInstalls/")
-      GetLLItemsFromPath(DirToCheck & "LLGamesInstalls/")
-      GetLLItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
-      GetLLItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
-      
-      GetWineItemsFromPath(DirToCheck & "ssAppsInstalls/")
-      GetWineItemsFromPath(DirToCheck & "ppAppsInstalls/")
-      GetWineItemsFromPath(DirToCheck & "ppGamesInstalls/")
-      GetWineItemsFromPath(DirToCheck & "ppAppsLive/")    
-      GetWineItemsFromPath(DirToCheck & "ssTek/ssAppsInstalls/")
-      GetWineItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
-      GetWineItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
+      If LLM.UseLocal = True Then
+        GetLLItemsFromPath(DirToCheck & "LLAppsInstalls/")
+        GetLLItemsFromPath(DirToCheck & "LLGamesInstalls/")
+        GetLLItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
+        GetLLItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
+        
+        GetWineItemsFromPath(DirToCheck & "ssAppsInstalls/")
+        GetWineItemsFromPath(DirToCheck & "ppAppsInstalls/")
+        GetWineItemsFromPath(DirToCheck & "ppGamesInstalls/")
+        GetWineItemsFromPath(DirToCheck & "ppAppsLive/")    
+        GetWineItemsFromPath(DirToCheck & "ssTek/ssAppsInstalls/")
+        GetWineItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
+        GetWineItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
+      End If
     Else 'Launcher Mode
       GetLLItemsFromPath(DirToCheck & "LLGames/")
       GetWineItemsFromPath(DirToCheck & "LLGames/")
