@@ -9,26 +9,14 @@ Right Click Desktop - Customize - Icon Spacing on Desktop so top left icon is wh
 
 Menu - Themes - Settings - Turn off "Jump to position when clicking in a trough (I like to go a page at a time)
 
-Menu - Login - Settings - Slide Numlock On, Change Mouse to DMZ-White, Check Icon & Theme etc on main page
+Menu - Login - Settings - Slide Numlock On, Change Mouse to DMZ-White, Check Icon & Theme and wallpaper etc on main page
 
 Right Click the Menu Button, Choose Configure - Set the icon size to 42 (Will make it slightly bigger)
 
 Pin Items you want to panel(s) - You can replace the OS_Overlay\etc\skel\.config\cinnamon\spices\grouped-window-list@cinnamon.org\2.json to change the panel items by copying the new panel from Main User.
 
+Set default associations (I will try to automate this job, but required for now)
+
 ? Do a folder Share so files are added and user is configured <- Leave this to each user post install.
 
 -----------------------------
-
-
-Below isn't required anymore, added --file LastOSeggs.yaml to root of this folder works with 10.0.0.10-1+
-
-* NOTE Script 09 will require you to configure the settings: (*** DON'T USE SPACE, needs to be live or something as space doesn't work in the LiveOS to elevate to sudo), use a different password for root so you can run GParted from the menu, needs root password, not live user.
-
-#LastOS <- Prefix name
-#Linux <- basename
-#LiveCD user: live
-#password: live
-#root password: root
-#compression (fast for testing, max for release)
-
-## Above saved to /etc/penguins-eggs.d/eggs.yaml - But has your Linux Kernel version generated in it so can't overlay.
