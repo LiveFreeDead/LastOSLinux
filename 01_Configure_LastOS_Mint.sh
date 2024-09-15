@@ -31,6 +31,10 @@ sudo apt install -y 7zip
 #Removing sudo apt install -y spice-vdagent qemu-guest-agent as it seems to cause instabilities
 sudo apt remove -y spice-vdagent qemu-guest-agent
 
+#Adding vhd support using guestmount, also needs access to kernel folder which newer ubuntu's disabled.
+sudo apt install -y libguestfs-tools
+sudo chmod 0644 /boot/vmlinuz*
+
 #turn on numlock
 numlockx on
 
