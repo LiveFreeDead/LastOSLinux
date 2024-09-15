@@ -108,13 +108,20 @@ gsettings set org.nemo.preferences default-folder-viewer 'compact-view'
 #gsettings set org.nemo.preferences inherit-folder-viewer true #Not Needed when default view is set
 gsettings set org.nemo.preferences show-full-path-titles true
 
+#Get thumbnails for images up to 30mb
+gsettings set org.nemo.preferences thumbnail-limit 30485760
+
 gsettings set org.nemo.preferences show-new-folder-icon-toolbar true
 gsettings set org.nemo.preferences show-open-in-terminal-toolbar true
 gsettings set org.nemo.preferences show-computer-icon-toolbar true
 
+#Sound FX
 gsettings set org.cinnamon.sounds login-enabled false
 gsettings set org.cinnamon.sounds logout-enabled false
 gsettings set org.cinnamon.sounds notification-enabled false
+gsettings set org.cinnamon.desktop.sound volume-sound-enabled true
+gsettings set org.cinnamon.desktop.sound volume-sound-file "/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"
+
 
 #Show hover tooltips on files/folders (Not everyone will want this, I should make a Settings choices app)
 gsettings set org.nemo.preferences tooltips-show-file-type true
