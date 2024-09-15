@@ -12,13 +12,16 @@
 ##winehq-stable
 
 #Changed to using default WINE included in Mint repository, end users can choose to install devel wine (which breaks from time to time).
-sudo apt install --yes --install-recommends wine winetricks protontricks
+sudo apt install --yes --install-recommends wine winetricks 
+
+#Disabled Proton Tricks, users can grab it as needed, it takes over Wine associations
+#protontricks
 
 #the OS_Overlay\etc\skel\.cache\wine\wine-mono-x.x.x-x86.msi makes it not need to ask and download it, remember to copy to current user.
 
 #For mint only (also exe-thumbnailer is renamed to icoextract-thumbnailer in debian but doesn't seem to work
 #wine-desktop-files
-sudo apt install --yes wine-desktop-files exe-thumbnailer 
+sudo apt install --yes wine-desktop-files exe-thumbnailer wine-binfmt
 
 #We Need Wine Mono for it to be silent for current user
 mkdir -p $HOME/.cache/wine 2>/dev/null
