@@ -1,21 +1,22 @@
 #!/bin/bash
 
-##Add Repo's
-##This requires you add i386 support to your linux, it's quite large, but required.
-#sudo dpkg --add-architecture i386
-#sudo mkdir -pm755 /etc/apt/keyrings
-#sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
-#sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
-#sudo apt-get update
-#sudo apt install --yes --install-recommends winehq-devel
+#Add Repo's
+#This requires you add i386 support to your linux, it's quite large, but required.
+sudo dpkg --add-architecture i386
+sudo mkdir -pm755 /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
+sudo apt-get update
+sudo apt install --yes --install-recommends winehq-devel
 ##winehq-devel
 ##winehq-stable
 
 #Changed to using default WINE included in Mint repository, end users can choose to install devel wine (which breaks from time to time).
-sudo apt install --yes --install-recommends wine winetricks 
+sudo apt install --yes --install-recommends winetricks protontricks
 
-#Disabled Proton Tricks, users can grab it as needed, it takes over Wine associations
-#protontricks
+#The mint repository of wine v9.0 doesn't do file associations or install mono correctly, moving back to devel
+#sudo apt install --yes --install-recommends wine winetricks 
+##protontricks
 
 #the OS_Overlay\etc\skel\.cache\wine\wine-mono-x.x.x-x86.msi makes it not need to ask and download it, remember to copy to current user.
 
