@@ -142,7 +142,7 @@
             "Toggle activation of last focused window": 2,
             "Cycle windows": 3
         },
-        "value": 2
+        "value": 3
     },
     "middle-click-action": {
         "type": "combobox",
@@ -163,8 +163,8 @@
             "org.gnome.Terminal.desktop"
         ],
         "value": [
+            "google-chrome.desktop",
             "nemo.desktop",
-            "firefox.desktop",
             "org.gnome.Terminal.desktop"
         ]
     },
