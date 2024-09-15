@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.6 2024-09-03-02
+'LastOS v1.1.7 2024-09-15-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -988,6 +988,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         ExpandScript(InstallToPath & "LLScript_Sudo.sh")          
         Try Chmod InstallToPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)        
+        If LLScriptSudoContent = "" Then LLScriptSudoContent = "#!/bin/bash" & Chr(10) & Chr(10) 'Make script have header if empty
         LLScriptSudoContent &= AddSudoScript(InstallToPath & "LLScript_Sudo.sh") 'Make all Sudo work go into a new script file        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If  
@@ -1005,6 +1006,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         'ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod TmpPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)
+        If LLScriptSudoContent = "" Then LLScriptSudoContent = "#!/bin/bash" & Chr(10) & Chr(10) 'Make script have header if empty
         LLScriptSudoContent &= AddSudoScript(TmpPath & "LLScript_Sudo.sh") 'Always make a new Sudo Script and run at the end        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
@@ -1226,6 +1228,7 @@ Public Sub Execute(ShellString As String, PathIn As String)
     Environ[0] = "PWD=" & PathIn
     TheProcess = Shell ShellString With Environ
   Else
+    'Message(ShellString)
     TheProcess = Shell ShellString
   End If
   Do
@@ -1453,10 +1456,10 @@ Public Function AddSudoScript(SudoFileIn As String) As String
     TxtIn = Trim(hFile.Load(SudoFileIn))
     hFile.close
     
-    If Left(TxtIn, 11) = "#!/bin/bash" Then 'Add cd to the long script so it runs ffrom the right locations
-      TxtIn = Replace(TxtIn, "#!/bin/bash", "cd " & Pathed)
+    If Left(TxtIn, 11) = "#!/bin/bash" Then 'Add cd to the long script so it runs from the right locations
+      TxtIn = Replace(TxtIn, "#!/bin/bash", "cd " & Chr(34) & Pathed & Chr(34)) 'Added quotes so Brackets and special characters work 'Can remove the #!/bin/bash from each addition, only needed at the top
     Else
-      TxtIn = "cd " & Pathed & Chr(10) & TxtIn    
+      TxtIn = "cd " & Chr(34) & Pathed & Chr(34) & Chr(10) & TxtIn
     End If 
     
     TxtIn = TxtIn & Chr(10) 'Make sure it ends on a new line

@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.6 2024-09-03-02
+'LastOS v1.1.7 2024-09-15-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -332,17 +332,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
   'Load whole file and Split it into individual Lines      
   Dim LLFile As String[]
   Dim LineID, LineData As String
-  If IsDir(FileIn) Then 'It's failed to extract the file, so only gives a folder, print error and return
-    ClearLLData()
-    Print "Error: " & FileIn & " Broken"
-    Return False  
-  End If
-  Try hFile = Open FileIn For Input
-  If hFile = Null Then
-    ClearLLData()
-    Print "Error: " & FileIn & " Broken"
-    Return False  
-  End If
+  hFile = Open FileIn For Input
   WholeFile = hFile.Load(FileIn)
   WholeFile = Replace(WholeFile, Chr(10), Chr(13)) ' Convert end of line to return (CRLF)
   LLFile = Split(WholeFile, Chr(13))' "\n")
@@ -383,11 +373,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
         WinPath = ExpWinPath(LLAppPath)
         WinPath = Replace(WinPath, Chr(92), "/")
         WinPath = Replace(WinPath, "C:", User.Home & "/.wine/drive_c", gb.IgnoreCase)
-        'Message(WinPath)
-        If Exist(WinPath) = True Then
-          LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
-          'Print ("Found " & WinPath)
-        End If
+        If Exist(WinPath) = True Then LLInstalled = "T" 'Check if folder it installs to exist and hide it if set in options
       End If
       If LineID = "url" Then LLURL = Replace(LineData, "|", Chr(13))
       If LineID = "category" Then 
@@ -1002,6 +988,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         ExpandScript(InstallToPath & "LLScript_Sudo.sh")          
         Try Chmod InstallToPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)        
+        If LLScriptSudoContent = "" Then LLScriptSudoContent = "#!/bin/bash" & Chr(10) & Chr(10) 'Make script have header if empty
         LLScriptSudoContent &= AddSudoScript(InstallToPath & "LLScript_Sudo.sh") 'Make all Sudo work go into a new script file        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If  
@@ -1019,6 +1006,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         'ExpandScript(InstallToPath & "LLScript.sh")          
         Try Chmod TmpPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)
+        If LLScriptSudoContent = "" Then LLScriptSudoContent = "#!/bin/bash" & Chr(10) & Chr(10) 'Make script have header if empty
         LLScriptSudoContent &= AddSudoScript(TmpPath & "LLScript_Sudo.sh") 'Always make a new Sudo Script and run at the end        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
@@ -1240,6 +1228,7 @@ Public Sub Execute(ShellString As String, PathIn As String)
     Environ[0] = "PWD=" & PathIn
     TheProcess = Shell ShellString With Environ
   Else
+    'Message(ShellString)
     TheProcess = Shell ShellString
   End If
   Do
@@ -1270,14 +1259,6 @@ Public Function ExpPath(PathIn As String) As String
   PathIn = Replace(PathIn, "%LLGames%", Homes & "/LLGames", gb.IgnoreCase)
 
   PathIn = Replace(PathIn, "$HOME", Homes, gb.IgnoreCase) ' Do this last, so others longer have time to expand
-  
-    'Test if adding these breaks anything in Linux things, I think I convert it elsewhere, so should work?
-  PathIn = Replace(PathIn, "%ProgramFiles%", Homes & "/.wine/drive_c/" & "Program Files", gb.IgnoreCase)
-  PathIn = Replace(PathIn, "%SystemRoot%", Homes & "/.wine/drive_c/" & "Windows", gb.IgnoreCase)
-  PathIn = Replace(PathIn, "%SystemDrive%", Homes & "/.wine/drive_c/", gb.IgnoreCase)
-  PathIn = Replace(PathIn, "%WinDir%", Homes & "/.wine/drive_c/" & "Windows", gb.IgnoreCase)
-  PathIn = Replace(PathIn, "%ProgramFiles(x86)%", Homes & "/.wine/drive_c/" & "Program Files (x86)", gb.IgnoreCase)
-  PathIn = Replace(PathIn, "%ProgramData%", Homes & "/.wine/drive_c/" & "ProgramData", gb.IgnoreCase)
   
   Return PathIn
 End
@@ -1475,10 +1456,10 @@ Public Function AddSudoScript(SudoFileIn As String) As String
     TxtIn = Trim(hFile.Load(SudoFileIn))
     hFile.close
     
-    If Left(TxtIn, 11) = "#!/bin/bash" Then 'Add cd to the long script so it runs ffrom the right locations
-      TxtIn = Replace(TxtIn, "#!/bin/bash", "cd " & Pathed)
+    If Left(TxtIn, 11) = "#!/bin/bash" Then 'Add cd to the long script so it runs from the right locations
+      TxtIn = Replace(TxtIn, "#!/bin/bash", "cd " & Chr(34) & Pathed & Chr(34)) 'Added quotes so Brackets and special characters work 'Can remove the #!/bin/bash from each addition, only needed at the top
     Else
-      TxtIn = "cd " & Pathed & Chr(10) & TxtIn    
+      TxtIn = "cd " & Chr(34) & Pathed & Chr(34) & Chr(10) & TxtIn
     End If 
     
     TxtIn = TxtIn & Chr(10) 'Make sure it ends on a new line

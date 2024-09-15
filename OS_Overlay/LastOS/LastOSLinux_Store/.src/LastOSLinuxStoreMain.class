@@ -2775,6 +2775,7 @@ End
 Public Sub RunMiniInstaller()
   If Installing = True Then Return 'One at a time
   Dim ItemToInstall As Integer
+  Dim TmpSudoScript As String
   
   If LLMod.StoreMode = 0 Then Installing = True
   
@@ -2858,12 +2859,14 @@ Public Sub RunMiniInstaller()
       'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
       'Message(LLMod.LLScriptSudoContent)
       If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
-        File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
+        TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
+        File.Save(TmpSudoScript, LLMod.LLScriptSudoContent)
         
         LLMod.LLScriptSudoContent = "" 'Clear it once done.
         
-        Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
-        LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
+        Try Chmod TmpSudoScript To "rwxrwxr--" 'Make sudo script file executable
+        LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
+        Try Kill TmpSudoScript 'Remove tmp script file
       End If  
     
       If FailedDownload = False Then 'Success
@@ -2992,12 +2995,14 @@ Public Sub RunMiniInstaller()
   'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
   'Message(LLMod.LLScriptSudoContent)
   If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
-    File.Save(LLMod.LLScriptSudoFile, LLMod.LLScriptSudoContent)
-    
+    TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
+    File.Save(TmpSudoScript, LLMod.LLScriptSudoContent)
+        
     LLMod.LLScriptSudoContent = "" 'Clear it once done.
     
-    Try Chmod LLMod.LLScriptSudoFile To "rwxrwxr--" 'Make sudo script file executable
-    LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & LLMod.LLScriptSudoFile & Chr(34), "")
+    Try Chmod TmpSudoScript To "rwxrwxr--" 'Make sudo script file executable
+    LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
+    Try Kill TmpSudoScript 'Remove tmp script file
   End If  
   
   If LLMod.RefreshPanel = True Then

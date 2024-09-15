@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Resolution Fix
+WID=$(xrandr --current | grep current | awk '{print $8}')
+HIT=$(xrandr --current | grep current | awk '{print $10}')
+Res="${WID}x${HIT}"
+
+xrandr -s 1920x1080
+
+$@ 
+
+xrandr -s $Res
+exit 0
