@@ -22,10 +22,10 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
         <glob pattern=\"ppApp.app\"/>
         <glob pattern=\"*ppApp.apz\"/>
     </mime-type>
-</mime-info>" > $APP-mime.xml
+</mime-info>" > /tmp/$APP-mime.xml
 
-xdg-mime install $APP-mime.xml
-rm $APP-mime.xml
+xdg-mime install /tmp/$APP-mime.xml
+rm /tmp/$APP-mime.xml
 update-mime-database $HOME/.local/share/mime
 
 echo "[Desktop Entry]
@@ -38,14 +38,14 @@ NoDisplay=true
 Type=Application
 Categories=
 Comment=$COMMENT
-"> $APP.desktop
-desktop-file-install --dir=$HOME/.local/share/applications $APP.desktop
-rm $APP.desktop
+"> /tmp/$APP.desktop
+desktop-file-install --dir=$HOME/.local/share/applications /tmp/$APP.desktop
+rm /tmp/$APP.desktop
 update-desktop-database $HOME/.local/share/applications
 
-xdg-mime default $APP.desktop application/x-$APP
+xdg-mime default /tmp/$APP.desktop application/x-$APP
 
-update-icon-caches $HOME/.local/share/icons/*
+chmod +x $HOME/.local/share/applications/$APP.desktop
 
 
 APP=llgame
@@ -68,10 +68,10 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
         <glob pattern=\"*.ppg\"/>
         <glob pattern=\"*.pgz\"/>
     </mime-type>
-</mime-info>" > $APP-mime.xml
+</mime-info>" > /tmp/$APP-mime.xml
 
-xdg-mime install $APP-mime.xml
-rm $APP-mime.xml
+xdg-mime install /tmp/$APP-mime.xml
+rm /tmp/$APP-mime.xml
 update-mime-database $HOME/.local/share/mime
 
 echo "[Desktop Entry]
@@ -84,11 +84,13 @@ NoDisplay=true
 Type=Application
 Categories=
 Comment=$COMMENT
-"> $APP.desktop
-desktop-file-install --dir=$HOME/.local/share/applications $APP.desktop
-rm $APP.desktop
+"> /tmp/$APP.desktop
+desktop-file-install --dir=$HOME/.local/share/applications /tmp/$APP.desktop
+rm /tmp/$APP.desktop
 update-desktop-database $HOME/.local/share/applications
 
-xdg-mime default $APP.desktop application/x-$APP
+xdg-mime default /tmp/$APP.desktop application/x-$APP
+
+chmod +x $HOME/.local/share/applications/$APP.desktop
 
 update-icon-caches $HOME/.local/share/icons/*
