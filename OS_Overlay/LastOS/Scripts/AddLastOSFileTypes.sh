@@ -94,3 +94,19 @@ xdg-mime default /tmp/$APP.desktop application/x-$APP
 chmod +x $HOME/.local/share/applications/$APP.desktop
 
 update-icon-caches $HOME/.local/share/icons/*
+
+xdg-mime default wine.desktop application/x-ms-dos-executable
+xdg-mime default wine.desktop application/x-msi
+xdg-mime default wine.desktop application/x-ms-shortcut
+xdg-mime default wine.desktop application/x-bat
+xdg-mime default wine.desktop application/x-mswinurl
+
+xdg-mime default xed.desktop text/plain
+
+xdg-mime default wine-extension-apz.desktop application/x-wine-extension-apz
+xdg-mime default wine-extension-pgz.desktop application/x-wine-extension-pgz
+
+#xdg-mime default llapp.desktop application/x-xz-compressed-tar
+
+
+
