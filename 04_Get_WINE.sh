@@ -22,7 +22,9 @@ sudo apt install --yes --install-recommends winetricks protontricks
 
 #For mint only (also exe-thumbnailer is renamed to icoextract-thumbnailer in debian but doesn't seem to work
 #wine-desktop-files
-sudo apt install --yes wine-desktop-files exe-thumbnailer wine-binfmt
+sudo apt install --yes wine-desktop-files exe-thumbnailer
+
+#wine-binfmt <- Don't install this, it doesn't help anything and actually stops it working when you double click a .exe
 
 #We Need Wine Mono for it to be silent for current user
 mkdir -p $HOME/.cache/wine 2>/dev/null
