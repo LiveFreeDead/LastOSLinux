@@ -2699,6 +2699,7 @@ Public Sub RunGame(GameID As Integer)
   Dim PathToUse As String
   Dim BT As String
   Dim RunMe As String
+  Dim LinuxRun As String
   Dim Wid As String
   Dim Hit As String
   BT = Data.Items[GameID, Data.CBuildType].Text ' BuildType
@@ -2753,7 +2754,13 @@ Public Sub RunGame(GameID As Integer)
   Else 'Linux game
     RunMe = LLMod.ExpPath(Data.Items[GameID, Data.CLnkExec].Text) 'Expand $HOME path
     PathToUse = Data.Items[GameID, Data.CLnkRunPath].Text
-    LLMod.Execute(RunMe, LLMod.ExpPath(PathToUse))'
+    Print "Running: " & LLMod.ExpPath(PathToUse) & " " & RunMe
+    'Make sure calls to links are going to work as intended
+    LinuxRun = LLMod.ExpPath(PathToUse)
+    If LLMod.ExpPath(PathToUse) <> "" Then
+      If Exist(LLMod.Slashed(LinuxRun) & RunMe) Then LinuxRun = LLMod.Slashed(LinuxRun) & RunMe 'Make exec full path instead of just script/command name ' helps as unless it's a .run type of exe then it's a script and they need a path given.
+    End If
+    LLMod.Execute(LinuxRun, LLMod.ExpPath(PathToUse))'
     'LLMod.Execute(RunMe, "") ' Trying without PWD set as it's not returning when it's done, Fixes it but also has issue with some WINE ones, so will have to fix in execute
   End If
   'Move focus back to Items List

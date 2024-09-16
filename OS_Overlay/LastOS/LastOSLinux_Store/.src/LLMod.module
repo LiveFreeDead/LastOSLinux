@@ -1223,6 +1223,7 @@ Public Sub Execute(ShellString As String, PathIn As String)
   Dim Environ As New String[1]
   Dim TheProcess As Process
   Dim Test As String
+    
   'Below is to change the Working Directory
   If PathIn <> "" Then
     Environ[0] = "PWD=" & PathIn
