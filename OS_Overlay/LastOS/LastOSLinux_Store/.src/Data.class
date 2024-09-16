@@ -93,6 +93,8 @@ Public Sub ClearDataFields()
   'Items.Clear 'This breaks Everything (Just remove all the rows instead)
   Items.Rows.Count = 0 'This clears it perfectly
   
+  LLM.DataItemsRows = 0 ' Make sure this is empty too
+  
   Icons.Clear 'Clears all known icons (Safe for all but Grids and Tables)
   
   Cats.Clear ' Clear out the cats too

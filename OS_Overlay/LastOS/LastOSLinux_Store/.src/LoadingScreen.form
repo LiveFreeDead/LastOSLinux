@@ -3,7 +3,6 @@
 { Form Form
   MoveScaled(0,0,62.8571,28.5714)
   Resizable = False
-  Border = False
   Stacking = Window.Above
   Centered = True
   { Timer1 #Timer

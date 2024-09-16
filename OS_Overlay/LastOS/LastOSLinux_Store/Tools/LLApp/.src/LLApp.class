@@ -74,7 +74,7 @@ Public Sub Form_Open()
       If S = "/usr/bin/llapp" Then S = CurrentPath 'If the user runs it from a folder, use the folder not the llapp symbolic link
       If Right(S, 7) = ".gambas" Then Continue 'Right clicking on a folder bacground only passes the name of the ran file, nothing good can come from this.   
          
-      'Clean Inputs Glenn Testing
+      'Clean Inputs
       If Left(S, 2) = "./" Then S = CurrentPath & Right(S, Len(S) - 2) 'Expand dot to PWD
       If InStr(S, "/", 1) <= 0 Then S = CurrentPath & S 'Parent path only given
       If InStr(S, "/", 2) <= 0 Then 'If only /
@@ -156,7 +156,7 @@ Public Sub Form_Open()
           Shell "wine " & Chr(34) & LineFileIn & Chr(34) Wait 'This just lets system associatiions handle the work             
           If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
         Else 'It's a pp Style app and doesn't need SetupS
-          'Message("Installing " & LineFileIn) 'Glenns
+          'Message("Installing " & LineFileIn)
           If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing ppApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
           LLMod.InstallppFile(LineFileIn)
           If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
@@ -262,7 +262,7 @@ Public Sub Form_Open()
       If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing LLApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
       LLMod.InstallLLFile(LineFileIn)
       
-      'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+      'Run the Admin Script once at the very end before hiding MiniInstaller
       'Message(LLMod.LLScriptSudoContent)
       If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
         File.Save(TmpSudoScript, LLMod.LLScriptSudoContent)
@@ -587,7 +587,7 @@ Public Sub BuildBut_Click()
         If NoInstall.Value = False Then Shell "cd " & Chr(34) & IncludeFolder.Text & Chr(34) & " && tar " & "--exclude=" & LLMod.LLBuildType & ".* " & " -czf " & Chr(34) & OutFile & Chr(34) & " *" Wait
       Else 'Copy Existing Only
         If InFile <> OutFile Then 'Don't Copy Self
-            If OutFile <> "/" And Exist(OutFile) Then Kill OutFile 'Glenn 2024
+            If OutFile <> "/" And Exist(OutFile) Then Kill OutFile
             Copy InFile To OutFile 'Grab extension off original source
           End If
       End If
@@ -595,7 +595,7 @@ Public Sub BuildBut_Click()
     
     'Check if build path is the same as Source Path and delete original uncompressed files if so
     
-    'STOP * If the user makes a script only build then this will remove important files, need a checkbox for them Glenn 2024
+    'STOP * If the user makes a script only build then this will remove important files, need a checkbox for them
     
     If NoInstall.Value = True Then
       'No install, do nothing??

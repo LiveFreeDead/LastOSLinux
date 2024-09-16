@@ -4,6 +4,8 @@
 
 'Public LLMod.StoreMode As Integer = 1 '0 Is Install Mode, 1 Is Launcher Mode (moved to LLMod now)
 
+Public Rescanning As Boolean = False
+
 Public StartItemCount As Integer
 Public MidItemCount As Integer
 Public FinishItemCount As Integer
@@ -189,15 +191,17 @@ Public Sub Form_Open()
   End If 'End of Checking for update
     
   'Get remote database of online web links to speed up download
-  If LLM.UseOnlineRepository = True Then
-    Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-    Try Kill "/LastOS/LastOSLinux_Store/RemoteWebLinks.db" ' Clear previous checks  
-    GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/WebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
-    While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
-      Wait (0.01)
-      If ForceClose = True Then Quit ' No point in looping the user already quit
-      If Exist("/LastOS/LastOSLinux_Store/RemoteWebLinks.db") Then Break 'Gets out of While, it's downloaded
-    Wend
+  If LLMod.StoreMode = 0 Then ' We want Games Launcher to be as fast as possible, still checks for newer versions as fixes apply to it also, but this online dbd doesn't
+    If LLM.UseOnlineRepository = True Then
+      Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+      Try Kill "/LastOS/LastOSLinux_Store/RemoteWebLinks.db" ' Clear previous checks  
+      GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/WebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
+      While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+        Wait (0.01)
+        If ForceClose = True Then Quit ' No point in looping the user already quit
+        If Exist("/LastOS/LastOSLinux_Store/RemoteWebLinks.db") Then Break 'Gets out of While, it's downloaded
+      Wend
+    End If
   End If
   
   'Clean Up, if ran Store as root, then when you run as standard user these files are not writable
@@ -403,6 +407,7 @@ Public Sub GetItemPaths()
   LoadManualLocations()
   If ManualLocationCount >= 1 Then
     For I = 0 To ManualLocationCount - 1
+      Wait (0.07) ' Draw Loading Form
       GetItemsInPath(ManualLocation[I]) 'Scan items in location and any Subfolders of interest
       'GetLLItemsFromPath(ManualLocation[I]) ' Scan in the actual supplied path for items too' This happens anyway
     Next
@@ -489,33 +494,34 @@ Public Sub GetItemsInPath(DirToCheck As String)
       Next
     End If
     Data.ScanPaths.Add(Data.ScanPaths.Count, DirToCheck)    
-    GetLLItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
-    GetWineItemsFromPath(DirToCheck) 'Same as above
+    GetAllItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
+    'GetWineItemsFromPath(DirToCheck) 'Same as above
     If LLMod.StoreMode = 0 Then
       If LLM.UseLocal = True Or ForceReScanItems = True Then
-        GetLLItemsFromPath(DirToCheck & "LLAppsInstalls/")
-        GetLLItemsFromPath(DirToCheck & "LLGamesInstalls/")
-        GetLLItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
-        GetLLItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
+        GetAllItemsFromPath(DirToCheck & "LLAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "LLGamesInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ssTek/LLAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ssTek/LLGamesInstalls/")
         
-        GetWineItemsFromPath(DirToCheck & "ssAppsInstalls/")
-        GetWineItemsFromPath(DirToCheck & "ppAppsInstalls/")
-        GetWineItemsFromPath(DirToCheck & "ppGamesInstalls/")
-        GetWineItemsFromPath(DirToCheck & "ppAppsLive/")    
-        GetWineItemsFromPath(DirToCheck & "ssTek/ssAppsInstalls/")
-        GetWineItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
-        GetWineItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ssAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ppAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ppGamesInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ppAppsLive/")    
+        GetAllItemsFromPath(DirToCheck & "ssTek/ssAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
       End If
     Else 'Launcher Mode
-      GetLLItemsFromPath(DirToCheck & "LLGames/")
-      GetWineItemsFromPath(DirToCheck & "LLGames/")
-      GetLLItemsFromPath(DirToCheck & "ppGames/")
-      GetWineItemsFromPath(DirToCheck & "ppGames/")
+      GetAllItemsFromPath(DirToCheck & "LLGames/")
+      'GetWineItemsFromPath(DirToCheck & "LLGames/") 'Disabled, only get they types we should
+      'GetLLItemsFromPath(DirToCheck & "ppGames/") 'Disabled, only get the types we should
+      GetAllItemsFromPath(DirToCheck & "ppGames/")
     End If
 End
 
 
-Public Sub GetLLItemsFromPath(InPath As String)
+
+Public Sub GetAllItemsFromPath(InPath As String)
   If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
   'Get Folders then files
@@ -523,10 +529,10 @@ Public Sub GetLLItemsFromPath(InPath As String)
   Dim FileIn As String
   Dim AddedItems As Integer
   Dim Test As String  
-  Dim RescanThis As Boolean
+  Dim RescanThis As Boolean = False
   Dim LocalDBCache As String = InPath & ".LLFileDB/"
 
-  StartItemCount = Data.Items.Rows.Count
+  StartItemCount = Data.Items.Rows.Count 'The last row is usually empty, so this is the start (first one added)
   'if InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
   
   If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
@@ -538,127 +544,82 @@ Public Sub GetLLItemsFromPath(InPath As String)
   
   AddedItems = MidItemCount - StartItemCount
   
+  Print "Added DB Items: " & AddedItems
+  
   If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
+  
     'Check if using Local DB or the last check has newer items/changes
     Shell "find " & InPath & " -type f -newer " & LocalDBCache & ".a" To Test    
-    If Trim(Test) <> "" Then  'Somethings Newer - rescan this path
-      'Message(Test)
+    If Trim(Test) <> "" Then  'Somethings Newer - rescan this path  
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
       RescanThis = True
       'ForceReScanItems = True
     End If
     
-    If Not Exist(LocalDBCache & ".a") Then
+    If Not Exist(LocalDBCache & ".a") Then          
       'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
       RescanThis = True
     End If
-    
   End If
   
-  
-  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
-  'Compressed ones first, only check the root folders for them though
-    If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
-      For Each FileIn In Dir(InPath & "/", "*.tar")
-         If LLMod.LoadLLFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/"
-           AddItem()
-         End If
-      Next
-    End If
-  'Uncompressed items now
-    For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
-      'Get Files:
-      For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
-        If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
-          If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
-           AddItem()
-          End If        
-        End If
-      Next 
-    Next
-    
-    'Save If Local DB Enabled
-    If InPath <> RepositoryPathLocal Then
-      SaveToLocalDB(InPath)    
-      'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
-      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
-    End If
-  End If
-  
-End
-
-
-Public Sub GetWineItemsFromPath(InPath As String)
-  If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
-  If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
-  Dim DirInPath As String
-  Dim FileIn As String 
-  Dim AddedItems As Integer
-  Dim Test As String
-  Dim RescanThis As Boolean
-  Dim LocalDBCache As String = InPath & ".LLFileDB/"
-   
-  StartItemCount = Data.Items.Rows.Count
-    
-  'If InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath)  
-  If InPath <> RepositoryPathLocal Then GetFromLocalDB(InPath)
-  
-  'Shell "rm " & Chr(34) & InPath & ".a" & Chr(34) 'Remove them all (temp fixer)
-  'Shell "rm " & Chr(34) & InPath & "LLFile_DB.ini" & Chr(34) 'Remove them all (temp fixer)
-
-  MidItemCount = Data.Items.Rows.Count
-  
-  AddedItems = MidItemCount - StartItemCount
-  
-  If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
-    'Check if using Local DB or the last check has newer items/changes
-    Shell "find " & InPath & " -type f -newer " & LocalDBCache & ".a" To Test    
-    If Trim(Test) <> "" Then 'Somethings Newer - rescan this path
-      'Message(Test)
-      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
-      RescanThis = True
-      'ForceReScanItems = True
-    End If
-    
-    If Not Exist(LocalDBCache & ".a") Then
-      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34)
-      RescanThis = True
-    End If
-    
-  End If
-  
-  Print "Here: StaC: " & Str(StartItemCount) & " MidC: " & Str(MidItemCount) & " InP: " & InPath & " Rescan: " & RescanThis
-  If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
-   'Get Folders then files
-   'Compressed ones first, only check the root folders for them though
-    If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
-      For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
-         If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
-          AddItem()
-         End If
-      Next
-    End If
-  'Uncompressed items now
-    For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
-      'Get Files:
-      For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
-        If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
-          If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
-            AddItem()
+  If LLM.SkipScanIfDBFile = False Or Exist(LocalDBCache) = False Or ForceReScanItems = True Then 'If set not to skip or no db exist then we need to scan if below are also true
+    If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
+      Print "Rescanning: " & InPath
+      'Compressed Linux first, only check the root folders for them though
+      If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
+        For Each FileIn In Dir(InPath & "/", "*.tar")
+           If LLMod.LoadLLFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/"
+             AddItem()
+           End If
+        Next        
+      End If      
+    'Uncompressed Linux items now
+      For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
+        'Get Files:
+        For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
+          If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
+            If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
+             AddItem()
+            End If        
           End If
-        End If
-      Next 
-    Next
-    
-    'Save If Local DB Enabled
-    If InPath <> RepositoryPathLocal Then
-      SaveToLocalDB(InPath)
-      'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
-      'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
+        Next 
+      Next
+      
+      'Compressed Wine ones next, only check the root folders for them though
+      If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
+        For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
+           If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
+            AddItem()
+           End If
+        Next
+      End If
+      
+      'Uncompressed Wine items now
+      For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
+        'Get Files:
+        For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
+          If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
+            If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
+              AddItem()
+            End If
+          End If
+        Next 
+      Next
+      Dim CCt As Integer
+      CCt = 0
+      Try CCt = Data.Items.Rows.Count 'will stay 0 if it was 0
+      Print "Added Scanned Items: " & Str(CCt - MidItemCount)
+      
+      'Save If Local DB Enabled
+      If InPath <> RepositoryPathLocal Then
+        SaveToLocalDB(InPath)    
+        'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
+        'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
+      End If
     End If
   End If
-
 End
+
 
 Public Sub SaveToLocalDB(InPath As String)
 
@@ -674,6 +635,8 @@ Public Sub SaveToLocalDB(InPath As String)
   Dim RepoLine As String
   Dim Tx As String
   
+  InPath = LLMod.Slashed(InPath)
+  
   Dim LocalDBCache As String = InPath & ".LLFileDB/"
   
   LocalDB = InPath & LocalDBFile  
@@ -682,11 +645,20 @@ Public Sub SaveToLocalDB(InPath As String)
   'Message(Str(StartItemCount) & " " & Str(MidItemCount) & " " & Str(FinishItemCount))
   
   If FinishItemCount > StartItemCount Then 'Found Items save a DB (I fixed the miscount issue making sure to move it into the main routines instead of the sub routines)
-    For I = 0 To LLM.DataItemsRows
+  'Changing to saving from StartItem instead of 0
+  ' For I = 0 To LLM.DataItemsRows
+    For I = StartItemCount To LLM.DataItemsRows
       'Check if item is local or skip (can't build a repo with remote items)
       If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
       
       UN = Lower(Replace(Data.Items[I, Data.CTitleName].Text, " ", "") & Data.Items[I, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & Data.Items[I, Data.CVersion].Text)     
+      
+      
+      If Not Exist(LocalDBCache) Then
+        Shell "mkdir -p " & Chr(34) & LocalDBCache & Chr(34) Wait
+        'Message("mkdir -p " & Chr(34) & LocalDBCache & Chr(34))
+      End If
+      If Exist(LocalDBCache) Then Shell "chmod -R 775 " & Chr(34) & LocalDBCache & Chr(34) Wait
       
       RepoLine = ""
       For J = 1 To Data.Items.Columns.Count - 1          
@@ -694,9 +666,7 @@ Public Sub SaveToLocalDB(InPath As String)
         'Keep Icons in a .LLFileDB folder on the USB
         If J = Data.CFileIcon Then
           If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
-            Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
-            If Not Exist(LocalDBCache) Then Shell "mkdir -p " & Chr(34) & LocalDBCache & Chr(34) Wait
-            If Exist(LocalDBCache) Then Shell "chmod -R 775 " & Chr(34) & LocalDBCache & Chr(34) Wait
+            Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)            
             OutFile = LocalDBCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
             If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
             Try Copy Data.Items[I, Data.CFileIcon].Text To OutFile 
@@ -706,8 +676,6 @@ Public Sub SaveToLocalDB(InPath As String)
         If J = Data.CFileScreenshot Then
           If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
             Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
-            If Not Exist(LocalDBCache) Then Shell "mkdir -p " & Chr(34) & LocalDBCache & Chr(34) Wait
-            If Exist(LocalDBCache) Then Shell "chmod -R 775 " & Chr(34) & LocalDBCache & Chr(34) Wait
             OutFile = LocalDBCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
             If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
             Try Copy Data.Items[I, Data.CFileScreenshot].Text To OutFile 
@@ -779,6 +747,7 @@ Public Sub GetFromLocalDB(InPath As String)
     
     Try InRepo = File.Load(LocalDB)
     InRepoSp = Split(InRepo, Chr(10))
+    Print "Loading DB: " & LocalDB
     For I = 0 To InRepoSp.Count - 1
       If Trim(InRepoSp[I]) <> "" Then
         
@@ -1037,6 +1006,8 @@ Public Sub GenerateCategoryList()
   Category.Add(LastAddedCat, "Windows")  
   LastAddedCat = LastAddedCat + 1
   
+  'Message(Str(LLM.DataItemsRows) & "=" & Str(Data.ItemsRows))
+  
   'Add To Data form so can sort
   If LLM.DataItemsRows >= 0 Then
     For I = 1 To LLM.DataItemsRows      
@@ -1086,6 +1057,8 @@ End
 '******************************************* Generate Main List Here*******************************************
 
 Public Sub GenerateMainList()
+  If Rescanning = True Then Return
+  If Data.Items.Rows.Count <= 0 Then Return 'No Items, may as well leave
   Dim I As Integer
   Dim J As Integer
   Dim ListIconSize As Integer
@@ -1128,6 +1101,7 @@ Public Sub GenerateMainList()
         Next
       End If
       
+      
       BT = Trim(Data.Items[I, Data.CBuildType].Text)
       
       If BT = "LLApp" Or BT = "LLGame" Then
@@ -1144,6 +1118,8 @@ Public Sub GenerateMainList()
           HideItem = True        
           Continue 'Jumps to Next For
         End If
+        If LLM.HideLocal = True And Left(Data.Items[I, Data.CPathINI].Text, 4) <> "http" Then Continue 'All but the http items are not shown
+        
         If LLM.HideOnline = True And Left(Data.Items[I, Data.CPathINI].Text, 4) = "http" Then 
           If LLM.UseCacheRepository = False Then Continue 'Skip showing Online Items at all when showing online and cache is off          
           If Not Exist(Replace(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", RepositoryPathLocal)) Then Continue 'Don't show uncached items when Online is off and Cache not shown          
@@ -1163,8 +1139,6 @@ Public Sub GenerateMainList()
         'ListIconSize = ScaleItems + (ScaleItems / 2) + 2
         ListIconSize = Items.Font.H 'Use Font Height in Pixels to set icon height, works great
         If FirstItem = 0 Then FirstItem = Val(Data.Items[I, Data.CRefID].Text) 'Keeps the ID of the first added item so we can jump to it on the list
-        
-        
         
         'Check if duplcated and hide all but the first occurence
         
@@ -1234,7 +1208,7 @@ Public Sub GenerateMainList()
         End If
         
         
-        'Add Item 'Did get an error here, so may need to protect it better Glenn 2025
+        'Add Item 'Did get an error here, so may need to protect it better Glenn
         If HideItem = False Then ' Just in case it makes its way to here, still hide it
           If Data.Items[I, Data.CIconRef].Text <> Null Then
             If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok
@@ -1247,7 +1221,7 @@ Public Sub GenerateMainList()
         End If
         
         'Item font color
-        If LLMod.StoreMode = 0 Then 'Only show colours for Installer, Had a crash here, check Glenn 2025
+        If LLMod.StoreMode = 0 Then 'Only show colours for Installer, Had a crash here once
           Select Case Lower(Data.Items[I, Data.CBuildType].Text)
           Case "ssapp"
             Try Items[Data.Items[I, 0].Text].Foreground = LLM.SetItemColssApp
@@ -1757,6 +1731,10 @@ End
 Public Sub Form_KeyRelease()
     CtrlPressed = False
     ShiftPressed = False
+    
+    'Doesn't need to be here (Or should it only be here?)
+    If Key.Code = Key["F5"] Then ReScanItems()
+    If Key.Code = Key["ESC"] Then Me.Close 'Quit
 End
 
 Public Sub Category_KeyRelease()
@@ -1765,6 +1743,8 @@ Public Sub Category_KeyRelease()
   If LLMod.StoreMode = 0 And Key.Code = Key["A"] And Key.Control Then SelectAll()
   If LLMod.StoreMode = 0 And Key.Code = Key["N"] And Key.Control Then SelectNone()
   If LLMod.StoreMode = 0 And Key.Code = Key["I"] And Key.Control Then SelectInvert()
+  
+  'If Key.Code = Key["F5"] Then ReScanItems() 'Moved to form event
 End
 
 Public Sub Items_KeyRelease()
@@ -1785,6 +1765,8 @@ Public Sub Items_KeyRelease()
   If LLMod.StoreMode = 0 And Key.Code = Key["I"] And Key.Control Then SelectInvert()
   
   If LLMod.StoreMode = 1 And Key.Code = Key["F"] And Key.Control Then AddFavorite
+  
+  'If Key.Code = Key["F5"] Then ReScanItems() 'Moved to form event
   
 End
 
@@ -2355,9 +2337,13 @@ Public Sub DoContextMenu()
     hMenu.Text = "Installed"
     If HideInstalled = True Then hMenu.Checked = True
     hMenu = New Menu(HideMenu) As "POP"
-    hMenu.Name = "LLM.HideOnline"
+    hMenu.Name = "HideOnline"
     hMenu.Text = "Online"
     If LLM.HideOnline = True Then hMenu.Checked = True
+    hMenu = New Menu(HideMenu) As "POP"
+    hMenu.Name = "HideLocal"
+    hMenu.Text = "Local"
+    If LLM.HideLocal = True Then hMenu.Checked = True
     hMenu = New Menu(HideMenu) As "POP"
   End If
   
@@ -2454,7 +2440,7 @@ Public Sub POP_Click()
       End If
       'GenerateCategoryList()
       GenerateMainList()
-    Case "LLM.HideOnline"            
+    Case "HideOnline"            
       If LLM.HideOnline = False Then ' Toggle Showing Online items
         LLM.HideOnline = True
       Else
@@ -2462,6 +2448,16 @@ Public Sub POP_Click()
       End If
       'GenerateCategoryList()
       GenerateMainList()
+      
+    Case "HideLocal"            
+      If LLM.HideLocal = False Then ' Toggle Showing Local items
+        LLM.HideLocal = True
+      Else
+        LLM.HideLocal = False
+      End If
+      'GenerateCategoryList()
+      GenerateMainList()
+        
     Case "HidePaid"
       If HidePaid = False Then ' Toggle Showing Paid items
         HidePaid = True
@@ -2516,23 +2512,7 @@ Public Sub POP_Click()
     Case "SaveCurrentList" 
       SaveCurrentList()
     Case "ReScanItems"   
-      'Clear All Known Items first
-      Data.ClearDataFields() 'This now does the Column Adding and naming scheme
-      
-      LastOSLinuxStoreMain.Hide
-      LoadingScreen.Show      
-      
-      ForceReScanItems = True
-      
-      'Get new items
-      GetItemPaths()
-      'Redo Categories
-      GenerateCategoryList()
-      'Redo main Lists
-      GenerateMainList()
-      LoadingScreen.Hide
-      LastOSLinuxStoreMain.Show
-      ForceReScanItems = False
+      ReScanItems()
     Case "OpenItemLocation"
       If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
       
@@ -2865,7 +2845,7 @@ Public Sub RunMiniInstaller()
       Wait (0.1) ' Lets the form Redraw before it starts installing
       LLMod.InstallLLFile(ItemLocal) ' Need to use FileINI not PathINI ' Uses Current Item value
       
-      'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+      'Run the Admin Script once at the very end before hiding MiniInstaller
       'Message(LLMod.LLScriptSudoContent)
       If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
         TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
@@ -2892,8 +2872,7 @@ Public Sub RunMiniInstaller()
   LastOSLinuxStoreMain.Hide 'Hide Main Form
   MiniInstaller.ListInstall.Clear ' This was used for ListView and not TableView
   LLMod.InstallingMulti = True
-
-  'Glenn 2026
+  
   'Change Category to All, Generate Main List and step through them, else all the hidden items you previously selected install too.
   Category.MoveFirst '(All)
   Category.Item.Selected = True
@@ -3001,7 +2980,7 @@ Public Sub RunMiniInstaller()
     If LLM.ClosedMini = True Then Break 'Closed Form check 3 (want to make 100% sure we exit asap)
   Next
   
-  'Glenn 2026 - Run the Admin Script once at the very end before hiding MiniInstaller
+  'This will Run the Admin Script once at the very end before hiding MiniInstaller
   'Message(LLMod.LLScriptSudoContent)
   If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
     TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
@@ -3212,7 +3191,7 @@ Public Sub BuildRepository()
       If INIType = ".tar" Or INIType = ".apz" Or INIType = ".pgz" Then
         RepoContent &= RepoLine & Chr(10)
         
-        'Need to copy the .tar, .apz and .pgz files here and if the source isn't a compressed item then do so. Glenn 2025
+        'Need to copy the .tar, .apz and .pgz files here and if the source isn't a compressed item then do so.
         DestPath = RepoDir & Right(Data.Items[I, Data.CFileINI].Text, Len(Data.Items[I, Data.CFileINI].Text) - LLMod.InStrRevSingle(Data.Items[I, Data.CFileINI].Text, "/"))
         If Exist(DestPath) Then Try Kill DestPath
         Try Copy Data.Items[I, Data.CFileINI].Text To DestPath
@@ -3539,4 +3518,40 @@ Public Sub LoadWebLinks()
       Next
     End If
   End If
+End
+
+Public Sub ReScanItems()
+  RescanTime.Enabled = True  'Using a timer allows the form to finish events and draw correctly
+End Sub
+
+Public Sub RescanTime_Timer()
+  RescanTime.Enabled = False
+  
+  'Clear All Known Items first
+  Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+  OldPathScan = ""
+  Data.ScanPaths.Clear 'Empty known paths
+  
+  Items.Clear 'Clear all Items (They get re-added)
+  
+  LastOSLinuxStoreMain.Hide
+  LLM.Loaded = False
+  LoadingScreen.Show
+  LoadingScreen.Refresh
+  Wait (0.1) ' Draw Loading Form      
+  ForceReScanItems = True
+  Rescanning = True
+  'Get new items
+  Wait (0.1) ' Draw Loading Form
+  GetItemPaths()
+  'Redo Categories
+  GenerateCategoryList()
+  'Redo main Lists
+  Rescanning = False
+  LLM.Loaded = True
+  GenerateMainList()
+  LoadingScreen.Hide
+  LastOSLinuxStoreMain.Show
+  ForceReScanItems = False
+
 End

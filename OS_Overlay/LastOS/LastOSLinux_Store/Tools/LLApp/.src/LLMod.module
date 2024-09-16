@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.7 2024-09-15-01
+'LastOS v1.1.7 2024-09-16-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -661,7 +661,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         LnkActive[LnkEditing] = True
         ReadMode = 1
       End If
-      If ReadMode = 1 Then 'Glenn 2025 Fix the exp paths (they are in the AddItem now)
+      If ReadMode = 1 Then 'Fix the exp paths (they are in the AddItem now)
         If LineID = "exec" Then
           LnkExec[LnkEditing] = Trim(LineData) 'Check Path is happy
           'If LnkExec[LnkEditing] <> "" Then 
@@ -954,7 +954,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     Else
       LLNoInstall = True 'Doesn't have one, it must just be a script installer
     End If
-    If LLNoInstall = False Then 'Glenn 2024 - this is to make sure we don't extract to a path, just run the scripts (Sometimes the builder like to add them anyway)
+    If LLNoInstall = False Then 'This is to make sure we don't extract to a path, just run the scripts (Sometimes the builder like to add them anyway)
       If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then      
         'Make install to folder and copy LLApp files accross
         If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
@@ -1223,6 +1223,7 @@ Public Sub Execute(ShellString As String, PathIn As String)
   Dim Environ As New String[1]
   Dim TheProcess As Process
   Dim Test As String
+    
   'Below is to change the Working Directory
   If PathIn <> "" Then
     Environ[0] = "PWD=" & PathIn

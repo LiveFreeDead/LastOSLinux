@@ -224,6 +224,8 @@ Public Sub LoadSettings(SettingsFile As String)
             LLM.UseLocalDBFiles = LLMod.IsTrue(LineData)
           Case "uselocal"
             LLM.UseLocal = LLMod.IsTrue(LineData)
+          Case "skipscanifdbfile"
+            LLM.SkipScanIfDBFile = LLMod.IsTrue(LineData)
           Case "usevideoplayback"
             LLM.UseVideoPlayback = LLMod.IsTrue(LineData)
           Case "videovolume"
@@ -238,4 +240,11 @@ Public Sub LoadSettings(SettingsFile As String)
       End If
     Next
   End If
+End
+
+Public Sub Form_Close()
+  LastOSLinuxStoreMain.ForceClose = True
+  Quit
+  LastOSLinuxStoreMain.Close
+
 End

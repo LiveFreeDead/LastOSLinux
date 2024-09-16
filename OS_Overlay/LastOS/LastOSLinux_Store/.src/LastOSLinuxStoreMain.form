@@ -146,4 +146,8 @@
     #MoveScaled(0,56)
     Delay = 100
   }
+  { RescanTime #Timer
+    #MoveScaled(0,48)
+    Delay = 50
+  }
 }

@@ -1,6 +1,7 @@
 ' Gambas module file
 
 Public HideOnline As Boolean
+Public HideLocal As Boolean
 
 Public CheckForUpdate As Boolean = True
 Public QuitOnComplete As Boolean
@@ -8,6 +9,7 @@ Public UseOnlineRepository As Boolean = True ' Default to using online repo
 Public UseCacheRepository As Boolean = True
 Public UseLocalDBFiles As Boolean = True
 Public UseLocal As Boolean = True
+Public SkipScanIfDBFile As Boolean = False
 Public UseVideoPlayback As Boolean = True
 Public VideoVolume As Float = 0.2 '20%
 Public MntScan As Boolean = True
