@@ -2756,10 +2756,12 @@ Public Sub RunGame(GameID As Integer)
     PathToUse = Data.Items[GameID, Data.CLnkRunPath].Text
     Print "Running: " & LLMod.ExpPath(PathToUse) & " " & RunMe
     'Make sure calls to links are going to work as intended
-    LinuxRun = LLMod.ExpPath(PathToUse)
-    If LLMod.ExpPath(PathToUse) <> "" Then
+    LinuxRun = RunMe
+    If LLMod.ExpPath(PathToUse) <> "" Then  
       If Exist(LLMod.Slashed(LinuxRun) & RunMe) Then LinuxRun = LLMod.Slashed(LinuxRun) & RunMe 'Make exec full path instead of just script/command name ' helps as unless it's a .run type of exe then it's a script and they need a path given.
     End If
+    LinuxRun = "bash " & LinuxRun 'Adding bash to the exec call fixes non run
+    Print "Running Main: " & LinuxRun
     LLMod.Execute(LinuxRun, LLMod.ExpPath(PathToUse))'
     'LLMod.Execute(RunMe, "") ' Trying without PWD set as it's not returning when it's done, Fixes it but also has issue with some WINE ones, so will have to fix in execute
   End If
