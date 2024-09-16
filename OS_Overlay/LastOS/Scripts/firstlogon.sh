@@ -20,6 +20,8 @@ grep -lZ '"value": "linuxmint-logo-ring-symbolic"' 0.json | xargs -0 sed -i 's|"
 #Exit if live user
 if [ "$(whoami)" == "live" ]; then
 	gsettings set org.cinnamon.desktop.background picture-uri 'file:///usr/share/backgrounds/lastos/LiveWallpaper.jpg'
+    #Show Hidden Files By Default (Handy in LiveOS)
+    gsettings set org.nemo.preferences show-hidden-files true
     exit
 fi
 
@@ -27,6 +29,17 @@ fi
 
 #notify-send --hint=int:transient:1 -u critical -t 0 "Please wait while LastOS Installs some things..."
 zenity --timeout 120 --info --text "Please wait while LastOS Installs some things..." &
+
+######## Move Zenity ########
+while [ -N $(xdotool search --name "Information") ];do sleep .01 ;done 
+echo "Found: " $(xdotool search --name "Information") 2>/dev/null
+WinID=$(xdotool search --name "Information")
+xdotool windowmove --relative $WinID 0 -2000 2>/dev/null
+xdotool windowminimize $WinID 2>/dev/null
+sleep .01
+xdotool windowactivate $WinID 2>/dev/null
+######## Move Zenity ########
+
 
 #Replace Home Path in custom .desktop files for new users
 cd $HOME/.local/share/applications/
@@ -155,3 +168,15 @@ killall zenity
 #notify-send --hint=int:transient:1  "Finnished Installing" "Enjoy using LastOSLinux"
 notify-send "Finnished Installing,  Enjoy using LastOSLinux"
 zenity --timeout 10 --info --text "   Finnished Installing\nEnjoy using LastOSLinux" &
+
+######## Move Zenity ########
+while [ -N $(xdotool search --name "Information") ];do sleep .01 ;done 
+echo "Found: " $(xdotool search --name "Information") 2>/dev/null
+WinID=$(xdotool search --name "Information")
+xdotool windowmove --relative $WinID 0 -2000 2>/dev/null
+xdotool windowminimize $WinID 2>/dev/null
+sleep .01
+xdotool windowactivate $WinID 2>/dev/null
+######## Move Zenity ########
+
+sleep 5

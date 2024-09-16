@@ -3,9 +3,6 @@
 #Set No effects (Feels faster)
 sudo gsettings set org.cinnamon desktop-effects false
 
-#Transparent Panels
-sudo dconf write /org/cinnamon/enabled-extensions "['transparent-panels@germanfr']"
-
 #Set Clock to 12H not 24H
 sudo gsettings set org.cinnamon.desktop.interface clock-use-24h false
 
