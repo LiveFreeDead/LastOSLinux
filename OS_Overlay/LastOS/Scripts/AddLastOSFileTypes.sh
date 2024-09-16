@@ -43,7 +43,7 @@ desktop-file-install --dir=$HOME/.local/share/applications /tmp/$APP.desktop
 rm /tmp/$APP.desktop
 update-desktop-database $HOME/.local/share/applications
 
-xdg-mime default /tmp/$APP.desktop application/x-$APP
+xdg-mime default $APP.desktop application/x-$APP
 
 chmod +x $HOME/.local/share/applications/$APP.desktop
 
@@ -89,7 +89,7 @@ desktop-file-install --dir=$HOME/.local/share/applications /tmp/$APP.desktop
 rm /tmp/$APP.desktop
 update-desktop-database $HOME/.local/share/applications
 
-xdg-mime default /tmp/$APP.desktop application/x-$APP
+xdg-mime default $APP.desktop application/x-$APP
 
 chmod +x $HOME/.local/share/applications/$APP.desktop
 
