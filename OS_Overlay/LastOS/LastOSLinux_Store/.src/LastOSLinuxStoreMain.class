@@ -524,6 +524,9 @@ End
 Public Sub GetAllItemsFromPath(InPath As String)
   If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  
+  If Not Access(InPath, gb.Read) Then Return 'Can't read it, don't even try
+  
   'Get Folders then files
   Dim DirInPath As String
   Dim FileIn As String
@@ -612,7 +615,7 @@ Public Sub GetAllItemsFromPath(InPath As String)
       
       'Save If Local DB Enabled
       If InPath <> RepositoryPathLocal Then
-        SaveToLocalDB(InPath)    
+        SaveToLocalDB(InPath)
         'Moved Below to after SaveDB, so it doesn't make it unless it makes a DB file, else whats the point?
         'Shell "touch " & Chr(34) & InPath & ".a" & Chr(34) ' Touch after DB creation to make it up to date
       End If
@@ -622,7 +625,7 @@ End
 
 
 Public Sub SaveToLocalDB(InPath As String)
-
+  If Not Access(InPath, gb.Write) Then Return  'Only try and save if writable path
   Dim LocalDB As String
 
   Dim I As Integer
@@ -717,7 +720,7 @@ End
 
 
 Public Sub GetFromLocalDB(InPath As String)
-  
+  If Not Access(InPath, gb.Read) Then Return  'Only try and read if readable path
   If InPath = OldPathScan Then Return 'We just scanned that one, get out
   OldPathScan = InPath
   
