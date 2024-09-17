@@ -25,7 +25,7 @@ nohup ./Tools/RestartCinnamon.sh  > /dev/null 2>&1&
 #xclip allows copying to clipboard from scripts
 #xdo allow things to be automated, much like how AutoIt has system API calls system wide, I use it in /usr/lib/pm-utils/sleep.d/999lastosvidfix
 #sudo apt install -y spice-vdagent qemu-guest-agent
-sudo apt install -y wget numlockx xclip xdotool
+sudo apt install -y wget numlockx xclip xdotool yad
 sudo apt install -y 7zip
 
 #Removing sudo apt install -y spice-vdagent qemu-guest-agent as it seems to cause instabilities
