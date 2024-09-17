@@ -27,18 +27,35 @@ fi
 
 ######################### SETUP NEW USER ##############################
 
-#notify-send --hint=int:transient:1 -u critical -t 0 "Please wait while LastOS Installs some things..."
-zenity --timeout 120 --info --text "Please wait while LastOS Installs some things..." &
+##notify-send --hint=int:transient:1 -u critical -t 0 "Please wait while LastOS Installs some things..."
+#zenity --timeout 120 --info --text "Please wait while LastOS Installs some things..." &
+#
+######### Move Zenity ########
+#while [ -N $(xdotool search --name "Information") ];do sleep .01 ;done 
+#echo "Found: " $(xdotool search --name "Information") 2>/dev/null
+#WinID=$(xdotool search --name "Information")
+#xdotool windowmove --relative $WinID 0 -2000 2>/dev/null
+#xdotool windowminimize $WinID 2>/dev/null
+#sleep .01
+#xdotool windowactivate $WinID 2>/dev/null
+######### Move Zenity ########
 
-######## Move Zenity ########
-while [ -N $(xdotool search --name "Information") ];do sleep .01 ;done 
-echo "Found: " $(xdotool search --name "Information") 2>/dev/null
-WinID=$(xdotool search --name "Information")
-xdotool windowmove --relative $WinID 0 -2000 2>/dev/null
-xdotool windowminimize $WinID 2>/dev/null
-sleep .01
-xdotool windowactivate $WinID 2>/dev/null
-######## Move Zenity ########
+#Trying to use yad instead, but it can't center to the top?
+read x y < <(xrandr --current | grep -oP '\d+x\d+' | tr x ' ')
+POSX2=$(($x/4))
+POSX=$(($POSX2-200))
+yad --image="dialog-information" \
+  --no-escape \
+  --timeout-indicator=bottom \
+  --window-icon=dialog-information \
+  --no-buttons \
+  --on-top \
+  --geometry=340x100+$POSX+0 \
+  --timeout=120 \
+  --title "LastOSLinux Installing" \
+  --text "\n  Please wait while LastOS installs some things..." &
+
+
 
 
 #Replace Home Path in custom .desktop files for new users
@@ -164,19 +181,36 @@ gio trash --empty
 ##Close all notifications (Fails)
 #killall notify-osd
 killall zenity
+killall yad
 
-#notify-send --hint=int:transient:1  "Finnished Installing" "Enjoy using LastOSLinux"
-notify-send "Finnished Installing,  Enjoy using LastOSLinux"
-zenity --timeout 10 --info --text "   Finnished Installing\nEnjoy using LastOSLinux" &
+##notify-send --hint=int:transient:1  "Finnished Installing" "Enjoy using LastOSLinux"
+#notify-send "Finnished Installing,  Enjoy using LastOSLinux"
+#zenity --timeout 10 --info --text "   Finnished Installing\nEnjoy using LastOSLinux" &
+#
+######### Move Zenity ########
+#while [ -N $(xdotool search --name "Information") ];do sleep .01 ;done 
+#echo "Found: " $(xdotool search --name "Information") 2>/dev/null
+#WinID=$(xdotool search --name "Information")
+#xdotool windowmove --relative $WinID 0 -2000 2>/dev/null
+#xdotool windowminimize $WinID 2>/dev/null
+#sleep .01
+#xdotool windowactivate $WinID 2>/dev/null
+######### Move Zenity ########
 
-######## Move Zenity ########
-while [ -N $(xdotool search --name "Information") ];do sleep .01 ;done 
-echo "Found: " $(xdotool search --name "Information") 2>/dev/null
-WinID=$(xdotool search --name "Information")
-xdotool windowmove --relative $WinID 0 -2000 2>/dev/null
-xdotool windowminimize $WinID 2>/dev/null
-sleep .01
-xdotool windowactivate $WinID 2>/dev/null
-######## Move Zenity ########
+#sleep 5
 
-sleep 5
+
+#Trying to use yad instead
+read x y < <(xrandr --current | grep -oP '\d+x\d+' | tr x ' ')
+POSX2=$(($x/4))
+POSX=$(($POSX2-200))
+yad --image="dialog-information" \
+  --no-escape \
+  --timeout-indicator=bottom \
+  --window-icon=dialog-information \
+  --no-buttons \
+  --on-top \
+  --geometry=340x100+$POSX+0 \
+  --timeout=10 \
+  --title "LastOSLinux Installed" \
+  --text "  Finnished Installing\n  Enjoy using LastOSLinux" &
