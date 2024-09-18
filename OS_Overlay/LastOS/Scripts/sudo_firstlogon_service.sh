@@ -21,7 +21,7 @@ ln -s /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /usr/bin/llapp
 apt-get update
 
 #Set Root defaults, so acts like normal user when you open nemo as root
-bash "/LastOS/Scripts/Settings_Root_User_Logon.sh"
+bash /LastOS/Scripts/Settings_Root_User_Logon.sh
 
 #Run Sudo LastOS Updates
 #Run Sudo Updates off USB/ISO and Copy Update Overlays

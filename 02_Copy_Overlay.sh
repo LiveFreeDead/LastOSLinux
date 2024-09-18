@@ -27,6 +27,7 @@ sudo chmod 775 "$HOME/Overlay/LastOS/Scripts/*.sh"
 
 sudo chmod +x "$HOME/Overlay/etc/skel/.config/autostart/First Logon.desktop"
 sudo chmod +x "$HOME/Overlay/LastOS/Scripts/firstlogon.sh"
+sudo chmod +x "$HOME/Overlay/LastOS/Scripts/Settings_Root_User_Logon.sh"
 
 sudo chmod +x "$HOME/Overlay/LastOS/Scripts/*.sh"
 
