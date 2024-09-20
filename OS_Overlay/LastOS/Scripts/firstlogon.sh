@@ -3,6 +3,9 @@
 #Turn on NumLock by default for Live and the first time a user logs in
 numlockx on
 
+#Make sure Ctrl + Alt + Backspace restarts xserver
+gsettings set org.gnome.libgnomekbd.keyboard options "['terminate\tterminate:ctrl_alt_bksp']"
+
 #Remove itself from first logon for current user
 rm  "$HOME/.config/autostart/First Logon.desktop"
 
