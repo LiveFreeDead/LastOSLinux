@@ -28,6 +28,11 @@ sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-cu
 
 #plank geany audacity okular filezilla obs-studio lutris playonlinux vlc darktable lbreakout2 kmahjongg kmines kpat ksudoku - Trying to reduce size so it fits on a DVD 4.7gb
 
+#Get i386 libs to make even more games work (like DOTT, Full Throttle, Gish etc)
+sudo apt install -y libasound2:i386 libasound2-data libasound2-plugins:i386 libsdl2-2.0-0:i386 libfltk1.3:i386
+sudo apt install -y pipewire-alsa:i386 libopenal1:i386 libudev1:i386 lib32z1 libsdl1.2-compat libsdl1.2debian:i386
+
+
 #Nemo Customised, webp gives convert to png ability
 sudo apt install -y nemo-media-columns
 sudo apt install -y sassc webp
