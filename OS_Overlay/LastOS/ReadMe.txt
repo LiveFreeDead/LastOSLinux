@@ -5,9 +5,13 @@ Introduction:
 This release is based on Linux Mint v22 with the Ubuntu 24.04 Update 1 applied. It contains WINE v9.16 at the time of building, I used Penguins Eggs to Remaster a running VirtualBox to make a LiveOS that is Installable on any x86_x64 hardware. Mint v22 is supported until 2029 and will continue to work after that or allow it to be upgraded to the next long term release to continue being updated.
 
 
-Find out more about LastOSLinux at: https://forum.lastos.org/index.php?forums/lastoslinux.216/
+Thanks and Information:
 
+Find out more about LastOSLinux at: https://forum.lastos.org/index.php?forums/lastoslinux.216/
 Find Penguins-Eggs: https://penguins-eggs.net/ thanks to Piero Proietti and his community.
+
+Conky Theme by Ryan
+Boot Screen by Proteus
 
 
 
