@@ -32,6 +32,9 @@ sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-cu
 sudo apt install -y libasound2:i386 libasound2-data libasound2-plugins:i386 libsdl2-2.0-0:i386 libfltk1.3:i386
 sudo apt install -y pipewire-alsa:i386 libopenal1:i386 libudev1:i386 lib32z1 libsdl1.2-compat libsdl1.2debian:i386
 
+sudo apt install -y  libglu1-mesa:i386 meson libfreetype6-dev libfreetype6 libglew-dev libsdl2-image-dev libstdc++5 libfuse2:i386 libepoxy-dev nix-bin
+
+
 
 #Nemo Customised, webp gives convert to png ability
 sudo apt install -y nemo-media-columns
@@ -74,6 +77,10 @@ sudo rm -f $HOME/deadbeef.deb
 
 #Install dwarfs mounter, some games.apps require this to run "special" ones
 sudo apt install -y ./debs/dwarfs-bin_0.9.9-1_amd64.deb
+
+#Install opengl extras, 
+sudo apt install -y ./debs/sdrpp_ubuntu_noble_amd64.deb
+
 
 #Handbreak, This is very large, This will auto download components in needs via updates (nVidia Module if have that GFX card), Disabled, too large, it's in the Store
 #flatpak install -y flathub fr.handbrake.ghb
