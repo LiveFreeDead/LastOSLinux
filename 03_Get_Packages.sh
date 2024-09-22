@@ -32,9 +32,10 @@ sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-cu
 sudo apt install -y libasound2:i386 libasound2-data libasound2-plugins:i386 libsdl2-2.0-0:i386 libfltk1.3:i386
 sudo apt install -y pipewire-alsa:i386 libopenal1:i386 libudev1:i386 lib32z1 libsdl1.2-compat libsdl1.2debian:i386
 
-sudo apt install -y  libglu1-mesa:i386 meson libfreetype6-dev libfreetype6 libglew-dev libsdl2-image-dev libstdc++5 libfuse2:i386 libepoxy-dev nix-bin
+sudo apt install -y libglu1-mesa:i386 meson libfreetype6-dev libfreetype6 libglew-dev libsdl2-image-dev libstdc++5 libfuse2:i386 libepoxy-dev nix-bin
 
-
+#Java
+sudo apt install -y default-jre
 
 #Nemo Customised, webp gives convert to png ability
 sudo apt install -y nemo-media-columns

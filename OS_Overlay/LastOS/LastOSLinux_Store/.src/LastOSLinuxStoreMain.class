@@ -6,6 +6,9 @@
 
 Public Rescanning As Boolean = False
 
+Public DoneOnce As Boolean = False
+Public MovieToPlay As String
+
 Public StartItemCount As Integer
 Public MidItemCount As Integer
 Public FinishItemCount As Integer
@@ -820,11 +823,14 @@ End
 
 
 Public Sub AddItem()
+  Dim UN As String
   Dim LoadedIcon As Image
   Dim DRows As Integer  
   Dim ParentRefID As Integer
   Dim ParentDRow As Integer
   Dim I, J As Integer
+  Dim RealPath As String
+  Dim RPOnly As String
   
   If LLMod.StoreMode = 1 And LLMod.LLTitle = "Games Launcher" Then Return ' Hide Games Launcher from Launcher
   
@@ -841,10 +847,24 @@ Public Sub AddItem()
 
   Data.Items[DRows, Data.CRefID].Text = Str(Data.Items.Rows.Count) 'Use RefID instead of the built in one which loses positions
 
+  'Get Unique Name
+  UN = Lower(Replace(LLMod.LLTitle, " ", "") & LLMod.LLBuildType)  'Make Lower and remove spaces (disable version for now & LLMod.LLVersion)  
+  
+  RPOnly = Left(LLMod.LLIconFile, LLMod.InStrRevSingle(LLMod.LLIconFile, "/"))  
+    
+  RealPath = LLMod.LLIconFile
+  
+  'Message(RPOnly & UN & ".png")
+  'Message(RPOnly & UN & ".png")
+  If Exist(RPOnly & UN & ".png") Then 'Use Unique Name Icon if avaialble
+    RealPath = RPOnly & UN & ".png"
+  End If
   'Load Icon ready to add here
   'Print "Icon: " & LLMod.LLIconFile
-  If LLMod.LLIconFile <> "" And Exist(LLMod.LLIconFile) Then LoadedIcon = Image.Load(LLMod.LLIconFile)
   
+  If RealPath <> "" And Exist(RealPath) Then LoadedIcon = Image.Load(RealPath)
+  
+
   'Add Icon and add ReferenceID       
   
   If LoadedIcon <> Null Then
@@ -977,6 +997,37 @@ Public Sub AddItem()
       Data.Items[DRows, Data.CLnkTerminal].Text = LLMod.LnkTerminal[I]
       Data.Items[DRows, Data.CLnkMultiple].Text = "T" 'LLMod.LnkMultiple[I]
       Data.Items[DRows, Data.CLnkParentRef].Text = ParentRefID 'Doesn't Exist Yet
+      
+      'Get Unique Name
+      UN = Lower(Replace(Data.Items[DRows, Data.CLnkTitle].Text, " ", "") & Data.Items[DRows, Data.CBuildType].Text)  'Make Lower and remove spaces (disable version for now & LLMod.LLVersion)  
+      
+      RPOnly = Left(Data.Items[DRows, Data.CLnkIcon].Text, LLMod.InStrRevSingle(Data.Items[DRows, Data.CLnkIcon].Text, "/"))  
+        
+      RealPath = Data.Items[DRows, Data.CLnkIcon].Text 
+      
+      'Message(RPOnly & UN & ".png")
+      'Message(RPOnly & UN & ".png")
+      If Exist(RPOnly & UN & ".png") Then 'Use Unique Name Icon if avaialble
+        RealPath = RPOnly & UN & ".png"
+      End If
+      'Load Icon ready to add here
+      'Print "Icon: " & LLMod.LLIconFile
+      
+      If RealPath <> "" And Exist(RealPath) Then
+        LoadedIcon = Image.Load(RealPath)
+        'Data.Items[DRows, Data.CLnkIcon].Text = RealPath ' Change Icon so it works in Database file ' Not this one, thats for the .Desktop File, leave incase I want to change to use it
+        Data.Items[DRows, Data.CFileIcon].Text = RealPath ' Change Icon so it works in Database file
+      End If
+    
+      'Add Icon and add ReferenceID       
+      
+      If LoadedIcon <> Null Then
+        Data.IconCount = Data.IconCount + 1
+        Data.Icons.Add(Data.IconCount, Data.IconCount, LoadedIcon.Picture)
+        Data.Items[DRows, Data.CIconRef].Text = Str(Data.IconCount)
+      End If  
+      
+      
     Next   
   End If
   
@@ -1404,7 +1455,14 @@ End
 
 
 Public Sub Items_Click()
+  MovieToPlay = ""
   If ForceClose Then Return 'This is incase wget ties up downloading.
+  
+  If CtrlPressed = False And DoneOnce = True Then 'If used Ctrl to show unique name, revert to showing selected amount
+    DoneOnce = False
+    Return  
+  End If
+  
   Try MoviePlayer.Stop ' Stop Any Movies
   MovieTimer.Enabled = False
   Screenshot.Visible = True
@@ -1431,15 +1489,30 @@ Public Sub Items_Click()
   'Change Fader to current
   ''LLM.Icon = Data.Icons[CurrentItemKey].Picture.Stretch(IconPic.W, IconPic.H) 'Old Method, get from file as it's the fader not the icon shown
   
+  
+  'allow clicking with Ctrl to show UN (Unique Name) in Stats  
+  If CtrlPressed = True Or DoneOnce = True Then
+    Stats.Text = UN
+    DoneOnce = True  
+  Else
+    'Update Stats  
+    If SelectedItems > 0 Then 
+      Stats.Text = Str(SelectedItems) & "/" & Str(Items.Count) & " Items"
+    Else 
+      Stats.Text = Str(Items.Count) & " Items"
+    End If        
+  End If  
+  
+  
   'See if online resource and grab it if able and doesn't exist in LocalDB folder already
   Dim RealPath As String
+  Dim RPOnly As String
   Dim ItemRepositoryURL As String
   
   'Grab Local Fader or download from URL
   RealPath = Data.Items[RefsID, Data.CFileFader].Text
   
   If InStr(Data.Items[RefsID, Data.CFileFader].Text, "%dbpath%/", 1) >= 1 Then
-    
     
     RealPath = Replace(RealPath, "%dbpath%/", RepositoryPathLocal)
     ItemRepositoryURL = Left(Data.Items[RefsID, Data.CPathINI].Text, LLMod.InStrRevSingle(Data.Items[RefsID, Data.CPathINI].Text, "/"))
@@ -1453,6 +1526,14 @@ Public Sub Items_Click()
       End If
     End If
   End If
+  
+  'Set RPOnly to the item Path and look for UN fader
+  RPOnly = Left(RealPath, LLMod.InStrRevSingle(RealPath, "/"))  
+  
+  If Exist(RPOnly & UN & ".png") Then
+    RealPath = RPOnly & UN & ".png"
+  End If
+  
   
   If Exist(RealPath) Then
     Try LLM.Icon = Picture.Load(RealPath).Stretch(IconPic.W, IconPic.H)
@@ -1484,7 +1565,13 @@ Public Sub Items_Click()
       End If  
     End If
   End If
+  
+  If Exist(RPOnly & UN & ".jpg") Then
+    RealPath = RPOnly & UN & ".jpg"
+  End If
+  
   'Message(RealPath)
+    
   'Change Screenshot to current
   If Exist(RealPath) Then
     'Must use Try or it will error out on dud pictures
@@ -1494,8 +1581,17 @@ Public Sub Items_Click()
   End If
   
   'Try Movie here
-  If LLM.UseVideoPlayback = True And Exist(Data.Items[RefsID, Data.CFileMovie].Text) Then
-    Try MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text ' Load the movie in case the users starts it    
+  
+  If Exist(RPOnly & UN & ".mp4") Then
+    RealPath = RPOnly & UN & ".mp4"    
+  Else
+    RealPath = Data.Items[RefsID, Data.CFileMovie].Text
+  End If
+  
+  
+  If LLM.UseVideoPlayback = True And Exist(RealPath) Then
+    MovieToPlay = RealPath
+    Try MoviePlayer.URL = RealPath ' Load the movie in case the users starts it    
     Try MoviePlayer.Play
     Wait (0.01) ' Let it do a quick play so it caches
     Try MoviePlayer.Stop
@@ -1558,7 +1654,11 @@ Public Sub Items_Click()
     Description.Text &= Chr(10) & "Location: " & LLMod.ExpPath(Data.Items[RefsID, Data.CPathINI].Text) & "   "
   End If
   
-  Description.Text &= Chr(10) & Chr(10) & Replace(Data.Items[RefsID, Data.CDescription].Text, Chr(30), Chr(13)) 'Change RS to CRLF
+  If Data.Items[RefsID, Data.CLnkDescription].Text = "" Then
+    Description.Text &= Chr(10) & Chr(10) & Replace(Data.Items[RefsID, Data.CDescription].Text, Chr(30), Chr(13)) 'Change RS to CRLF
+  Else
+    Description.Text &= Chr(10) & Chr(10) & Replace(Data.Items[RefsID, Data.CLnkDescription].Text, Chr(30), Chr(13)) 'Change RS to CRLF
+  End If
   Description.Pos = 0
   Description.Wrap = True
   
@@ -3076,7 +3176,7 @@ Public Sub MovieTimer_Timer()
   MoviePlayer.Border = False ' Hide Border
   MoviePlayer.ShowControl = False
   
-  If Exist(Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text) Then 
+  If Exist(MovieToPlay) Then 
     Screenshot.Visible = False
     MoviePlayer.Visible = True
     MoviePlayer.Volume = LLM.VideoVolume '0.2 '20%
@@ -3556,5 +3656,11 @@ Public Sub RescanTime_Timer()
   LoadingScreen.Hide
   LastOSLinuxStoreMain.Show
   ForceReScanItems = False
+
+End
+
+Public Sub Stats_DblClick()
+  'Do Clipboard here
+  Try Clipboard.Copy(Stats.Text)
 
 End
