@@ -423,8 +423,8 @@ Public Function LoadSSFile(FileIn As String) As Boolean
       If ReadMode = 1 Then  ' Only Allow reading link lines when past the first .lnk file
         If LineID = "target" Then LnkExec[LnkEditing] = LineData
         If LineID = "comment" Then LnkComment[LnkEditing] = LineData
-        If LineID = "description" Then 
-          LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
+        If LineID = "description" Then           
+          LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(10)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
         End If
         If LineID = "icon" Then LnkIcon[LnkEditing] = LineData
         If LineID = "categories" Then LnkCatalog[LnkEditing] = LineData
@@ -672,7 +672,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         End If
         If LineID = "comment" Then LnkComment[LnkEditing] = LineData
         If LineID = "description" Then 
-          LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(13)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
+          LnkDescription[LnkEditing] = Replace(LineData, Chr(30), Chr(10)) 'Replace RS lines ASAP to avoid issues, save will make sure to put them back
         End If
         If LineID = "path" Then
           LnkRunInPath[LnkEditing] = Trim(LineData)
