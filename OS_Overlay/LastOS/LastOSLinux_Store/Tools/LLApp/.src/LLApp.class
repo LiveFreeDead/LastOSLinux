@@ -297,6 +297,10 @@ Public Sub Form_Open()
     BuildToFolder.Enabled = True
     CompressBuild.Enabled = True
   End If
+  
+  'Made it here, populate the Catalog Combo with correct type
+  BuildTypeCheck_Click
+  
 End
 
 Public Sub MetaBut_Click()
@@ -309,6 +313,7 @@ Public Sub Form_Close()
 End
 
 Public Sub Files_Click()
+  Dim FileOut As String
   'Dim bIsButton As Boolean = Last Is Button  
   Select Last.Name
     Case "Open"
@@ -337,7 +342,16 @@ Public Sub Files_Click()
       End If
   
     Case "Save"
-      BuildBut_Click() 'Make Save press the Build Button to use same code.
+      'BuildBut_Click() 'Make Save press the Build Button to use same code. 'Disabled but using save as file instead
+      If BuildTypeCheck.Value = True Then FileOut = "LLGame.llg" Else FileOut = "LLApp.lla"
+      FileOut = BuildToFolder.Text & FileOut
+      Dim TestBuildWorked As Boolean
+      TestBuildWorked = LLMod.SaveLLFile(FileOut)
+      If TestBuildWorked = True Then
+        Message("Save was Successful")
+      Else
+        Message("Save Failed")
+      End If
     Case "Exit" 
       Me.Close
   End Select
@@ -417,10 +431,10 @@ Public Sub LoadFileIn(FileIn As String)
     End If
     
     For I = 1 To LLMod.LnkCount
-      DisplayNameCombo.Add(Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing], LLMod.LnkEditing)         
+      DisplayNameCombo.Add(Str(I) & "> " & LLMod.LnkDisplayName[I], I)         
       If I = 1 Then
-        DisplayNameCombo.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing] 'Show first item only
-        If EditLnk(LLMod.LnkEditing) = True Then
+        DisplayNameCombo.Text = Str(I) & "> " & LLMod.LnkDisplayName[I] 'Show first item only
+        If EditLnk(I) = True Then
           'Good
         End If
       End If
@@ -835,6 +849,7 @@ Public Sub LoadScriptBut_Click()
     hFile = Open LLMod.LLScriptFile For Input
     LLMod.LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
     hFile.close
+    BuildTypeCheck_Click
   End If
 
   PostScript.Text = LLMod.LLScript
@@ -901,6 +916,7 @@ Public Function EditLnk(EditLnkNum As Integer)
   LLMod.LnkEditing = EditLnkNum
   
   CommentText.Text = LLMod.LnkComment[LLMod.LnkEditing]
+  LinkDescriptionText.Text = LLMod.LnkDescription[LLMod.LnkEditing]
   ExecText.Text = LLMod.LnkExec[LLMod.LnkEditing]
   RunPathText.Text = LLMod.LnkRunInPath[LLMod.LnkEditing]
   IconFileText.Text = LLMod.LnkIcon[LLMod.LnkEditing]
@@ -1081,4 +1097,17 @@ End
 
 Public Sub NoInstall_Click()
   LLMod.LLNoInstall = NoInstall.Value
+End
+
+
+Public Sub LinkDescriptionText_LostFocus()
+
+  LLMod.LnkDescription[LLMod.LnkEditing] = LinkDescriptionText.Text
+
+End
+
+Public Sub LinkDescriptionText_Change()
+
+  LLMod.LnkDescription[LLMod.LnkEditing] = LinkDescriptionText.Text
+
 End

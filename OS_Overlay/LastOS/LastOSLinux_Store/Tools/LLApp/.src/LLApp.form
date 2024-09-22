@@ -1,24 +1,24 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,90,68)
+  MoveScaled(0,0,90,70)
   Text = ("LLAppEditor")
   Icon = Picture["Tools/LastOS.png"]
   Resizable = False
   { Files Menu Files
     Name = "Files"
     Text = ("File")
-    { Open Menu File
+    { Open Menu Files
       Name = "Open"
       Text = ("Open")
     }
-    { Save Menu File
+    { Save Menu Files
       Name = "Save"
       Text = ("Save")
     }
     { Menu2 Menu
     }
-    { Exit Menu File
+    { Exit Menu Files
       Name = "Exit"
       Action = "File_Exit"
       Text = ("Exit")
@@ -33,7 +33,7 @@
     }
   }
   { TabStrip1 TabStrip
-    MoveScaled(0,0,90,53)
+    MoveScaled(0,0,90,55)
     Count = 4
     Index = 0
     Text = ("General")
@@ -122,15 +122,15 @@
       Text = ("Add")
     }
     { ShowOnDesktop CheckBox
-      MoveScaled(30,41,20,4)
+      MoveScaled(30,45,20,4)
       Text = (" Show On Desktop")
     }
     { ShowOnPanel CheckBox
-      MoveScaled(51,41,17,4)
+      MoveScaled(51,45,17,4)
       Text = (" Show On Panel")
     }
     { ShowOnFavorites CheckBox
-      MoveScaled(68,41,20,4)
+      MoveScaled(68,45,20,4)
       Text = (" Show On Favorites")
     }
     { Label6 Label
@@ -202,10 +202,10 @@
       MoveScaled(13,15,76,4)
     }
     { MenuCatalogText TextArea
-      MoveScaled(52,24,37,10)
+      MoveScaled(52,24,37,15)
     }
     { RunInTerminal CheckBox
-      MoveScaled(10,41,18,4)
+      MoveScaled(10,45,18,4)
       Text = (" Run In Terminal")
     }
     { Shortcuts Label
@@ -223,6 +223,14 @@
     }
     { FileTypesText TextBox
       MoveScaled(13,35,38,4)
+    }
+    { Label21 Label
+      MoveScaled(0,40,12,4)
+      Alignment = Align.Right
+      Text = ("Description")
+    }
+    { LinkDescriptionText TextBox
+      MoveScaled(13,40,76,4)
     }
     Index = 2
     Text = ("Post-Processing")
@@ -246,11 +254,11 @@
     Index = 3
     Text = ("Graphics")
     { Fader PictureBox
-      MoveScaled(0,10,36.5714,36.5714)
+      MoveScaled(0,10,37,37)
       Border = Border.Plain
     }
     { Screenshot PictureBox
-      MoveScaled(37,10,53,36)
+      MoveScaled(37,10,53,37)
       Border = Border.Plain
     }
     { Icon PictureBox
@@ -284,44 +292,44 @@
     Index = 0
   }
   { BuildBut Button
-    MoveScaled(61,55,13,6)
+    MoveScaled(61,57,13,6)
     Text = ("Build")
   }
   { Label15 Label
-    MoveScaled(1,54,7,4)
+    MoveScaled(1,56,7,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
     Text = ("Include")
   }
   { !IncludeFolder TextBox
-    MoveScaled(9,54,46,4)
+    MoveScaled(9,56,46,4)
     #Public = True
   }
   { BrowsePathBut2 Button
-    MoveScaled(55,54,5,4)
+    MoveScaled(55,56,5,4)
     Text = ("..")
   }
   { Label16 Label
-    MoveScaled(1,59,7,4)
+    MoveScaled(1,61,7,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
     Text = ("Build To")
   }
   { BuildToFolder TextBox
-    MoveScaled(9,59,46,4)
+    MoveScaled(9,61,46,4)
   }
   { BrowsePathBut3 Button
-    MoveScaled(55,59,5,4)
+    MoveScaled(55,61,5,4)
     Text = ("..")
   }
   { !CompressBuild CheckBox
-    MoveScaled(76,53,14,4)
+    MoveScaled(76,55,14,4)
     #Public = True
     ToolTip = ("Tick this if you also want a single tar file and the folder version (Puts in root folder)")
     Text = ("Compressed")
   }
   { !NoInstall CheckBox
-    MoveScaled(76,56,14,4)
+    MoveScaled(76,58,14,4)
     #Public = True
     ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked")
     Text = ("No Install")

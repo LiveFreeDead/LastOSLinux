@@ -2,7 +2,7 @@
 Title=LastOSLinux Store
 Startup=LoadingScreen
 Icon=Themes/LLOSStore.png
-Version=1.1024.127
+Version=1.1024.128
 Component=gb.image
 Component=gb.gui.qt
 Component=gb.form

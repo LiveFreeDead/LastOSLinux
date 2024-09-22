@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.7 2024-09-16-01
+'LastOS v1.1.8 2024-09-22-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -797,7 +797,12 @@ Public Function SaveLLFile(FileOut As String) As Boolean
       LLFileContent &= "Extensions=" & LnkFileTypes[I] & Chr(10)      
       
       TL = "Terminal=False"
-      If LnkTerminal[I] = True Then TL = "Terminal=True"        
+      If LnkTerminal[I] = True Then TL = "Terminal=True"
+      
+      LnkDescription[I] = Replace(LnkDescription[I], Chr(13), Chr(10))
+      
+      LLFileContent &= "Description=" & Replace(LnkDescription[I], Chr(10), Chr(30)) & Chr(10)
+      
       LLFileContent &= TL & Chr(10)
       TL = "ShowOn="
       If LnkDesktop[I] = True Then TL &= "Desktop "
