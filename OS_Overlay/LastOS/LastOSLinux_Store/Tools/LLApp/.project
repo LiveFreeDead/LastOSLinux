@@ -2,11 +2,11 @@
 Title=LLApp
 Startup=LLApp
 Icon=Tools/LastOS.png
-Version=1.2.294
+Version=1.3.295
 Component=gb.image
 Component=gb.gui.qt
 Component=gb.form
-Description="LLApp Editor, Builder and Installer"
+Description="LLFile Editor, Builder and Installer"
 Authors="Glenn Chugg"
 TabSize=2
 Language=en_AU
