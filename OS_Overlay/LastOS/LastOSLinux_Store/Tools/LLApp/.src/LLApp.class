@@ -917,6 +917,7 @@ Public Function EditLnk(EditLnkNum As Integer)
   
   CommentText.Text = LLMod.LnkComment[LLMod.LnkEditing]
   LinkDescriptionText.Text = LLMod.LnkDescription[LLMod.LnkEditing]
+  LinkDescriptionText.Pos = 0 'Move to top
   ExecText.Text = LLMod.LnkExec[LLMod.LnkEditing]
   RunPathText.Text = LLMod.LnkRunInPath[LLMod.LnkEditing]
   IconFileText.Text = LLMod.LnkIcon[LLMod.LnkEditing]

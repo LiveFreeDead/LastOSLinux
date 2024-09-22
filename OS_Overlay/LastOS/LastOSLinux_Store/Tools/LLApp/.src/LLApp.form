@@ -229,8 +229,10 @@
       Alignment = Align.Right
       Text = ("Description")
     }
-    { LinkDescriptionText TextBox
-      MoveScaled(13,40,76,4)
+    { LinkDescriptionText TextArea
+      MoveScaled(13,39,76,6)
+      Wrap = True
+      ScrollBar = Scroll.Vertical
     }
     Index = 2
     Text = ("Post-Processing")
