@@ -34,6 +34,9 @@ sudo apt install -y pipewire-alsa:i386 libopenal1:i386 libudev1:i386 lib32z1 lib
 
 sudo apt install -y libglu1-mesa:i386 meson libfreetype6-dev libfreetype6 libglew-dev libsdl2-image-dev libstdc++5 libfuse2:i386 libepoxy-dev nix-bin
 
+#ScummVM Depends
+sudo apt install -y libsdl2-net-2.0-0
+
 #Java
 sudo apt install -y default-jre
 
