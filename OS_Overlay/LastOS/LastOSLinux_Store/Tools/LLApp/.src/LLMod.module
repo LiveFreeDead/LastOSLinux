@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.8 2024-09-22-01
+'LastOS v1.1.9 2024-09-23-02
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -932,6 +932,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   Dim DesktopOutPath As String = User.Home & "/.local/share/applications/"
   Dim TmpPath As String
   Dim PanelPath As String
+  Dim IconFix As String
   
   'If tar (compressed) Then extract it to temp and install it
   If Right(LLAFile, 4) = ".tar" Then LLCompressed = True Else LLCompressed = False  
@@ -954,7 +955,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   End If
   
   If LoadLLFile(LLAFile) = True Then 'Loaded good, get to installing it
-    InstallToPath = Replace(LLAppPath, "$HOME", User.Home)
+    InstallToPath = ExpPath(LLAppPath)
     
     'Check for a LLApp.tar.gz or a LLGame.tag.gz and if not found, it's not installable, just runs scripts etc
     If Exist(LLINIPath & "LLApp.tar.gz") Or Exist(LLINIPath & "LLGame.tar.gz") Then
@@ -1022,15 +1023,29 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     End If
     If LnkCount > 0 Then
       For I = 1 To LnkCount
+        
+        IconFix = Trim(ExpPath(LnkIcon[I]))
+        If IconFix = "" And Exist(InstallToPath & "/LLApp.svg") Then IconFix = InstallToPath & "/LLApp.svg"
+        If IconFix = "" And Exist(InstallToPath & "/LLApp.png") Then IconFix = InstallToPath & "/LLApp.png"
+        If IconFix = "" And Exist(InstallToPath & "/LLGame.svg") Then IconFix = InstallToPath & "/LLGame.svg"
+        If IconFix = "" And Exist(InstallToPath & "/LLGame.png") Then IconFix = InstallToPath & "/LLGame.png"
+        
+        
+        If Trim(LLMod.ExpPath(LnkIcon[I])) = "" Then
+          LnkIcon[I] = IconFix 'Give it something
+        Else
+          If Not Exist(Trim(LLMod.ExpPath(LnkIcon[I]))) Then LnkIcon[I] = IconFix 'Give it something
+        End If
+        
         DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"
         DesktopContent = "[Desktop Entry]" & Chr(10)
         DesktopContent &= "Type=Application" & Chr(10)
         DesktopContent &= "Version=1.0" & Chr(10)
         DesktopContent &= "Name=" & LnkDisplayName[I] & Chr(10)
-        DesktopContent &= "Exec=" & Replace(LnkExec[I], "$HOME", User.Home) & Chr(10)
-        DesktopContent &= "Path=" & Replace(LnkRunInPath[I], "$HOME", User.Home) & Chr(10)
+        DesktopContent &= "Exec=" & ExpPath(LnkExec[I]) & Chr(10)
+        DesktopContent &= "Path=" & ExpPath(LnkRunInPath[I]) & Chr(10)
         DesktopContent &= "Comment=" & LnkComment[I] & Chr(10)
-        DesktopContent &= "Icon=" & Replace(LnkIcon[I], "$HOME", User.Home) & Chr(10)
+        DesktopContent &= "Icon=" & IconFix & Chr(10)
         DesktopContent &= "Categories=" & LnkCatalog[I] & Chr(10)
         DesktopContent &= "Terminal=" & Str(LnkTerminal[I]) & Chr(10)
         ''''If LLBuildType = "LLGame" Then DesktopContent &= "PrefersNonDefaultGPU=true" & Chr(10) 'Make games use the GPU, it's a Mint Thing, but I don't think it'll cause issues. * I think this is an old trick, when you have the correct drivers setup, this isn't needed, so don't include it as on default.
@@ -1090,7 +1105,7 @@ Public Function InstallppFile(PPFile As String) As Boolean
   End If
   
   If LoadSSFile(PPFile) = True Then 'Loaded good, get to installing it
-    InstallToPath = LLMod.ExpPath(LLAppPath)
+    InstallToPath = ExpPath(LLAppPath)
     
     'Make install to folder and copy LLApp files accross
     If Not Exist(InstallToPath) Then Shell "mkdir -p " & Chr(34) & InstallToPath & Chr(34) Wait
@@ -1146,17 +1161,21 @@ Public Function InstallppFile(PPFile As String) As Boolean
           CategoryFix = "Game; " & CategoryFix
         End If
         
-        IconFix = Trim(LLMod.ExpPath(LnkIcon[I]))
-        If IconFix = "" And Exist(InstallToPath & "/ppGame.png") Then IconFix = InstallToPath & "/ppGame.png"
+        IconFix = Trim(ExpPath(LnkIcon[I]))
         If IconFix = "" And Exist(InstallToPath & "/ppApp.png") Then IconFix = InstallToPath & "/ppApp.png"
-        If Trim(LLMod.ExpPath(LnkIcon[I])) = "" Then LnkIcon[I] = IconFix 'Give it something
+        If IconFix = "" And Exist(InstallToPath & "/ppGame.png") Then IconFix = InstallToPath & "/ppGame.png"        
+        If Trim(LLMod.ExpPath(LnkIcon[I])) = "" Then
+          LnkIcon[I] = IconFix 'Give it something
+        Else
+          If Not Exist(Trim(LLMod.ExpPath(LnkIcon[I]))) Then LnkIcon[I] = IconFix 'Give it something
+        End If
         
         DesktopContent = "[Desktop Entry]" & Chr(10)
         DesktopContent &= "Type=Application" & Chr(10)
         DesktopContent &= "Version=1.0" & Chr(10)
         DesktopContent &= "Name=" & LnkDisplayName[I] & Chr(10)
-        DesktopContent &= "Exec=" & "wine " & Chr(34) & LLMod.ExpPath(LnkExec[I]) & Chr(34) & Chr(10)
-        DesktopContent &= "Path=" & LLMod.ExpPath(LnkRunInPath[I]) & Chr(10)
+        DesktopContent &= "Exec=" & "wine " & Chr(34) & ExpPath(LnkExec[I]) & Chr(34) & Chr(10)
+        DesktopContent &= "Path=" & ExpPath(LnkRunInPath[I]) & Chr(10)
         DesktopContent &= "Comment=" & LnkComment[I] & Chr(10)
         DesktopContent &= "Icon=" & IconFix & Chr(10)
         DesktopContent &= "Categories=" & CategoryFix & Chr(10)
