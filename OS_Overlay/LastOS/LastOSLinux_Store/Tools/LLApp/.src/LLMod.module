@@ -755,7 +755,10 @@ Public Function SaveLLFile(FileOut As String) As Boolean
   
   LLFileContent = "[LLFile]" & Chr(10)
   LLFileContent &= "Title=" & Trim(LLTitle) & Chr(10)
-  If LLVersion <> "" Then LLFileContent &= "Version=" & Trim(LLVersion) & Chr(10)
+  If LLVersion <> "" Then
+    LLFileContent &= "Version=" & Trim(LLVersion) & Chr(10)
+    'Message("Version")
+  End If
   LLFileContent &= "Description=" & Trim(Replace(LLDescription, Chr(10), Chr(30))) & Chr(10) 'Text Area uses Chr 10 not 13 for CR, drops LF
   LLFileContent &= "URL=" & Trim(Replace(LLURL, Chr(10), "|")) & Chr(10)
   LLFileContent &= "Category=" & Trim(LLCategory) & Chr(10)  

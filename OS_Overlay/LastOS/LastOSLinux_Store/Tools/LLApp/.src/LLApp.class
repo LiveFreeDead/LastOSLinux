@@ -347,6 +347,58 @@ Public Sub Files_Click()
       FileOut = BuildToFolder.Text & FileOut
       Dim TestBuildWorked As Boolean
       TestBuildWorked = LLMod.SaveLLFile(FileOut)
+      
+      'Update inside .tar file
+      If TestBuildWorked = True Then 
+        If LLMod.LLCompressed = True Then 'Update this file LLMod.LLFileINI with the new LLFiles directly in the tar
+              
+          If Not Access(LLMod.LLFileINI, gb.Write) Then
+            Message("Built To Path is read Only")                 
+            Return
+          End If
+          
+          If LLMod.LLBuildType = "LLApp" Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".lla" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".lla" & Chr(34) Wait      
+          Else 'Game
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".llg" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".llg" & Chr(34) Wait
+          End If
+          If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".png") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".png" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".png" & Chr(34) Wait
+          End If
+          If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".png") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".jpg" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".jpg" & Chr(34) Wait
+          End If
+          If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".jpg") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".ico" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".ico" & Chr(34) Wait
+          End If
+          If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".svg") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".svg" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".svg" & Chr(34) Wait
+          End If
+          If Exist(LLMod.LLBuildPath & LLMod.LLBuildType & ".mp4") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".mp4" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & LLMod.LLBuildType & ".mp4" & Chr(34) Wait
+          End If
+          
+          If Exist(LLMod.LLBuildPath & "LLScript.sh") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript.sh" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript.sh" & Chr(34) Wait
+          End If
+          
+          If Exist(LLMod.LLBuildPath & "LLScript_Sudo.sh") Then
+            Shell "tar --delete -f " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript_Sudo.sh" & Chr(34) Wait
+            Shell "cd " & Chr(34) & LLMod.LLBuildPath & Chr(34) & " && " & "tar -uf " & Chr(34) & LLMod.LLFileINI & Chr(34) & " " & Chr(34) & "LLScript_Sudo.sh" & Chr(34) Wait
+          End If      
+        End If   
+      End If
+      
+      
+      
       If TestBuildWorked = True Then
         Message("Save was Successful")
       Else
