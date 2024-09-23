@@ -32,6 +32,14 @@
       Text = ("Pick File To Install")
     }
   }
+  { Help Menu Helps
+    Name = "Help"
+    Text = ("Help")
+    { About Menu Helps
+      Name = "About"
+      Text = ("About")
+    }
+  }
   { TabStrip1 TabStrip
     MoveScaled(0,0,90,55)
     Count = 4
@@ -44,6 +52,7 @@
     }
     { TitleText TextBox
       MoveScaled(9,1,44,4)
+      ToolTip = ("Type the title that is shown in the Store (This is used to generate a default install to path, this can be changed)")
     }
     { Label2 Label
       MoveScaled(53,1,7,4)
@@ -52,6 +61,7 @@
     }
     { VersionText TextBox
       MoveScaled(61,1,28,4)
+      ToolTip = ("You can hide old versions in the Store, so keep a version number \"v1.0\"")
     }
     { Label3 Label
       MoveScaled(1,5,7,4)
@@ -60,6 +70,7 @@
     }
     { URLText TextArea
       MoveScaled(9,6,80,8)
+      ToolTip = ("You can click the URL in the store to be taken to this website for more detail")
       Text = ("https://")
       ScrollBar = Scroll.Vertical
     }
@@ -74,16 +85,18 @@
     }
     { DescriptionText TextArea
       MoveScaled(1,26,88,22)
+      ToolTip = ("The description shown in the Store")
       Wrap = True
       ScrollBar = Scroll.Vertical
     }
     { MetaBut Button
       MoveScaled(69,20,20,4)
+      ToolTip = ("Edit the meta data for your item")
       Text = ("Meta-data Editor")
     }
     { HideLaunchCheck CheckBox
       MoveScaled(68,15,21,4)
-      ToolTip = ("Hidden in Launcher, shows on Installer")
+      ToolTip = ("Makes item Hidden in Launcher, shows on Installer")
       Text = ("Hide From Launcher")
     }
     { Label5 Label
@@ -98,10 +111,12 @@
     }
     { InternetRequiredCheck CheckBox
       MoveScaled(23,19,25,4)
+      ToolTip = ("If your app or game requires internet to install this flag should be set")
       Text = ("Install Requires Internet")
     }
     { PriorityText TextBox
       MoveScaled(62,20,6,4)
+      ToolTip = ("This is the order the Store will install things (1 is first, 99 is last)")
       Text = ("5")
     }
     { Label17 Label
@@ -123,14 +138,17 @@
     }
     { ShowOnDesktop CheckBox
       MoveScaled(30,45,20,4)
+      ToolTip = ("This adds the Shortcut to the desktop as well as the Main Menu")
       Text = (" Show On Desktop")
     }
     { ShowOnPanel CheckBox
       MoveScaled(51,45,17,4)
+      ToolTip = ("This will pin this shortcut to the Cinnamon Panel")
       Text = (" Show On Panel")
     }
     { ShowOnFavorites CheckBox
       MoveScaled(68,45,20,4)
+      ToolTip = ("This adds the shortcut to the Menu's Favorites")
       Text = (" Show On Favorites")
     }
     { Label6 Label
@@ -140,6 +158,7 @@
     }
     { InstallToText TextBox
       MoveScaled(13,1,71,4)
+      ToolTip = ("This is the Path the item is installed to, also checked to see if items are already installed")
     }
     { BrowsePathBut Button
       MoveScaled(84,1,5,4)
@@ -158,6 +177,7 @@
     }
     { DisplayNameCombo ComboBox
       MoveScaled(13,10,60,4)
+      ToolTip = ("The name(s) of the Link (also shown as Launcher Items if multiple given) Double click to rename existing one")
       ReadOnly = True
     }
     { Label8 Label
@@ -167,6 +187,7 @@
     }
     { ExecText TextBox
       MoveScaled(13,20,38,4)
+      ToolTip = ("This is the command called (you can add arguments, but better to use a script file if needing multiple commands")
     }
     { Label9 Label
       MoveScaled(0,25,12,4)
@@ -175,6 +196,7 @@
     }
     { RunPathText TextBox
       MoveScaled(13,25,38,4)
+      ToolTip = ("This is the path the command will execute in, usually the same as the Install To Path")
     }
     { Label10 Label
       MoveScaled(0,30,12,4)
@@ -183,6 +205,7 @@
     }
     { IconFileText TextBox
       MoveScaled(13,30,38,4)
+      ToolTip = ("If left blank it'll use LLApp or LLGame .svg or .png for the icon")
     }
     { AddLinkBut Button
       MoveScaled(79,10,5,4)
@@ -191,6 +214,7 @@
     }
     { DelLinkBut Button
       MoveScaled(84,10,5,4)
+      ToolTip = ("Remove an item from the Links List")
       Text = ("-")
     }
     { Label11 Label
@@ -200,12 +224,14 @@
     }
     { CommentText TextBox
       MoveScaled(13,15,76,4)
+      ToolTip = ("This will be the tool tip when you hover a Link on the desktop or menu")
     }
     { MenuCatalogText TextArea
       MoveScaled(52,24,37,15)
     }
     { RunInTerminal CheckBox
       MoveScaled(10,45,18,4)
+      ToolTip = ("If your shortcut needs to open in Terminal, setting this will do so")
       Text = (" Run In Terminal")
     }
     { Shortcuts Label
@@ -223,6 +249,7 @@
     }
     { FileTypesText TextBox
       MoveScaled(13,35,38,4)
+      ToolTip = ("This will associate any file types with this link")
     }
     { Label21 Label
       MoveScaled(0,40,12,4)
@@ -231,6 +258,7 @@
     }
     { LinkDescriptionText TextArea
       MoveScaled(13,39,76,6)
+      ToolTip = ("If you are adding multiple links that will show up in the Launcher, this will change the description for this Link")
       Wrap = True
       ScrollBar = Scroll.Vertical
     }
@@ -257,14 +285,17 @@
     Text = ("Graphics")
     { Fader PictureBox
       MoveScaled(0,10,37,37)
+      ToolTip = ("Fader is the larger icon shown down the bottom of the Laucnher (Will also be used as the Shortcut icon if none specified)")
       Border = Border.Plain
     }
     { Screenshot PictureBox
       MoveScaled(37,10,53,37)
+      ToolTip = ("The screenshot is shown in the Store")
       Border = Border.Plain
     }
     { Icon PictureBox
       MoveScaled(80,0,9.1429,9.1429)
+      ToolTip = ("Icon is the icon shown beside the Items Label  in Store/Launcher, will drop back to use Fader if none given")
       Border = Border.Plain
     }
     { Label12 Label
@@ -286,15 +317,18 @@
     { !MovieFile TextBox
       MoveScaled(7,1,49,4)
       #Public = True
+      ToolTip = ("Selecting a .mp4 video to play after a short wait time in the Store")
     }
     { BrowseMovieFile Button
       MoveScaled(56,1,5,4)
+      ToolTip = ("Selecting a .mp4 video to play after a short wait time in the Store")
       Text = ("..")
     }
     Index = 0
   }
   { BuildBut Button
     MoveScaled(61,57,13,6)
+    ToolTip = ("Saves LLFile and builds the install folder to Build To path (Compresses to a single .tar if Compressed is picked)")
     Text = ("Build")
   }
   { Label15 Label
@@ -306,6 +340,7 @@
   { !IncludeFolder TextBox
     MoveScaled(9,56,46,4)
     #Public = True
+    ToolTip = ("The contents of this folder will be added to be installed")
   }
   { BrowsePathBut2 Button
     MoveScaled(55,56,5,4)
@@ -319,6 +354,7 @@
   }
   { BuildToFolder TextBox
     MoveScaled(9,61,46,4)
+    ToolTip = ("You can make a new path to build in or use the same path you include")
   }
   { BrowsePathBut3 Button
     MoveScaled(55,61,5,4)
@@ -333,7 +369,7 @@
   { !NoInstall CheckBox
     MoveScaled(76,58,14,4)
     #Public = True
-    ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked")
+    ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked, Items with no links often need this checked (Such as tweaks)")
     Text = ("No Install")
   }
 }

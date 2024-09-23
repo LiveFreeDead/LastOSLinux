@@ -1182,3 +1182,12 @@ Public Sub LinkDescriptionText_Change()
   LLMod.LnkDescription[LLMod.LnkEditing] = LinkDescriptionText.Text
 
 End
+
+Public Sub Helps_Click()
+  Select Last.Name
+    Case "About"
+      Message("LLFile Editor v" & Application.Version & Chr(10) & Chr(10) & "LastOS 2024")
+  End Select
+  
+
+End
