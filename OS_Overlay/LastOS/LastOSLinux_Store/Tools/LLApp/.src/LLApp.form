@@ -186,7 +186,7 @@
     }
     { AddLinkBut Button
       MoveScaled(79,10,5,4)
-      ToolTip = ("Save Current and add empty entry for makeing another")
+      ToolTip = ("Save Current and add empty entry for making another")
       Text = ("+")
     }
     { DelLinkBut Button

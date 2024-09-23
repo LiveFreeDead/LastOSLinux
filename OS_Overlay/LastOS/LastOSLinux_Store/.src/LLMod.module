@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.9 2024-09-23-02
+'LastOS v1.1.9 2024-09-23-03
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -1033,8 +1033,8 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         
         If Trim(LLMod.ExpPath(LnkIcon[I])) = "" Then
           LnkIcon[I] = IconFix 'Give it something
-        Else
-          If Not Exist(Trim(LLMod.ExpPath(LnkIcon[I]))) Then LnkIcon[I] = IconFix 'Give it something
+        Else 'Don't do this in Linux as it lets you specify system wide icons
+          'If Not Exist(Trim(LLMod.ExpPath(LnkIcon[I]))) Then LnkIcon[I] = IconFix 'Give it something
         End If
         
         DesktopFile = Replace(LnkDisplayName[I], " ", ".") & ".desktop"

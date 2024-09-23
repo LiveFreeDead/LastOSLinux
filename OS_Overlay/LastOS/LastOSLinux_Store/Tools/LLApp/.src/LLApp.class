@@ -1117,7 +1117,25 @@ Public Sub NewDisplayName_KeyPress()
         LLMod.LnkActive[LLMod.LnkEditing] = True
         LLMod.LnkDisplayName[LLMod.LnkEditing] = Trim(NewDisplayName.Text)
         DisplayNameCombo.Add(Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing], LLMod.LnkEditing)
-        DisplayNameCombo.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing]      
+        DisplayNameCombo.Text = Str(LLMod.LnkEditing) & "> " & LLMod.LnkDisplayName[LLMod.LnkEditing] 
+        
+        'Update Newly added item to have the current info, even if empty
+        LLMod.LnkComment[LLMod.LnkEditing] = CommentText.Text
+        LLMod.LnkExec[LLMod.LnkEditing] = ExecText.Text
+        LLMod.LnkRunInPath[LLMod.LnkEditing] = RunPathText.Text
+        LLMod.LnkIcon[LLMod.LnkEditing] = IconFileText.Text
+        LLMod.LnkFileTypes[LLMod.LnkEditing] = FileTypesText.Text
+        LLMod.LnkDescription[LLMod.LnkEditing] = LinkDescriptionText.Text
+        LLMod.LnkCatalog[LLMod.LnkEditing] = Trim(Replace(MenuCatalogText.Text, "\n", "; "))
+        
+        If RunInTerminal.Value = True Then LLMod.LnkTerminal[LLMod.LnkEditing] = True Else LLMod.LnkTerminal[LLMod.LnkEditing] = False
+        
+        If ShowOnDesktop.Value = True Then LLMod.LnkDesktop[LLMod.LnkEditing] = True Else LLMod.LnkDesktop[LLMod.LnkEditing] = False
+        
+        If ShowOnPanel.Value = True Then LLMod.LnkPanel[LLMod.LnkEditing] = True Else LLMod.LnkPanel[LLMod.LnkEditing] = False
+        
+        If ShowOnFavorites.Value = True Then LLMod.LnkFavorite[LLMod.LnkEditing] = True Else LLMod.LnkFavorite[LLMod.LnkEditing] = False
+        
       Else
         LLMod.LnkEditing = PubID
         LLMod.LnkActive[LLMod.LnkEditing] = True
