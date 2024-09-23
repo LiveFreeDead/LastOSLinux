@@ -480,6 +480,7 @@ Public Sub GetItemPaths()
 End
 
 Public Sub GetItemsInPath(DirToCheck As String)
+    'Message(DirToCheck)
     'Try Resetting between item scans (Fixed)
     StartItemCount = 0
     MidItemCount = 0
@@ -537,6 +538,8 @@ Public Sub GetAllItemsFromPath(InPath As String)
   Dim Test As String  
   Dim RescanThis As Boolean = False
   Dim LocalDBCache As String = InPath & ".LLFileDB/"
+  
+  Dim Debugger As Boolean = False
 
   StartItemCount = Data.Items.Rows.Count 'The last row is usually empty, so this is the start (first one added)
   'if InPath <> RepositoryPathLocal And ForceReScanItems = False Then GetFromLocalDB(InPath) ' Get Local DB if not local Repo, else treat Local Repo as a cached source only
@@ -550,7 +553,7 @@ Public Sub GetAllItemsFromPath(InPath As String)
   
   AddedItems = MidItemCount - StartItemCount
   
-  Print "Added DB Items: " & AddedItems
+  If Debugger Then Print "Added DB Items: " & AddedItems
   
   If AddedItems >= 1 Then 'Check if the folder contains more items than we loaded and force a reload if so
   
@@ -570,42 +573,48 @@ Public Sub GetAllItemsFromPath(InPath As String)
   
   If LLM.SkipScanIfDBFile = False Or Exist(LocalDBCache) = False Or ForceReScanItems = True Then 'If set not to skip or no db exist then we need to scan if below are also true
     If MidItemCount = StartItemCount Or InPath = RepositoryPathLocal Or RescanThis = True Then 'Not Added from LocalDB so get scanning 'Always scan Online Repo as Cache, not as LocalDB
-      Print "Rescanning: " & InPath
+      If Debugger Then Print "Rescanning Compressed Linux: " & InPath
       'Compressed Linux first, only check the root folders for them though
       If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
         For Each FileIn In Dir(InPath & "/", "*.tar")
-           If LLMod.LoadLLFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/"
+           If LLMod.LoadLLFile(InPath & FileIn) = True Then 'Dropped extra slash & "/"
+            If Debugger Then Print "Adding Compressed Item: " & InPath & FileIn
              AddItem()
            End If
         Next        
       End If      
+      If Debugger Then Print "Rescanning Linux: " & InPath
     'Uncompressed Linux items now
       For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
         'Get Files:
         For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
           If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
             If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
+            If Debugger Then Print "Adding Item: " & InPath & DirInPath & FileIn
              AddItem()
             End If        
           End If
         Next 
       Next
-      
+      If Debugger Then Print "Rescanning Compressed Wine: " & InPath
       'Compressed Wine ones next, only check the root folders for them though
       If LLMod.StoreMode = 0 Then 'Don't get these in Launcher Mode
         For Each FileIn In Dir(InPath & "/", "*.??z") '*.apz, *.pgz
-           If LLMod.LoadSSFile(InPath & DirInPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
+          If Debugger Then Print "Checking inside Wine Compressed Item: " & InPath & FileIn
+           If LLMod.LoadSSFile(InPath & FileIn) = True Then 'Dropped extra slash & "/" also returns true if loaded success
+            If Debugger Then Print "Adding Wine Compressed Item: " & InPath & FileIn
             AddItem()
            End If
         Next
       End If
-      
+      If Debugger Then Print "Rescanning Wine: " & InPath
       'Uncompressed Wine items now
       For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
         'Get Files:
         For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
           If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
             If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
+              If Debugger Then Print "Adding Wine Item: " & InPath & DirInPath & FileIn
               AddItem()
             End If
           End If
@@ -614,7 +623,7 @@ Public Sub GetAllItemsFromPath(InPath As String)
       Dim CCt As Integer
       CCt = 0
       Try CCt = Data.Items.Rows.Count 'will stay 0 if it was 0
-      Print "Added Scanned Items: " & Str(CCt - MidItemCount)
+      If Debugger Then Print "Added Scanned Items: " & Str(CCt - MidItemCount)
       
       'Save If Local DB Enabled
       If InPath <> RepositoryPathLocal Then
