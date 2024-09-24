@@ -1,0 +1,6 @@
+#!/bin/bash
+
+files="$*"
+filesout=$(basename "$files" .tga).png
+
+convert "$files" "$filesout"
