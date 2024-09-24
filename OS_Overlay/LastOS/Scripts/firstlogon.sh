@@ -54,7 +54,7 @@ yad --image="dialog-information" \
   --no-buttons \
   --on-top \
   --geometry=340x100+$POSX+0 \
-  --timeout=120 \
+  --timeout=240 \
   --title "LastOSLinux Installing" \
   --text "\n  Please wait while LastOS installs some things..." &
 

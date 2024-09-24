@@ -10,6 +10,9 @@ sudo add-apt-repository --yes ppa:danielrichter2007/grub-customizer
 #Gambas Repo
 sudo add-apt-repository --yes ppa:gambas-team/gambas3
 
+#Conky and Manager
+sudo add-apt-repository -y ppa:teejee2008/foss
+
 #handbreak (Using Flatpak as I want to enable FlatPak and I don't like this repo, shows errors)
 #sudo add-apt-repository --yes ppa:stebbins/handbrake-releases
 
@@ -39,6 +42,9 @@ sudo apt install -y libsdl2-net-2.0-0
 
 #Java
 sudo apt install -y default-jre
+
+#Conky
+sudo apt install -y conky-all conky-manager2
 
 #Nemo Customised, webp gives convert to png ability
 sudo apt install -y nemo-media-columns
