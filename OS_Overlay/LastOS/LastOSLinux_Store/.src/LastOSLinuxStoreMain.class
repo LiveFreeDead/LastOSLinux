@@ -497,6 +497,11 @@ Public Sub GetItemsInPath(DirToCheck As String)
         If DirToCheck = Data.ScanPaths[I].Text Then Return 'Already Scanned this path
       Next
     End If
+    If Not Access(DirToCheck, gb.Read) Then Return 'Can't read it, don't even try
+    If Exist(DirToCheck & ".llignore") Then
+      Print "Ignoring: " & DirToCheck
+      Return 'Skip if ignore flag file found
+    End If
     Data.ScanPaths.Add(Data.ScanPaths.Count, DirToCheck)    
     GetAllItemsFromPath(DirToCheck)'Check the actual path (May slow down scan, remove and add it to the manual paths only for scanning)
     'GetWineItemsFromPath(DirToCheck) 'Same as above
@@ -514,6 +519,13 @@ Public Sub GetItemsInPath(DirToCheck As String)
         GetAllItemsFromPath(DirToCheck & "ssTek/ssAppsInstalls/")
         GetAllItemsFromPath(DirToCheck & "ssTek/ppAppsInstalls/")
         GetAllItemsFromPath(DirToCheck & "ssTek/ppGamesInstalls/")
+        
+        GetAllItemsFromPath(DirToCheck & "LLTek/LLAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "LLTek/LLGamesInstalls/")
+        GetAllItemsFromPath(DirToCheck & "LLTek/ssAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "LLTek/ppAppsInstalls/")
+        GetAllItemsFromPath(DirToCheck & "LLTek/ppGamesInstalls/")
+        
       End If
     Else 'Launcher Mode
       GetAllItemsFromPath(DirToCheck & "LLGames/")
@@ -526,10 +538,15 @@ End
 
 
 Public Sub GetAllItemsFromPath(InPath As String)
-  If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash
-  If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  If Right(InPath, 1) <> "/" Then InPath &= "/" 'Add Trailing slash  re
   
   If Not Access(InPath, gb.Read) Then Return 'Can't read it, don't even try
+  If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta he
+  
+  If Exist(InPath & ".llignore") Then
+    Print "Ignoring: " & InPath
+    Return 'Skip if ignore flag file found
+  End If
   
   'Get Folders then files
   Dim DirInPath As String
