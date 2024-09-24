@@ -24,12 +24,15 @@ Public Sub Form_Open()
   
   'Parse args to see if launcher
   For Each S In Args
-    S = Trim(S)
+    S = Trim(Lower(S))
     If S <> "" Then 
-      If S = "-launcher" Or S = "-l" Then
-        LLMod.StoreMode = 1        
-        Break 'only need one
-      End If
+      
+      Select Case S
+      Case "-launcher", "-l"
+        LLMod.StoreMode = 1
+      Case "-store", "-s"
+        LLMod.StoreMode = 0
+      End Select
     End If
   Next
   

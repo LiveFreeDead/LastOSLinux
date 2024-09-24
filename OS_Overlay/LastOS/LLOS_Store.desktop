@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=LastOSLinux Store
-Exec="/LastOS/LastOSLinux_Store/LastLinuxStore.gambas"
+Exec="/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" "-Store"
 Path=/LastOS/LastOSLinux_Store/
 Comment=Insert LastOS DVD or USB to show items
 Terminal=false
