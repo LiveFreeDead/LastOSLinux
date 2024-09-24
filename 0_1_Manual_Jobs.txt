@@ -17,6 +17,8 @@ Pin Items you want to panel(s) - You can replace the OS_Overlay\etc\skel\.config
 
 Set default associations (I will try to automate this job, but required for now)
 
+Run Default Programs after reboot, to set defaults, then run clean, copy to skel then prepare eggs and capture
+
 ? Do a folder Share so files are added and user is configured <- Leave this to each user post install.
 
 -----------------------------
