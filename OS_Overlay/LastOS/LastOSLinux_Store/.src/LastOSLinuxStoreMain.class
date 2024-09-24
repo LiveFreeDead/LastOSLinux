@@ -2867,12 +2867,63 @@ Public Sub RunGame(GameID As Integer)
     'Make sure calls to links are going to work as intended
     LinuxRun = RunMe
     If LLMod.ExpPath(PathToUse) <> "" Then  
-      If Exist(LLMod.Slashed(LinuxRun) & RunMe) Then LinuxRun = LLMod.Slashed(LinuxRun) & RunMe 'Make exec full path instead of just script/command name ' helps as unless it's a .run type of exe then it's a script and they need a path given.
+      If Exist(LLMod.Slashed(PathToUse) & RunMe) Then
+        LinuxRun = Chr(34) & LLMod.Slashed(PathToUse) & RunMe & Chr(34) 'Make exec full path instead of just script/command name ' helps as unless it's a .run type of exe then it's a script and they need a path given.
+      End If
+    Else 'Try and add the dot skip if not found
+      If Exist("./" & RunMe) Then LinuxRun = Chr(34) & "./" & RunMe & Chr(34) 'Make exec current path
     End If
-    LinuxRun = "bash " & LinuxRun 'Adding bash to the exec call fixes non run
-    Print "Running Main: " & LinuxRun
-    LLMod.Execute(LinuxRun, LLMod.ExpPath(PathToUse))'
-    'LLMod.Execute(RunMe, "") ' Trying without PWD set as it's not returning when it's done, Fixes it but also has issue with some WINE ones, so will have to fix in execute
+    If Left(LinuxRun, 9) <> "run-1080p" Then 'This is already done
+      If Left(LinuxRun, 1) <> Chr(34) Then
+        LinuxRun = "exec " & Chr(34) & LinuxRun & Chr(34) 'Adding exec to the execute call fixes non run better than bash
+      Else
+        LinuxRun = "exec " & LinuxRun  'Adding exec to the execute call fixes non run better than bash, already had quotes
+      End If
+    End If
+    
+    If ShiftPressed = False Then 'Run Normal
+      Print "Running Main: " & LinuxRun
+      LLMod.Execute(LinuxRun, LLMod.ExpPath(PathToUse))'
+      'LLMod.Execute(RunMe, "") ' Trying without PWD set as it's not returning when it's done, Fixes it but also has issue with some WINE ones, so will have to fix in execute
+    Else 'Shift in, change res
+      
+      ShiftPressed = False 'Disabled once in here
+      Shell "xrandr --current | grep current | awk '{print $8}'" To Wid
+      Shell "xrandr --current | grep current | awk '{print $10}'" To Hit
+      
+      Wid = Trim(Wid)
+      Hit = Replace(Hit, ",", "")
+      'Message(Wid & "x" & Hit)
+      LLM.ScreenResolution = ""
+      ScreenResolution.Visible = True
+      While LLM.ScreenResolution = ""
+        Wait (0.1)
+      Wend
+      
+      If LLM.ScreenResolution = "Desktop" Then
+        LLM.ScreenResolution = Wid & "x" & Hit
+      End If
+      If LLM.ScreenResolution = "Closed" Then
+       'Move focus back to Items List
+        LastOSLinuxStoreMain.Show ' Show once ran game
+        Wait (0.03)
+        Categories.SetFocus
+        Wait (0.03)
+        Items.SetFocus
+        Wait (0.03)
+        Return 'Closed screen res
+      End If
+      
+      LinuxRun = "xrandr -s " & LLM.ScreenResolution & " && " & LinuxRun 'Adding bash to the exec call fixes non run
+      Print "Running Main: " & LinuxRun
+      LLMod.Execute(LinuxRun, LLMod.ExpPath(PathToUse))'
+      
+      If Wid <> "" Then
+        Shell "xrandr -s " & Wid & "x" & Hit
+        Wait (0.3) ' Wait until it's had time to update the system so it puts it back in the right position
+      End If
+      
+    End If
   End If
   'Move focus back to Items List
   LastOSLinuxStoreMain.Show ' Show once ran game
