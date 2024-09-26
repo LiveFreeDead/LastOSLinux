@@ -61,6 +61,10 @@ sudo apt install -y samba wsdd
 #Allows mounting a FS Used by some games and UDF tools to mount DVD Images
 sudo apt install -y fuse-overlayfs udftools
 
+#Make KDE apps/games dark to match theme
+#echo  export QT_QPA_PLATFORMTHEME="qt5ct"  to ~/.profile
+sudo apt install -y qt5ct adwaita-qt
+
 #These ones aren't in mint v22 yet, so exclude from main list for now
 #sudo apt install -y pinta isomaster brave-browser
 
