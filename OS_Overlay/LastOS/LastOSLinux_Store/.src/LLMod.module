@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.9 2024-09-23-03
+'LastOS v1.1.9 2024-09-26-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -98,14 +98,16 @@ Public Sub LoadCatalogs()
   'Load Catalogs
   Dim hFile As File
   Dim FileIn As String
+  
+  'Message(AppPath)
 
-  FileIn = AppPath & "Tools/MenuCatalogApps.ini"
+  FileIn = Slashed(AppPath) & "Tools/MenuCatalogApps.ini"
   If Exist(FileIn) = True Then
     hFile = Open FileIn For Input
     LLCatalogApps = Split(hFile.Load(FileIn), "\n")
     hFile.Close
   End If
-   FileIn = AppPath & "Tools/MenuCatalogGames.ini"
+   FileIn = Slashed(AppPath) & "Tools/MenuCatalogGames.ini"
    If Exist(FileIn) = True Then
     hFile = Open FileIn For Input
     LLCatalogGames = Split(hFile.Load(FileIn), "\n")
