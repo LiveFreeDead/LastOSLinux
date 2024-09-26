@@ -2,6 +2,7 @@
 Active=true
 Name=Install with LLFile
 Comment=Installs a LLFile
+Quote=double
 Exec=llfile '%F'
 Icon-Name=application-x-llapp
 Selection=S
