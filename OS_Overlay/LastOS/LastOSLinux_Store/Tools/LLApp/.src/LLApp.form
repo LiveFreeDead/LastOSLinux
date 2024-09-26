@@ -2,9 +2,11 @@
 
 { Form Form
   MoveScaled(0,0,90,74)
+  Font = Font["-1"]
   Text = ("LLFile Editor")
   Icon = Picture["Tools/LastOS.png"]
   Resizable = False
+  AutoResize = True
   { Files Menu Files
     Name = "Files"
     Text = ("File")
