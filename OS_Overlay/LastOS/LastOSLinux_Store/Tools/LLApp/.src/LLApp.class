@@ -29,6 +29,7 @@ Public Sub Form_Open()
   LLMod.AppPath = LLMod.Slashed(Application.Path) ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
   If LLMod.AppPath = "/usr/bin" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
   If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
+  'Message(LLMod.AppPath)
   LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
   If Not Exist(LLMod.Linux7z) Then LLMod.Linux7z = "7z" 'Fall back to built in 7z if not available
 
