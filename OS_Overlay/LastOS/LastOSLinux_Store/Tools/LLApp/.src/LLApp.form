@@ -2,7 +2,6 @@
 
 { Form Form
   MoveScaled(0,0,90,74)
-  Font = Font["-1"]
   Text = ("LLFile Editor")
   Icon = Picture["Tools/LastOS.png"]
   Resizable = False
@@ -139,17 +138,17 @@
       Text = ("Add")
     }
     { ShowOnDesktop CheckBox
-      MoveScaled(30,45,20,4)
+      MoveScaled(30,46,20,4)
       ToolTip = ("This adds the Shortcut to the desktop as well as the Main Menu")
       Text = (" Show On Desktop")
     }
     { ShowOnPanel CheckBox
-      MoveScaled(51,45,17,4)
+      MoveScaled(51,46,17,4)
       ToolTip = ("This will pin this shortcut to the Cinnamon Panel")
       Text = (" Show On Panel")
     }
     { ShowOnFavorites CheckBox
-      MoveScaled(68,45,20,4)
+      MoveScaled(68,46,20,4)
       ToolTip = ("This adds the shortcut to the Menu's Favorites")
       Text = (" Show On Favorites")
     }
@@ -232,13 +231,9 @@
       MoveScaled(52,24,37,15)
     }
     { RunInTerminal CheckBox
-      MoveScaled(10,45,18,4)
+      MoveScaled(10,46,18,4)
       ToolTip = ("If your shortcut needs to open in Terminal, setting this will do so")
       Text = (" Run In Terminal")
-    }
-    { Shortcuts Label
-      MoveScaled(34,6,23,3)
-      Alignment = Align.Center
     }
     { NewDisplayName TextBox
       MoveScaled(13,6,60,4)
@@ -259,10 +254,16 @@
       Text = ("Description")
     }
     { LinkDescriptionText TextArea
-      MoveScaled(13,39,76,6)
+      MoveScaled(13,40,76,6)
       ToolTip = ("If you are adding multiple links that will show up in the Launcher, this will change the description for this Link")
       Wrap = True
       ScrollBar = Scroll.Vertical
+    }
+    { Label23 Label
+      MoveScaled(0,6,12,4)
+      ToolTip = ("The Number isn't displayed, it's just the Shortcuts ID")
+      Alignment = Align.Right
+      Text = ("Shortcuts: -")
     }
     Index = 2
     Text = ("Post-Processing")
@@ -363,13 +364,13 @@
     Text = ("..")
   }
   { !CompressBuild CheckBox
-    MoveScaled(76,55,14,4)
+    MoveScaled(75,55,14,4)
     #Public = True
     ToolTip = ("Tick this if you also want a single tar file and the folder version (Puts in root folder)")
     Text = ("Compressed")
   }
   { !NoInstall CheckBox
-    MoveScaled(76,58,14,4)
+    MoveScaled(75,59,14,4)
     #Public = True
     ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked, Items with no links often need this checked (Such as tweaks)")
     Text = ("No Install")
