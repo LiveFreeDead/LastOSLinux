@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,90,70)
+  MoveScaled(0,0,90,74)
   Text = ("LLFile Editor")
   Icon = Picture["Tools/LastOS.png"]
   Resizable = False
@@ -80,7 +80,7 @@
       Text = ("Category")
     }
     { CatCombo ComboBox
-      MoveScaled(9,15,59,4)
+      MoveScaled(9,15,58,4)
       Sorted = True
     }
     { DescriptionText TextArea
@@ -371,6 +371,19 @@
     #Public = True
     ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked, Items with no links often need this checked (Such as tweaks)")
     Text = ("No Install")
+  }
+  { ArgsLine Label
+    MoveScaled(6,66,83,4)
+    ToolTip = ("This is the Arguments Given from call command")
+    Padding = 2
+    Alignment = Align.Left
+    Border = Border.Plain
+  }
+  { Label22 Label
+    MoveScaled(0,66,5,4)
+    ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
+    Alignment = Align.Right
+    Text = ("Args:")
   }
 }
 

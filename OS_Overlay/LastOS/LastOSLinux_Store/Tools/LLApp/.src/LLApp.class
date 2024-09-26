@@ -19,6 +19,7 @@ Public InstallerType As String
 Public InstallThisApp As String
 Public CurrentPath As String
 Public ForceInstall As Boolean
+Public CurrScript As String = "Script"
 
 
 Public Sub Form_Open()
@@ -39,8 +40,9 @@ Public Sub Form_Open()
   InstallThisApp = "" 'Make sure the Check is cleared
   
   If Args[0] = "LLApp" Then LineInstall = False 'Running in IDE is the only time you get LLApp as the arguments
-  
+  ArgsLine.Text = ""
   For Each S In Args  'Process Command Line Arguments
+    If S <> "LLApp" Then ArgsLine.Text &= S & " "
     S = Trim(S) 'Remove any spacing
     If S <> "" Then 'If Empty then it wont process them
       If S = "LLApp" Then Break 'Bypass checking this, in IDE anyway
@@ -865,6 +867,7 @@ Dim RealPath As String
 End
 
 Public Sub TabStrip1_Click()
+  Dim TryPic As String
   
   'Message(TabStrip1.Current.Text)
   If TabStrip1.Current.Text = "Install/Links" Then '(Changed to 2nd Tab)
@@ -885,6 +888,64 @@ Public Sub TabStrip1_Click()
     End If
     
   End If
+  
+  If TabStrip1.Current.Text = "Graphics" Then '(Changed to 4th Tab)
+    If Fader.Picture = Null Then
+      If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLGame.png") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLGame.png"      
+      If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLApp.png") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLApp.png"      
+      
+      If TryPic <> "" Then         
+        'If LLScreenshotFile <> "" Then Try LLScreenshot = Image.Load(LLScreenshotFile)          
+        Try LLMod.LLFader = Image.Load(TryPic)
+        LLMod.LLFaderFile = TryPic
+        Try Fader.Picture = LLMod.LLFader.Picture
+        'If LLIconFile <> "" Then Try LLIcon = Image.Load(LLIconFile)          
+        TryPic = ""    
+      End If
+    End If
+    If Access(LLMod.Slashed(IncludeFolder.Text), gb.Read) Then
+      If Icon.Picture = Null Then
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLGame.png") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLGame.png"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLApp.png") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLApp.png"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLGame.ico") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLGame.ico"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLApp.ico") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLApp.ico"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLGame.svg") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLGame.svg"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLApp.svg") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLApp.svg"      
+        
+        If TryPic <> "" Then         
+          'If LLScreenshotFile <> "" Then Try LLScreenshot = Image.Load(LLScreenshotFile)          
+          Try LLMod.LLIcon = Image.Load(TryPic)
+          LLMod.LLIconFile = TryPic
+          Try Icon.Picture = LLMod.LLIcon.Picture
+          'If LLIconFile <> "" Then Try LLIcon = Image.Load(LLIconFile)          
+          TryPic = ""    
+        End If
+      End If
+      
+      If Screenshot.Picture = Null Then
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLGame.jpg") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLGame.jpg"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLApp.jpg") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLApp.jpg"     
+          
+        If TryPic <> "" Then             
+          Try LLMod.LLScreenshot = Image.Load(TryPic)
+          LLMod.LLScreenshotFile = TryPic
+          Try Screenshot.Picture = LLMod.LLScreenshot.Picture      
+          TryPic = ""    
+        End If
+      End If
+      
+      If MovieFile.Text = "" Then
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLGame.mp4") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLGame.mp4"      
+        If Exist(LLMod.Slashed(IncludeFolder.Text) & "LLApp.mp4") Then TryPic = LLMod.Slashed(IncludeFolder.Text) & "LLApp.mp4"     
+          
+        If TryPic <> "" Then             
+          LLMod.LLMovieFileFile = TryPic
+          MovieFile.Text = TryPic
+        End If
+      End If
+    
+    End If
+  End If
 
 End
 
@@ -901,16 +962,23 @@ Public Sub LoadScriptBut_Click()
   LLMod.LLScriptFile = Dialog.Path
   If Exist(LLMod.LLScriptFile) Then 'Load Script    
     hFile = Open LLMod.LLScriptFile For Input
-    LLMod.LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    If CurrScript = "Script" Then
+      LLMod.LLScript = Trim(hFile.Load(LLMod.LLScriptFile))
+    Else
+      LLMod.LLScriptSudo = Trim(hFile.Load(LLMod.LLScriptFile))
+    End If
     hFile.close
     BuildTypeCheck_Click
   End If
-
-  PostScript.Text = LLMod.LLScript
-  PostScript.Pos = 0
-
-  PostScriptSudo.Text = LLMod.LLScriptSudo
-  PostScriptSudo.Pos = 0
+  If Trim(LLMod.LLScript) <> "" Then
+    PostScript.Text = LLMod.LLScript
+    PostScript.Pos = 0
+  End If
+  
+  If Trim(LLMod.LLScriptSudo) <> "" Then
+    PostScriptSudo.Text = LLMod.LLScriptSudo
+    PostScriptSudo.Pos = 0
+  End If
 
 End
 
@@ -1191,5 +1259,17 @@ Public Sub Helps_Click()
       Message("LLFile Editor v" & Application.Version & Chr(10) & Chr(10) & "LastOS 2024")
   End Select
   
+
+End
+
+Public Sub PostScript_GotFocus()
+
+  CurrScript = "Script"
+
+End
+
+Public Sub PostScriptSudo_GotFocus()
+
+  CurrScript = "Script_Sudo"
 
 End
