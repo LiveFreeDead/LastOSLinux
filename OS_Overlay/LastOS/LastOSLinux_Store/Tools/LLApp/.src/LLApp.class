@@ -413,6 +413,9 @@ Public Sub Files_Click()
       Else
         Message("Save Failed")
       End If
+    Case "Build"
+    BuildBut_Click() 'Just use the button, quicker  
+    
     Case "Exit" 
       Me.Close
   End Select
@@ -1101,6 +1104,7 @@ End
 
 Public Sub DelLinkBut_Click()
   Dim ID As Integer
+  If DisplayNameCombo.Text = "" Then Return 'Not selected one to delete
   ID = Val(Left(DisplayNameCombo.Text, InStr(DisplayNameCombo.Text, ">") - 1))
   If DisplayNameCombo.Index <> -1 Then
     DisplayNameCombo.Remove(DisplayNameCombo.Index)

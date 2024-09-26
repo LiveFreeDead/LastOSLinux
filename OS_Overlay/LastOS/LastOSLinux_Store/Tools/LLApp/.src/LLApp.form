@@ -12,10 +12,17 @@
     { Open Menu Files
       Name = "Open"
       Text = ("Open")
+      Shortcut = "Ctrl+O"
     }
     { Save Menu Files
       Name = "Save"
       Text = ("Save")
+      Shortcut = "Ctrl+S"
+    }
+    { Build Menu Files
+      Name = "Build"
+      Text = ("Build")
+      Shortcut = "Ctrl+B"
     }
     { Menu2 Menu
     }
@@ -23,6 +30,7 @@
       Name = "Exit"
       Action = "File_Exit"
       Text = ("Exit")
+      Shortcut = "Alt+F4"
     }
   }
   { Install Menu Install
@@ -31,6 +39,7 @@
     { InstallPick Menu Install
       Name = "InstallPick"
       Text = ("Pick File To Install")
+      Shortcut = "Ctrl+I"
     }
   }
   { Help Menu Helps
@@ -380,7 +389,7 @@
     ToolTip = ("This is the Arguments Given from call command")
     Padding = 2
     Alignment = Align.Left
-    Border = Border.Plain
+    Border = Border.Sunken
   }
   { Label22 Label
     MoveScaled(0,66,5,4)
@@ -395,6 +404,6 @@
 { Actions
   { Action File_Exit
     Text = "Exit"
-    Shortcut = ""
+    Shortcut = "Alt+F4"
   }
 }

@@ -3,7 +3,7 @@
 { Actions
   { Action File_Exit
     Text = "Exit"
-    Shortcut = ""
+    Shortcut = "Alt+F4"
   }
 }
 
