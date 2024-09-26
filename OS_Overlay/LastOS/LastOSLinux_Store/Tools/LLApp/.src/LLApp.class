@@ -325,7 +325,7 @@ Public Sub Files_Click()
       Dialog.Title = "Choose a LLApp or LLGame file"
       'Dialog.Filter = ["*.lla", "LLApp File", "*.llg", "LLGame File"]
       Dialog.Filter = ["*.lla *.llg *LLApp.tar *LLGame.tar", "LLFile File"]
-      Dialog.Path = User.Home & "/Desktop/LastOS-Important/LLAppsInstalls"
+      Dialog.Path = User.Home & "/Desktop"
       Dialog.FilterIndex = 0
       If Dialog.OpenFile() Then
         Return ' User pressed Cancel -
@@ -349,7 +349,7 @@ Public Sub Files_Click()
     Case "Save"
       'BuildBut_Click() 'Make Save press the Build Button to use same code. 'Disabled but using save as file instead
       If BuildTypeCheck.Value = True Then FileOut = "LLGame.llg" Else FileOut = "LLApp.lla"
-      FileOut = BuildToFolder.Text & FileOut
+      FileOut = LLMod.Slashed(BuildToFolder.Text) & FileOut
       Dim TestBuildWorked As Boolean
       TestBuildWorked = LLMod.SaveLLFile(FileOut)
       
@@ -435,8 +435,8 @@ Public Sub LoadFileIn(FileIn As String)
     'Message("Loaded File in")
     
     'Set Include Path and Build to path
-    BuildToFolder.Text = LLMod.LLBuildPath
-    IncludeFolder.Text = LLMod.LLBuildPath
+    BuildToFolder.Text = LLMod.Slashed(LLMod.LLBuildPath)
+    IncludeFolder.Text = LLMod.Slashed(LLMod.LLBuildPath)
     
     If LLMod.LLBuildType = "LLApp" Then 'Do This first so that it re-populates the Categories ComboBox 
       BuildTypeCheck.Value = False
@@ -546,8 +546,8 @@ Public Sub BuildBut_Click()
   BuildBut.Enabled = False
   Wait (0.1)
   
-  If Right(BuildToFolder.Text, 1) <> "/" Then BuildToFolder.Text = BuildToFolder.Text & "/" 'Add slash
-  If Right(IncludeFolder.Text, 1) <> "/" Then IncludeFolder.Text = IncludeFolder.Text & "/" 'Add slash
+  BuildToFolder.Text = LLMod.Slashed(BuildToFolder.Text)
+  IncludeFolder.Text = LLMod.Slashed(IncludeFolder.Text)
   
   'Message(BuildToFolder.Text)
   
@@ -573,7 +573,7 @@ Public Sub BuildBut_Click()
   End If
   
   If BuildTypeCheck.Value = True Then FileOut = "LLGame.llg" Else FileOut = "LLApp.lla"
-  FileOut = BuildToFolder.Text & FileOut
+  FileOut = LLMod.Slashed(BuildToFolder.Text) & FileOut
   Dim TestBuildWorked As Boolean
   TestBuildWorked = LLMod.SaveLLFile(FileOut)
   
@@ -847,8 +847,7 @@ Public Sub BrowsePathBut3_Click()
   If Dialog.SelectDirectory() Then
     Return ' User pressed Cancel -
   Endif
-  BuildToFolder.Text = Dialog.Path
-  
+  BuildToFolder.Text = LLMod.Slashed(Dialog.Path)
 End
 
 Public Sub BrowsePathBut_Click()
@@ -861,8 +860,10 @@ Dim RealPath As String
   Endif
   RealPath = Dialog.Path
   
+  RealPath = Replace(RealPath, User.Home & "/LLApps", "%LLApps%") ' Convert directory To Variable
+  RealPath = Replace(RealPath, User.Home & "/LLGames", "%LLGames%") ' Convert directory To Variable
   RealPath = Replace(RealPath, User.Home, "$HOME") ' Convert Home directory To Variable
-  
+     
   InstallToText.Text = RealPath
 
 End
