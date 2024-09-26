@@ -1,0 +1,9 @@
+[Nemo Action]
+Active=true
+Name=Sanitize (Clean)
+Comment=Cleans the File/folder names selected
+Quote=double
+Exec=wine "Z:/LastOS/Tools/Sanitize/Sanitize.exe" z:%F
+Icon-Name=face-cool
+Selection=notnone
+Extensions=any

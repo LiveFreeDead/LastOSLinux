@@ -87,6 +87,8 @@ Public Sub Form_Open()
       If LLMod.Slashed(S) = LLMod.Slashed(User.Home) & "Desktop/" Then Continue ' Don't process if only the Desktop given, dangerous
 
       'Message(S)
+      'Replace quotes with nothing so the folder is just the folder with spaces (no quotes)
+      S = Replace(S, Chr(34), "")
       
       If IsDir(S) Then 'It's a Directory        
         'Message("Is A Dir")

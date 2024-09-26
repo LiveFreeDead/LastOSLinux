@@ -1,0 +1,8 @@
+[Nemo Action]
+Active=true
+Name=Edit in LLFile Editor
+Comment=Edit a LLFile
+Exec=llfile -e '%F'
+Icon-Name=application-x-llapp
+Selection=S
+Extensions=lla;llg;tar;

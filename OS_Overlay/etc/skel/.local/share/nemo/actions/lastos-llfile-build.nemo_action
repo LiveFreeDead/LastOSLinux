@@ -1,0 +1,9 @@
+[Nemo Action]
+Active=true
+Name=Build as LLFile
+Comment=Build folder as LLFile
+Quote=double
+Exec=llfile -b '%F'
+Icon-Name=application-x-llapp
+Selection=S
+Extensions=dir;lla;llg

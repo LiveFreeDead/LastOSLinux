@@ -1,0 +1,9 @@
+[Nemo Action]
+Active=true
+Name=Compress as LLFile
+Comment=Compress folder as LLFile
+Quote=double
+Exec=llfile -c '%F'
+Icon-Name=application-x-llapp
+Selection=S
+Extensions=dir;lla;llg
