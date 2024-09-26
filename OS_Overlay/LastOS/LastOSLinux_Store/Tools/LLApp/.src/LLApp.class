@@ -349,6 +349,10 @@ Public Sub Files_Click()
     Case "Save"
       'BuildBut_Click() 'Make Save press the Build Button to use same code. 'Disabled but using save as file instead
       If BuildTypeCheck.Value = True Then FileOut = "LLGame.llg" Else FileOut = "LLApp.lla"
+      If BuildToFolder.Text = "" Or Not Exist(BuildToFolder.Text) Then
+        Message("Build To folder doesn't exist")
+        Return
+      End If
       FileOut = LLMod.Slashed(BuildToFolder.Text) & FileOut
       Dim TestBuildWorked As Boolean
       TestBuildWorked = LLMod.SaveLLFile(FileOut)
