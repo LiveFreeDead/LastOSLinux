@@ -65,6 +65,12 @@ sudo apt install -y fuse-overlayfs udftools
 #echo  export QT_QPA_PLATFORMTHEME="qt5ct"  to ~/.profile
 sudo apt install -y qt5ct adwaita-qt
 
+
+#For DaVinici Resolve these are needed: (libasound2 <-Packaged removed from Mint 22, so need to use skip_package in divinci)
+sudo apt install -y libapr1 libaprutil1 libglib2.0-0 libxcb-cursor0
+
+sudo apt install -y liboss4-salsa-asound2 liboss4-salsa2
+
 #These ones aren't in mint v22 yet, so exclude from main list for now
 #sudo apt install -y pinta isomaster brave-browser
 

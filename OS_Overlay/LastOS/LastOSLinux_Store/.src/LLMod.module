@@ -1465,13 +1465,16 @@ End
 
 Public Sub MakeAllEXE(MakeExePath As String)
   If MakeExePath = "" Then Return
+  If Not Exist(MakeExePath) Then Return
   MakeExePath = Slashed(MakeExePath)
-  Dim FileInPath As String
-  For Each FileInPath In Dir(MakeExePath, "[^.]*", gb.File) ' Check all mounted and sub mounts Media also 
-      If Access(MakeExePath & FileInPath) = True Then ' Only do ones with access to them        
-        Try Chmod MakeExePath & FileInPath To "rwxrwxr--" 'Make script files executable
-      End If
-  Next
+  Dim FileInPath As String  
+  If Access(MakeExePath, gb.Write) Then 'No point if doesn't have write access
+    For Each FileInPath In Dir(MakeExePath, "[^.]*", gb.File) ' Check all mounted and sub mounts Media also 
+        If Access(MakeExePath & FileInPath) = True Then ' Only do ones with access to them        
+          Try Chmod MakeExePath & FileInPath To "rwxrwxr--" 'Make script files executable
+        End If
+    Next
+  End If
 End
 
 Public Function AddSudoScript(SudoFileIn As String) As String
