@@ -4,6 +4,6 @@ Name=Compress as LLFile
 Comment=Compress folder as LLFile
 Quote=double
 Exec=llfile -c '%F'
-Icon-Name=application-x-llapp
+Icon-Name=LLFileBuild
 Selection=S
 Extensions=dir;lla;llg

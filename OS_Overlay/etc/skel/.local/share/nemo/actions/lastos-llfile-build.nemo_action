@@ -4,6 +4,6 @@ Name=Build as LLFile
 Comment=Build folder as LLFile
 Quote=double
 Exec=llfile -b '%F'
-Icon-Name=application-x-llapp
+Icon-Name=LLFileBuild
 Selection=S
 Extensions=dir;lla;llg
