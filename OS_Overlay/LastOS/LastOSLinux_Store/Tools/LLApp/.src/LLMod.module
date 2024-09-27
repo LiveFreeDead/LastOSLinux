@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.9 2024-09-26-01
+'LastOS v1.1.9 2024-09-27-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -1206,26 +1206,14 @@ Public Function Extract(Archive As String, OutPath As String, ExcludesIncludes A
   If Not Exist(Archive) Then Return False
   If Lower(Right(Archive, 4)) = ".tar" Then 'tar
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
-    If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
    Execute("tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
   Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
-    If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
     Execute("tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
   Else 'use 7z for all but tar and tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
-    If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
     'Execute("7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
     Execute(Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes, "")
@@ -1240,34 +1228,18 @@ Public Function ExtractFast(Archive As String, OutPath As String, ExcludesInclud
   If Not Exist(Archive) Then Return False
   If Lower(Right(Archive, 4)) = ".tar" Then 'tar
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
-    If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
-    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait    
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
    Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
   Else If Lower(Right(Archive, 3)) = ".gz" Then 'tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
-    If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
     Shell "tar -xf " & Chr(34) & Archive & Chr(34) & " -C " & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
   Else 'use 7z for all but tar and tar.gz
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
-    If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
-    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait    
+    If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
     'Shell "7z -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait
     Shell Linux7z & " -mtc -aoa x " & Chr(34) & Archive & Chr(34) & " -o" & Chr(34) & OutPath & Chr(34) & ExcludesIncludes Wait '& ">/dev/null" Wait 'Keeping Error Protection on for now
   End If
-  If Not Exist(OutPath) Then
-      Print "* ERROR: " & Archive & " can't be written to " & OutPath
-      Return 'It wasn't made, don't go on
-    End If
   If Exist(OutPath) Then Shell "chmod -R 775 " & Chr(34) & OutPath & Chr(34) Wait
   MakeAllEXE(OutPath)
   Return True ' Success
@@ -1493,13 +1465,16 @@ End
 
 Public Sub MakeAllEXE(MakeExePath As String)
   If MakeExePath = "" Then Return
+  If Not Exist(MakeExePath) Then Return
   MakeExePath = Slashed(MakeExePath)
-  Dim FileInPath As String
-  For Each FileInPath In Dir(MakeExePath, "[^.]*", gb.File) ' Check all mounted and sub mounts Media also 
-      If Access(MakeExePath & FileInPath) = True Then ' Only do ones with access to them        
-        Try Chmod MakeExePath & FileInPath To "rwxrwxr--" 'Make script files executable
-      End If
-  Next
+  Dim FileInPath As String  
+  If Access(MakeExePath, gb.Write) Then 'No point if doesn't have write access
+    For Each FileInPath In Dir(MakeExePath, "[^.]*", gb.File) ' Check all mounted and sub mounts Media also 
+        If Access(MakeExePath & FileInPath) = True Then ' Only do ones with access to them        
+          Try Chmod MakeExePath & FileInPath To "rwxrwxr--" 'Make script files executable
+        End If
+    Next
+  End If
 End
 
 Public Function AddSudoScript(SudoFileIn As String) As String
