@@ -1,0 +1,2800 @@
+[2024/07/31 17:21:31] 
+[2024/07/31 17:21:31] =========================================================
+[2024/07/31 17:21:31] =========================================================
+[2024/07/31 17:21:31] =============== VentoyGui x86_64 ===============
+[2024/07/31 17:21:31] =========================================================
+[2024/07/31 17:21:31] =========================================================
+[2024/07/31 17:21:31] log file is <log.txt>
+[2024/07/31 17:21:31] pid:125393 ppid:125385 uid:1001 euid:1001
+[2024/07/31 17:21:31] adjust dir:1  current path:/home/glenn/LLApps/Ventoy
+[2024/07/31 17:21:31] =========RAW ARGS BEGIN===========
+[2024/07/31 17:21:31] argv[0]=<./VentoyGUI.x86_64>
+[2024/07/31 17:21:31] =========RAW ARGS END===========
+[2024/07/31 17:21:31] uname -m <x86_64> 64bit
+[2024/07/31 17:21:31] Build bit is 64 (x86_64)
+[2024/07/31 17:21:31] Now detect the GUI type ...
+[2024/07/31 17:21:31] 1834 libs found in cache format 1
+[2024/07/31 17:21:31] LIB:<libgtk-4.so.1>
+[2024/07/31 17:21:31] LIB:<libgtk-3.so.0>
+[2024/07/31 17:21:31] LIB:<libgtk-x11-2.0.so.0>
+[2024/07/31 17:21:31] LIB:<libQt6Xml.so.6>
+[2024/07/31 17:21:31] LIB:<libQt5X11Extras.so.5>
+[2024/07/31 17:21:31] ldconfig lib flags 0x37
+[2024/07/31 17:21:31] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/07/31 17:21:31] distro_check_gui_env ...
+[2024/07/31 17:21:31] Key arch is not found in json data.
+[2024/07/31 17:21:31] check <env> <DESKTOP_SESSION> <equal>
+[2024/07/31 17:21:31] Key arch is not found in json data.
+[2024/07/31 17:21:31] check <env> <DESKTOP_SESSION> <equal>
+[2024/07/31 17:21:31] Key arch is not found in json data.
+[2024/07/31 17:21:31] check <env> <DESKTOP_SESSION> <equal>
+[2024/07/31 17:21:31] Can not distinguish GTK and QT, default use GTK.
+[2024/07/31 17:21:31] This is gtk3 X environment.
+[2024/07/31 17:21:31] exe = /home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/07/31 17:21:31] execute permission check success.
+[2024/07/31 17:21:31] EUID check failed.
+[2024/07/31 17:21:31] try restart self by pkexec ...
+[2024/07/31 17:21:31] Find pkexec at </usr/bin/pkexec>
+[2024/07/31 17:21:31] create environment param 49
+[2024/07/31 17:21:31] =========PKEXEC ARGS BEGIN===========
+[2024/07/31 17:21:31] argv[0]=</usr/bin/pkexec>
+[2024/07/31 17:21:31] argv[1]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/07/31 17:21:31] argv[2]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2490,unix/glenn-pc:/tmp/.ICE-unix/2490
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/176071e5_0696_4d35_b54e_de7ceded9279
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.1060
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/07/31 17:21:31] argv[3]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/07/31 17:21:31] =========PKEXEC ARGS END===========
+[2024/07/31 17:21:34] 
+[2024/07/31 17:21:34] =========================================================
+[2024/07/31 17:21:34] =========================================================
+[2024/07/31 17:21:34] =============== VentoyGui x86_64 ===============
+[2024/07/31 17:21:34] =========================================================
+[2024/07/31 17:21:34] =========================================================
+[2024/07/31 17:21:34] log file is <log.txt>
+[2024/07/31 17:21:34] pid:125393 ppid:125385 uid:0 euid:0
+[2024/07/31 17:21:34] adjust dir:0  current path:/home/glenn/LLApps/Ventoy
+[2024/07/31 17:21:34] =========RAW ARGS BEGIN===========
+[2024/07/31 17:21:34] argv[0]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/07/31 17:21:34] argv[1]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2490,unix/glenn-pc:/tmp/.ICE-unix/2490
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/176071e5_0696_4d35_b54e_de7ceded9279
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.1060
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/07/31 17:21:34] argv[2]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/07/31 17:21:34] =========RAW ARGS END===========
+[2024/07/31 17:21:34] recover environ 49 49
+[2024/07/31 17:21:34] recover success, argc=1 evecve </home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/07/31 17:21:34] =========EXECVE ARGS BEGIN===========
+[2024/07/31 17:21:34] argv[0]=</home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/07/31 17:21:34] =========EXECVE ARGS END===========
+[2024/07/31 17:21:34] ================================================
+[2024/07/31 17:21:34] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/07/31 17:21:34] ================================================
+[2024/07/31 17:21:34] log file is <log.txt> lastsize:7197
+[2024/07/31 17:21:34] ini file is <./Ventoy2Disk.ini>
+[2024/07/31 17:21:34] ventoy_disk_enumerate_all
+[2024/07/31 17:21:34] get disk info sdf
+[2024/07/31 17:21:34] is 4k native disk <sdf> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sdf
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdf
+[2024/07/31 17:21:34] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:21:34] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/07/31 17:21:34] /dev/sdf NO Ventoy detected
+[2024/07/31 17:21:34] get disk info nvme0n1
+[2024/07/31 17:21:34] is 4k native disk <nvme0n1> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for nvme0n1
+[2024/07/31 17:21:34] /sys/block/nvme0n1/device/vendor not exist 
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/07/31 17:21:34] Invalid efi part2 name <Restored>
+[2024/07/31 17:21:34] disk:</dev/nvme0n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/07/31 17:21:34] /dev/nvme0n1 NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sdd
+[2024/07/31 17:21:34] is 4k native disk <sdd> <1>
+[2024/07/31 17:21:34] get disk size from sysfs for sdd
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdd
+[2024/07/31 17:21:34] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/07/31 17:21:34] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/07/31 17:21:34] /dev/sdd NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sdb
+[2024/07/31 17:21:34] is 4k native disk <sdb> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sdb
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdb
+[2024/07/31 17:21:34] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:21:34] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/07/31 17:21:34] /dev/sdb NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sdi
+[2024/07/31 17:21:34] is 4k native disk <sdi> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sdi
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdi
+[2024/07/31 17:21:34] Invalid mbr magic 0x0 0x0
+[2024/07/31 17:21:34] disk:</dev/sdi 8:128> model:< USB  SanDisk 3.2Gen1 (USB)> size:61530439680 (64 GB)
+[2024/07/31 17:21:34] /dev/sdi NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sdg
+[2024/07/31 17:21:34] is 4k native disk <sdg> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sdg
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdg
+[2024/07/31 17:21:34] disk /dev/sdg is too small 0
+[2024/07/31 17:21:34] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/07/31 17:21:34] /dev/sdg NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sde
+[2024/07/31 17:21:34] is 4k native disk <sde> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sde
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sde
+[2024/07/31 17:21:34] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:21:34] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/07/31 17:21:34] /dev/sde NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sdc
+[2024/07/31 17:21:34] is 4k native disk <sdc> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sdc
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdc
+[2024/07/31 17:21:34] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/07/31 17:21:34] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/07/31 17:21:34] /dev/sdc NO Ventoy detected
+[2024/07/31 17:21:34] get disk info nvme1n1
+[2024/07/31 17:21:34] is 4k native disk <nvme1n1> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for nvme1n1
+[2024/07/31 17:21:34] /sys/block/nvme1n1/device/vendor not exist 
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/07/31 17:21:34] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:21:34] disk:</dev/nvme1n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/07/31 17:21:34] /dev/nvme1n1 NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sda
+[2024/07/31 17:21:34] is 4k native disk <sda> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sda
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sda
+[2024/07/31 17:21:34] Invalid efi part2 name <My Linux Backups>
+[2024/07/31 17:21:34] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/07/31 17:21:34] /dev/sda NO Ventoy detected
+[2024/07/31 17:21:34] get disk info sdh
+[2024/07/31 17:21:34] is 4k native disk <sdh> <0>
+[2024/07/31 17:21:34] get disk size from sysfs for sdh
+[2024/07/31 17:21:34] ventoy_get_vtoy_data /dev/sdh
+[2024/07/31 17:21:34] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:21:34] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/07/31 17:21:34] /dev/sdh NO Ventoy detected
+[2024/07/31 17:21:34] ============= DISK DUMP ============
+[2024/07/31 17:21:34] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sdf [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sdg [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sdh [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sdi [64 GB]  USB  SanDisk 3.2Gen1 (USB)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/nvme0n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/nvme1n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/07/31 17:21:34] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/07/31 17:21:34] on_init_window ...
+[2024/07/31 17:21:34] load_languages ...
+[2024/07/31 17:21:34] current language <English (English)>
+[2024/07/31 17:21:34] fill_dev_list total disk: 11 showall:0
+[2024/07/31 17:21:34] combox count:7, active:sdc id:0
+[2024/07/31 17:22:23] install_thread ...
+[2024/07/31 17:22:23] ==================================================================================
+[2024/07/31 17:22:23] ===== ventoy install /dev/sdi style:MBR secureboot:1 align4K:1 reserve:0 =========
+[2024/07/31 17:22:23] ==================================================================================
+[2024/07/31 17:22:23] /dev/sdi mounted </dev/sdi /media/glenn/LastOSLinux udf ro,nosuid,nodev,relatime,uid=1001,gid=1001,iocharset=utf8 0 0
+>
+[2024/07/31 17:22:23] disk is mounted, now try to unmount it ...
+[2024/07/31 17:22:23] umount </dev/sdi> </media/glenn/LastOSLinux> [ success ]
+[2024/07/31 17:22:23] disk is not mounted now, we can do the install ...
+[2024/07/31 17:22:23] start install thread  USB  SanDisk 3.2Gen1 (USB) ...
+[2024/07/31 17:22:23] func handler install <{ "result" : "success" }>
+[2024/07/31 17:22:23] ventoy_install_thread run ...
+[2024/07/31 17:22:23] check disk sdi
+[2024/07/31 17:22:23] set percent 1
+[2024/07/31 17:22:23] disk is not mounted now, we can do continue ...
+[2024/07/31 17:22:23] ventoy_clean_disk fd:6 size:61530439680
+[2024/07/31 17:22:23] write disk at off:0 writelen:65536 datalen:65536
+[2024/07/31 17:22:23] write disk at off:61530374144 writelen:65536 datalen:65536
+[2024/07/31 17:22:23] read core.img.xz rc:0 len:455192
+[2024/07/31 17:22:23] ventoy_unxz_stg1_img len:455192 rc:0
+[2024/07/31 17:22:23] set percent 8
+[2024/07/31 17:22:23] read disk.img.xz rc:0 len:13475864
+[2024/07/31 17:22:23] set percent 9
+[2024/07/31 17:22:24] set percent 12
+[2024/07/31 17:22:24] set percent 16
+[2024/07/31 17:22:24] set percent 19
+[2024/07/31 17:22:24] set percent 22
+[2024/07/31 17:22:24] set percent 29
+[2024/07/31 17:22:24] set percent 33
+[2024/07/31 17:22:24] set percent 37
+[2024/07/31 17:22:24] set percent 41
+[2024/07/31 17:22:24] set percent 46
+[2024/07/31 17:22:24] set percent 50
+[2024/07/31 17:22:24] set percent 56
+[2024/07/31 17:22:24] ventoy_unxz_efipart_img len:13475864 rc:0 unxzlen:33554432
+[2024/07/31 17:22:24] Fill MBR part table
+[2024/07/31 17:22:24] Disk signature: 0x4895907e
+[2024/07/31 17:22:24] no need to align with 4KB
+[2024/07/31 17:22:24] ReservedSector: 0
+[2024/07/31 17:22:24] Part1StartSector:2048 Part1SectorCount:120109056 Part2StartSector:120111104
+[2024/07/31 17:22:24] Formatting part1 exFAT /dev/sdi ...
+[0124/07/31 17:22:24] Creating... 
+[0124/07/31 17:22:24] Flushing... 
+[2024/07/31 17:22:24] set percent 61
+[2024/07/31 17:22:24] set percent 61
+[2024/07/31 17:22:24] Formatting part2 EFI ...
+[2024/07/31 17:22:24] Formatting part2 EFI offset:61496885248 ...
+[2024/07/31 17:22:24] VentoyProcSecureBoot 1 ...
+[2024/07/31 17:22:24] Secure boot is enabled ...
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] set percent 64
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:24] Writing legacy grub ...
+[2024/07/31 17:22:24] Write MBR stage1 ...
+[2024/07/31 17:22:24] lseek offset:512(512) writelen:1048064(1048064)
+[2024/07/31 17:22:24] fsync data1...
+[2024/07/31 17:22:24] set percent 80
+[2024/07/31 17:22:24] set percent 80
+[2024/07/31 17:22:24] set percent 80
+[2024/07/31 17:22:24] set percent 80
+[2024/07/31 17:22:24] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:25] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] set percent 80
+[2024/07/31 17:22:26] Checking part2 efi data /dev/sdi ...
+[2024/07/31 17:22:26] set percent 82
+[2024/07/31 17:22:26] set percent 83
+[2024/07/31 17:22:26] set percent 85
+[2024/07/31 17:22:26] set percent 88
+[2024/07/31 17:22:26] set percent 91
+[2024/07/31 17:22:26] efi part data check success
+[2024/07/31 17:22:26] Writting Partition Table style:0...
+[2024/07/31 17:22:26] Writting MBR Partition Table 0 512
+[2024/07/31 17:22:26] fsync data2...
+[2024/07/31 17:22:26] ====================================
+[2024/07/31 17:22:26] ====== ventoy install success ======
+[2024/07/31 17:22:26] ====================================
+[2024/07/31 17:22:27] set percent 100
+[2024/07/31 17:22:27] ventoy_disk_enumerate_all
+[2024/07/31 17:22:27] get disk info sdf
+[2024/07/31 17:22:27] is 4k native disk <sdf> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sdf
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdf
+[2024/07/31 17:22:27] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:27] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/07/31 17:22:27] /dev/sdf NO Ventoy detected
+[2024/07/31 17:22:27] get disk info nvme0n1
+[2024/07/31 17:22:27] is 4k native disk <nvme0n1> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for nvme0n1
+[2024/07/31 17:22:27] /sys/block/nvme0n1/device/vendor not exist 
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/07/31 17:22:27] Invalid efi part2 name <Restored>
+[2024/07/31 17:22:27] disk:</dev/nvme0n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/07/31 17:22:27] /dev/nvme0n1 NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sdd
+[2024/07/31 17:22:27] is 4k native disk <sdd> <1>
+[2024/07/31 17:22:27] get disk size from sysfs for sdd
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdd
+[2024/07/31 17:22:27] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/07/31 17:22:27] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/07/31 17:22:27] /dev/sdd NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sdb
+[2024/07/31 17:22:27] is 4k native disk <sdb> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sdb
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdb
+[2024/07/31 17:22:27] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:27] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/07/31 17:22:27] /dev/sdb NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sdi
+[2024/07/31 17:22:27] is 4k native disk <sdi> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sdi
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdi
+[2024/07/31 17:22:27] ventoy partition layout check OK: [2048 120109056] [120111104 65536]
+[2024/07/31 17:22:27] now check secure boot for /dev/sdi ...
+[2024/07/31 17:22:27] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/07/31 17:22:27] disk:</dev/sdi 8:128> model:< USB  SanDisk 3.2Gen1 (USB)> size:61530439680 (64 GB)
+[2024/07/31 17:22:27] /dev/sdi Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/07/31 17:22:27] get disk info sdg
+[2024/07/31 17:22:27] is 4k native disk <sdg> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sdg
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdg
+[2024/07/31 17:22:27] disk /dev/sdg is too small 0
+[2024/07/31 17:22:27] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/07/31 17:22:27] /dev/sdg NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sde
+[2024/07/31 17:22:27] is 4k native disk <sde> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sde
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sde
+[2024/07/31 17:22:27] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:27] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/07/31 17:22:27] /dev/sde NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sdc
+[2024/07/31 17:22:27] is 4k native disk <sdc> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sdc
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdc
+[2024/07/31 17:22:27] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/07/31 17:22:27] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/07/31 17:22:27] /dev/sdc NO Ventoy detected
+[2024/07/31 17:22:27] get disk info nvme1n1
+[2024/07/31 17:22:27] is 4k native disk <nvme1n1> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for nvme1n1
+[2024/07/31 17:22:27] /sys/block/nvme1n1/device/vendor not exist 
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/07/31 17:22:27] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:27] disk:</dev/nvme1n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/07/31 17:22:27] /dev/nvme1n1 NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sda
+[2024/07/31 17:22:27] is 4k native disk <sda> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sda
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sda
+[2024/07/31 17:22:27] Invalid efi part2 name <My Linux Backups>
+[2024/07/31 17:22:27] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/07/31 17:22:27] /dev/sda NO Ventoy detected
+[2024/07/31 17:22:27] get disk info sdh
+[2024/07/31 17:22:27] is 4k native disk <sdh> <0>
+[2024/07/31 17:22:27] get disk size from sysfs for sdh
+[2024/07/31 17:22:27] ventoy_get_vtoy_data /dev/sdh
+[2024/07/31 17:22:27] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:27] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/07/31 17:22:27] /dev/sdh NO Ventoy detected
+[2024/07/31 17:22:29] set percent 0
+[2024/07/31 17:22:29] fill_dev_list total disk: 11 showall:0
+[2024/07/31 17:22:29] combox count:7, active:sdi id:6
+[2024/07/31 17:22:34] ==========================================================
+[2024/07/31 17:22:34] ===== ventoy update /dev/sdi new_secureboot:1 =========
+[2024/07/31 17:22:34] ==========================================================
+[2024/07/31 17:22:34] /dev/sdi version:1.0.99 partstyle:0 oldsecureboot:1 reserve:0
+[2024/07/31 17:22:34] disk is not mounted now, we can do the update ...
+[2024/07/31 17:22:34] start update thread  USB  SanDisk 3.2Gen1 (USB) ...
+[2024/07/31 17:22:34] func handler update <{ "result" : "success" }>
+[2024/07/31 17:22:34] ventoy_update_thread run ...
+[2024/07/31 17:22:34] check disk sdi
+[2024/07/31 17:22:34] set percent 1
+[2024/07/31 17:22:34] disk is not mounted now, we can do continue ...
+[2024/07/31 17:22:34] read core.img.xz rc:0 len:455192
+[2024/07/31 17:22:34] ventoy_unxz_stg1_img len:455192 rc:0
+[2024/07/31 17:22:34] read disk.img.xz rc:0 len:13475864
+[2024/07/31 17:22:34] set percent 8
+[2024/07/31 17:22:34] set percent 12
+[2024/07/31 17:22:34] set percent 16
+[2024/07/31 17:22:34] set percent 19
+[2024/07/31 17:22:34] set percent 24
+[2024/07/31 17:22:34] set percent 30
+[2024/07/31 17:22:35] set percent 35
+[2024/07/31 17:22:35] set percent 38
+[2024/07/31 17:22:35] set percent 43
+[2024/07/31 17:22:35] set percent 48
+[2024/07/31 17:22:35] set percent 51
+[2024/07/31 17:22:35] ventoy_unxz_efipart_img len:13475864 rc:0 unxzlen:33554432
+[2024/07/31 17:22:35] Formatting part2 EFI ...
+[2024/07/31 17:22:35] Formatting part2 EFI offset:61496885248 ...
+[2024/07/31 17:22:35] VentoyProcSecureBoot 1 ...
+[2024/07/31 17:22:35] Secure boot is enabled ...
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/07/31 17:22:35] Writing legacy grub ...
+[2024/07/31 17:22:35] Write MBR stage1 ...
+[2024/07/31 17:22:35] set percent 79
+[2024/07/31 17:22:35] lseek offset:512(512) writelen:1048064(1048064)
+[2024/07/31 17:22:35] Writing reserve data offset:1044480 len:4096 ...
+[2024/07/31 17:22:35] No need to update MBR
+[2024/07/31 17:22:35] fsync data1...
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:35] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:36] set percent 80
+[2024/07/31 17:22:37] ====================================
+[2024/07/31 17:22:37] ====== ventoy update success ======
+[2024/07/31 17:22:37] ====================================
+[2024/07/31 17:22:37] set percent 100
+[2024/07/31 17:22:37] ventoy_disk_enumerate_all
+[2024/07/31 17:22:37] get disk info sdf
+[2024/07/31 17:22:37] is 4k native disk <sdf> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sdf
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdf
+[2024/07/31 17:22:37] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:37] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/07/31 17:22:37] /dev/sdf NO Ventoy detected
+[2024/07/31 17:22:37] get disk info nvme0n1
+[2024/07/31 17:22:37] is 4k native disk <nvme0n1> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for nvme0n1
+[2024/07/31 17:22:37] /sys/block/nvme0n1/device/vendor not exist 
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/07/31 17:22:37] Invalid efi part2 name <Restored>
+[2024/07/31 17:22:37] disk:</dev/nvme0n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/07/31 17:22:37] /dev/nvme0n1 NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sdd
+[2024/07/31 17:22:37] is 4k native disk <sdd> <1>
+[2024/07/31 17:22:37] get disk size from sysfs for sdd
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdd
+[2024/07/31 17:22:37] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/07/31 17:22:37] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/07/31 17:22:37] /dev/sdd NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sdb
+[2024/07/31 17:22:37] is 4k native disk <sdb> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sdb
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdb
+[2024/07/31 17:22:37] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:37] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/07/31 17:22:37] /dev/sdb NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sdi
+[2024/07/31 17:22:37] is 4k native disk <sdi> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sdi
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdi
+[2024/07/31 17:22:37] ventoy partition layout check OK: [2048 120109056] [120111104 65536]
+[2024/07/31 17:22:37] now check secure boot for /dev/sdi ...
+[2024/07/31 17:22:37] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/07/31 17:22:37] disk:</dev/sdi 8:128> model:< USB  SanDisk 3.2Gen1 (USB)> size:61530439680 (64 GB)
+[2024/07/31 17:22:37] /dev/sdi Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/07/31 17:22:37] get disk info sdg
+[2024/07/31 17:22:37] is 4k native disk <sdg> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sdg
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdg
+[2024/07/31 17:22:37] disk /dev/sdg is too small 0
+[2024/07/31 17:22:37] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/07/31 17:22:37] /dev/sdg NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sde
+[2024/07/31 17:22:37] is 4k native disk <sde> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sde
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sde
+[2024/07/31 17:22:37] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:37] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/07/31 17:22:37] /dev/sde NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sdc
+[2024/07/31 17:22:37] is 4k native disk <sdc> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sdc
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdc
+[2024/07/31 17:22:37] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/07/31 17:22:37] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/07/31 17:22:37] /dev/sdc NO Ventoy detected
+[2024/07/31 17:22:37] get disk info nvme1n1
+[2024/07/31 17:22:37] is 4k native disk <nvme1n1> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for nvme1n1
+[2024/07/31 17:22:37] /sys/block/nvme1n1/device/vendor not exist 
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/07/31 17:22:37] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:37] disk:</dev/nvme1n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/07/31 17:22:37] /dev/nvme1n1 NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sda
+[2024/07/31 17:22:37] is 4k native disk <sda> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sda
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sda
+[2024/07/31 17:22:37] Invalid efi part2 name <My Linux Backups>
+[2024/07/31 17:22:37] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/07/31 17:22:37] /dev/sda NO Ventoy detected
+[2024/07/31 17:22:37] get disk info sdh
+[2024/07/31 17:22:37] is 4k native disk <sdh> <0>
+[2024/07/31 17:22:37] get disk size from sysfs for sdh
+[2024/07/31 17:22:37] ventoy_get_vtoy_data /dev/sdh
+[2024/07/31 17:22:37] NO ventoy efi part layout <2048 0>
+[2024/07/31 17:22:37] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/07/31 17:22:37] /dev/sdh NO Ventoy detected
+[2024/07/31 17:22:39] set percent 0
+[2024/07/31 17:22:39] fill_dev_list total disk: 11 showall:0
+[2024/07/31 17:22:39] combox count:7, active:sdi id:6
+[2024/07/31 17:22:44] on_exit_window ...
+[2024/07/31 17:22:44] ######## Ventoy2Disk GTK 1.0.99 exit ########
+[2024/08/24 12:23:40] 
+[2024/08/24 12:23:40] =========================================================
+[2024/08/24 12:23:40] =========================================================
+[2024/08/24 12:23:40] =============== VentoyGui x86_64 ===============
+[2024/08/24 12:23:40] =========================================================
+[2024/08/24 12:23:40] =========================================================
+[2024/08/24 12:23:40] log file is <log.txt>
+[2024/08/24 12:23:40] pid:1035461 ppid:1035453 uid:1001 euid:1001
+[2024/08/24 12:23:40] adjust dir:1  current path:/home/glenn/LLApps/Ventoy
+[2024/08/24 12:23:40] =========RAW ARGS BEGIN===========
+[2024/08/24 12:23:40] argv[0]=<./VentoyGUI.x86_64>
+[2024/08/24 12:23:40] =========RAW ARGS END===========
+[2024/08/24 12:23:40] uname -m <x86_64> 64bit
+[2024/08/24 12:23:40] Build bit is 64 (x86_64)
+[2024/08/24 12:23:40] Now detect the GUI type ...
+[2024/08/24 12:23:40] 2119 libs found in cache format 1
+[2024/08/24 12:23:40] LIB:<libgtk-4.so.1>
+[2024/08/24 12:23:40] LIB:<libgtk-3.so.0>
+[2024/08/24 12:23:40] LIB:<libgtk-x11-2.0.so.0>
+[2024/08/24 12:23:40] LIB:<libQt6Xml.so.6>
+[2024/08/24 12:23:40] LIB:<libQt5X11Extras.so.5>
+[2024/08/24 12:23:40] ldconfig lib flags 0x37
+[2024/08/24 12:23:40] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/08/24 12:23:40] distro_check_gui_env ...
+[2024/08/24 12:23:40] Key arch is not found in json data.
+[2024/08/24 12:23:40] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 12:23:40] Key arch is not found in json data.
+[2024/08/24 12:23:40] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 12:23:40] Key arch is not found in json data.
+[2024/08/24 12:23:40] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 12:23:40] Can not distinguish GTK and QT, default use GTK.
+[2024/08/24 12:23:40] This is gtk3 X environment.
+[2024/08/24 12:23:40] exe = /home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/24 12:23:40] execute permission check success.
+[2024/08/24 12:23:40] EUID check failed.
+[2024/08/24 12:23:40] try restart self by pkexec ...
+[2024/08/24 12:23:40] Find pkexec at </usr/bin/pkexec>
+[2024/08/24 12:23:40] create environment param 49
+[2024/08/24 12:23:40] =========PKEXEC ARGS BEGIN===========
+[2024/08/24 12:23:40] argv[0]=</usr/bin/pkexec>
+[2024/08/24 12:23:40] argv[1]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/24 12:23:40] argv[2]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2311,unix/glenn-pc:/tmp/.ICE-unix/2311
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/c860a228_06d1_4444_8127_e5180a43fb4e
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.5379
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/08/24 12:23:40] argv[3]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:23:40] =========PKEXEC ARGS END===========
+[2024/08/24 12:23:44] 
+[2024/08/24 12:23:44] =========================================================
+[2024/08/24 12:23:44] =========================================================
+[2024/08/24 12:23:44] =============== VentoyGui x86_64 ===============
+[2024/08/24 12:23:44] =========================================================
+[2024/08/24 12:23:44] =========================================================
+[2024/08/24 12:23:44] log file is <log.txt>
+[2024/08/24 12:23:44] pid:1035461 ppid:1035453 uid:0 euid:0
+[2024/08/24 12:23:44] adjust dir:0  current path:/home/glenn/LLApps/Ventoy
+[2024/08/24 12:23:44] =========RAW ARGS BEGIN===========
+[2024/08/24 12:23:44] argv[0]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/24 12:23:44] argv[1]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2311,unix/glenn-pc:/tmp/.ICE-unix/2311
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/c860a228_06d1_4444_8127_e5180a43fb4e
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.5379
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/08/24 12:23:44] argv[2]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:23:44] =========RAW ARGS END===========
+[2024/08/24 12:23:44] recover environ 49 49
+[2024/08/24 12:23:44] recover success, argc=1 evecve </home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:23:44] =========EXECVE ARGS BEGIN===========
+[2024/08/24 12:23:44] argv[0]=</home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:23:44] =========EXECVE ARGS END===========
+[2024/08/24 12:23:44] ================================================
+[2024/08/24 12:23:44] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/08/24 12:23:44] ================================================
+[2024/08/24 12:23:44] log file is <log.txt> lastsize:44425
+[2024/08/24 12:23:44] ini file is <./Ventoy2Disk.ini>
+[2024/08/24 12:23:44] ventoy_disk_enumerate_all
+[2024/08/24 12:23:44] get disk info sdf
+[2024/08/24 12:23:44] is 4k native disk <sdf> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sdf
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdf
+[2024/08/24 12:23:44] Invalid mbr magic 0x0 0x0
+[2024/08/24 12:23:44] disk:</dev/sdf 8:80> model:<SanDisk Ultra (USB)> size:30752636928 (32 GB)
+[2024/08/24 12:23:44] /dev/sdf NO Ventoy detected
+[2024/08/24 12:23:44] get disk info nvme0n1
+[2024/08/24 12:23:44] is 4k native disk <nvme0n1> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for nvme0n1
+[2024/08/24 12:23:44] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/24 12:23:44] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:23:44] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/24 12:23:44] /dev/nvme0n1 NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sdd
+[2024/08/24 12:23:44] is 4k native disk <sdd> <1>
+[2024/08/24 12:23:44] get disk size from sysfs for sdd
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdd
+[2024/08/24 12:23:44] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/24 12:23:44] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/24 12:23:44] /dev/sdd NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sdb
+[2024/08/24 12:23:44] is 4k native disk <sdb> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sdb
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdb
+[2024/08/24 12:23:44] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:23:44] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/24 12:23:44] /dev/sdb NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sdi
+[2024/08/24 12:23:44] is 4k native disk <sdi> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sdi
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdi
+[2024/08/24 12:23:44] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:23:44] disk:</dev/sdi 8:128> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/24 12:23:44] /dev/sdi NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sdg
+[2024/08/24 12:23:44] is 4k native disk <sdg> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sdg
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdg
+[2024/08/24 12:23:44] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:23:44] disk:</dev/sdg 8:96> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/24 12:23:44] /dev/sdg NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sde
+[2024/08/24 12:23:44] is 4k native disk <sde> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sde
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sde
+[2024/08/24 12:23:44] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:23:44] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/24 12:23:44] /dev/sde NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sdc
+[2024/08/24 12:23:44] is 4k native disk <sdc> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sdc
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdc
+[2024/08/24 12:23:44] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/24 12:23:44] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/24 12:23:44] /dev/sdc NO Ventoy detected
+[2024/08/24 12:23:44] get disk info nvme1n1
+[2024/08/24 12:23:44] is 4k native disk <nvme1n1> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for nvme1n1
+[2024/08/24 12:23:44] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/24 12:23:44] Invalid efi part2 name <Restored>
+[2024/08/24 12:23:44] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/24 12:23:44] /dev/nvme1n1 NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sda
+[2024/08/24 12:23:44] is 4k native disk <sda> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sda
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sda
+[2024/08/24 12:23:44] Invalid efi part2 name <My Linux Backups>
+[2024/08/24 12:23:44] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/24 12:23:44] /dev/sda NO Ventoy detected
+[2024/08/24 12:23:44] get disk info sdh
+[2024/08/24 12:23:44] is 4k native disk <sdh> <0>
+[2024/08/24 12:23:44] get disk size from sysfs for sdh
+[2024/08/24 12:23:44] ventoy_get_vtoy_data /dev/sdh
+[2024/08/24 12:23:44] disk /dev/sdh is too small 0
+[2024/08/24 12:23:44] disk:</dev/sdh 8:112> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/24 12:23:44] /dev/sdh NO Ventoy detected
+[2024/08/24 12:23:44] ============= DISK DUMP ============
+[2024/08/24 12:23:44] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sdf [32 GB] SanDisk Ultra (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sdg [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sdh [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sdi [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/nvme0n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/nvme1n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/08/24 12:23:44] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/08/24 12:23:44] on_init_window ...
+[2024/08/24 12:23:44] load_languages ...
+[2024/08/24 12:23:44] current language <English (English)>
+[2024/08/24 12:23:44] fill_dev_list total disk: 11 showall:0
+[2024/08/24 12:23:44] combox count:7, active:sdc id:0
+[2024/08/24 12:24:22] install_thread ...
+[2024/08/24 12:24:22] ==================================================================================
+[2024/08/24 12:24:22] ===== ventoy install /dev/sdf style:MBR secureboot:1 align4K:1 reserve:0 =========
+[2024/08/24 12:24:22] ==================================================================================
+[2024/08/24 12:24:22] /dev/sdf mounted </dev/sdf /media/glenn/LastOSLinux udf ro,nosuid,nodev,relatime,uid=1001,gid=1001,iocharset=utf8 0 0
+>
+[2024/08/24 12:24:22] disk is mounted, now try to unmount it ...
+[2024/08/24 12:24:22] umount </dev/sdf> </media/glenn/LastOSLinux> [ success ]
+[2024/08/24 12:24:22] disk is not mounted now, we can do the install ...
+[2024/08/24 12:24:22] start install thread SanDisk Ultra (USB) ...
+[2024/08/24 12:24:22] func handler install <{ "result" : "success" }>
+[2024/08/24 12:24:22] set percent 1
+[2024/08/24 12:24:22] ventoy_install_thread run ...
+[2024/08/24 12:24:22] check disk sdf
+[2024/08/24 12:24:22] disk is not mounted now, we can do continue ...
+[2024/08/24 12:24:22] ventoy_clean_disk fd:6 size:30752636928
+[2024/08/24 12:24:22] write disk at off:0 writelen:65536 datalen:65536
+[2024/08/24 12:24:22] write disk at off:30752571392 writelen:65536 datalen:65536
+[2024/08/24 12:24:22] read core.img.xz rc:0 len:455192
+[2024/08/24 12:24:22] set percent 6
+[2024/08/24 12:24:22] ventoy_unxz_stg1_img len:455192 rc:0
+[2024/08/24 12:24:22] read disk.img.xz rc:0 len:13475864
+[2024/08/24 12:24:22] set percent 8
+[2024/08/24 12:24:22] set percent 11
+[2024/08/24 12:24:23] set percent 14
+[2024/08/24 12:24:23] set percent 16
+[2024/08/24 12:24:23] set percent 20
+[2024/08/24 12:24:23] set percent 25
+[2024/08/24 12:24:23] set percent 32
+[2024/08/24 12:24:23] set percent 35
+[2024/08/24 12:24:23] set percent 38
+[2024/08/24 12:24:23] set percent 43
+[2024/08/24 12:24:23] set percent 48
+[2024/08/24 12:24:23] set percent 51
+[2024/08/24 12:24:23] ventoy_unxz_efipart_img len:13475864 rc:0 unxzlen:33554432
+[2024/08/24 12:24:23] Fill MBR part table
+[2024/08/24 12:24:23] Disk signature: 0xc91baa5f
+[2024/08/24 12:24:23] no need to align with 4KB
+[2024/08/24 12:24:23] ReservedSector: 0
+[2024/08/24 12:24:23] Part1StartSector:2048 Part1SectorCount:59996160 Part2StartSector:59998208
+[2024/08/24 12:24:23] Formatting part1 exFAT /dev/sdf ...
+[0124/08/24 12:24:23] Creating... 
+[0124/08/24 12:24:23] Flushing... 
+[2024/08/24 12:24:23] set percent 61
+[2024/08/24 12:24:23] set percent 61
+[2024/08/24 12:24:23] Formatting part2 EFI ...
+[2024/08/24 12:24:23] Formatting part2 EFI offset:30719082496 ...
+[2024/08/24 12:24:23] VentoyProcSecureBoot 1 ...
+[2024/08/24 12:24:23] Secure boot is enabled ...
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:23] Writing legacy grub ...
+[2024/08/24 12:24:23] Write MBR stage1 ...
+[2024/08/24 12:24:23] lseek offset:512(512) writelen:1048064(1048064)
+[2024/08/24 12:24:23] fsync data1...
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:23] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] set percent 80
+[2024/08/24 12:24:24] Checking part2 efi data /dev/sdf ...
+[2024/08/24 12:24:24] set percent 82
+[2024/08/24 12:24:24] set percent 85
+[2024/08/24 12:24:24] set percent 88
+[2024/08/24 12:24:24] set percent 90
+[2024/08/24 12:24:24] efi part data check success
+[2024/08/24 12:24:24] set percent 93
+[2024/08/24 12:24:24] Writting Partition Table style:0...
+[2024/08/24 12:24:24] Writting MBR Partition Table 0 512
+[2024/08/24 12:24:24] fsync data2...
+[2024/08/24 12:24:24] ====================================
+[2024/08/24 12:24:24] ====== ventoy install success ======
+[2024/08/24 12:24:24] ====================================
+[2024/08/24 12:24:24] set percent 100
+[2024/08/24 12:24:24] ventoy_disk_enumerate_all
+[2024/08/24 12:24:24] get disk info sdf
+[2024/08/24 12:24:24] is 4k native disk <sdf> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sdf
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdf
+[2024/08/24 12:24:24] ventoy partition layout check OK: [2048 59996160] [59998208 65536]
+[2024/08/24 12:24:24] now check secure boot for /dev/sdf ...
+[2024/08/24 12:24:24] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/08/24 12:24:24] disk:</dev/sdf 8:80> model:<SanDisk Ultra (USB)> size:30752636928 (32 GB)
+[2024/08/24 12:24:24] /dev/sdf Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/08/24 12:24:24] get disk info nvme0n1
+[2024/08/24 12:24:24] is 4k native disk <nvme0n1> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for nvme0n1
+[2024/08/24 12:24:24] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/24 12:24:24] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:24] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/24 12:24:24] /dev/nvme0n1 NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sdd
+[2024/08/24 12:24:24] is 4k native disk <sdd> <1>
+[2024/08/24 12:24:24] get disk size from sysfs for sdd
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdd
+[2024/08/24 12:24:24] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/24 12:24:24] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/24 12:24:24] /dev/sdd NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sdb
+[2024/08/24 12:24:24] is 4k native disk <sdb> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sdb
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdb
+[2024/08/24 12:24:24] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:24] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/24 12:24:24] /dev/sdb NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sdi
+[2024/08/24 12:24:24] is 4k native disk <sdi> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sdi
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdi
+[2024/08/24 12:24:24] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:24] disk:</dev/sdi 8:128> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/24 12:24:24] /dev/sdi NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sdg
+[2024/08/24 12:24:24] is 4k native disk <sdg> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sdg
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdg
+[2024/08/24 12:24:24] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:24] disk:</dev/sdg 8:96> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/24 12:24:24] /dev/sdg NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sde
+[2024/08/24 12:24:24] is 4k native disk <sde> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sde
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sde
+[2024/08/24 12:24:24] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:24] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/24 12:24:24] /dev/sde NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sdc
+[2024/08/24 12:24:24] is 4k native disk <sdc> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sdc
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdc
+[2024/08/24 12:24:24] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/24 12:24:24] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/24 12:24:24] /dev/sdc NO Ventoy detected
+[2024/08/24 12:24:24] get disk info nvme1n1
+[2024/08/24 12:24:24] is 4k native disk <nvme1n1> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for nvme1n1
+[2024/08/24 12:24:24] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/24 12:24:24] Invalid efi part2 name <Restored>
+[2024/08/24 12:24:24] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/24 12:24:24] /dev/nvme1n1 NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sda
+[2024/08/24 12:24:24] is 4k native disk <sda> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sda
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sda
+[2024/08/24 12:24:24] Invalid efi part2 name <My Linux Backups>
+[2024/08/24 12:24:24] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/24 12:24:24] /dev/sda NO Ventoy detected
+[2024/08/24 12:24:24] get disk info sdh
+[2024/08/24 12:24:24] is 4k native disk <sdh> <0>
+[2024/08/24 12:24:24] get disk size from sysfs for sdh
+[2024/08/24 12:24:24] ventoy_get_vtoy_data /dev/sdh
+[2024/08/24 12:24:24] disk /dev/sdh is too small 0
+[2024/08/24 12:24:24] disk:</dev/sdh 8:112> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/24 12:24:24] /dev/sdh NO Ventoy detected
+[2024/08/24 12:24:26] set percent 0
+[2024/08/24 12:24:26] fill_dev_list total disk: 11 showall:0
+[2024/08/24 12:24:26] combox count:7, active:sdf id:3
+[2024/08/24 12:24:29] ==========================================================
+[2024/08/24 12:24:29] ===== ventoy update /dev/sdf new_secureboot:1 =========
+[2024/08/24 12:24:29] ==========================================================
+[2024/08/24 12:24:29] /dev/sdf version:1.0.99 partstyle:0 oldsecureboot:1 reserve:0
+[2024/08/24 12:24:29] disk is not mounted now, we can do the update ...
+[2024/08/24 12:24:29] start update thread SanDisk Ultra (USB) ...
+[2024/08/24 12:24:29] func handler update <{ "result" : "success" }>
+[2024/08/24 12:24:29] ventoy_update_thread run ...
+[2024/08/24 12:24:29] check disk sdf
+[2024/08/24 12:24:29] set percent 1
+[2024/08/24 12:24:29] disk is not mounted now, we can do continue ...
+[2024/08/24 12:24:29] read core.img.xz rc:0 len:455192
+[2024/08/24 12:24:29] ventoy_unxz_stg1_img len:455192 rc:0
+[2024/08/24 12:24:29] read disk.img.xz rc:0 len:13475864
+[2024/08/24 12:24:29] set percent 8
+[2024/08/24 12:24:29] set percent 11
+[2024/08/24 12:24:29] set percent 16
+[2024/08/24 12:24:29] set percent 19
+[2024/08/24 12:24:29] set percent 22
+[2024/08/24 12:24:29] set percent 30
+[2024/08/24 12:24:29] set percent 33
+[2024/08/24 12:24:29] set percent 38
+[2024/08/24 12:24:30] set percent 43
+[2024/08/24 12:24:30] set percent 48
+[2024/08/24 12:24:30] set percent 53
+[2024/08/24 12:24:30] ventoy_unxz_efipart_img len:13475864 rc:0 unxzlen:33554432
+[2024/08/24 12:24:30] Formatting part2 EFI ...
+[2024/08/24 12:24:30] Formatting part2 EFI offset:30719082496 ...
+[2024/08/24 12:24:30] VentoyProcSecureBoot 1 ...
+[2024/08/24 12:24:30] Secure boot is enabled ...
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:24:30] Writing legacy grub ...
+[2024/08/24 12:24:30] Write MBR stage1 ...
+[2024/08/24 12:24:30] set percent 79
+[2024/08/24 12:24:30] lseek offset:512(512) writelen:1048064(1048064)
+[2024/08/24 12:24:30] Writing reserve data offset:1044480 len:4096 ...
+[2024/08/24 12:24:30] No need to update MBR
+[2024/08/24 12:24:30] fsync data1...
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:30] set percent 80
+[2024/08/24 12:24:31] set percent 80
+[2024/08/24 12:24:31] set percent 80
+[2024/08/24 12:24:31] set percent 80
+[2024/08/24 12:24:31] set percent 80
+[2024/08/24 12:24:31] ====================================
+[2024/08/24 12:24:31] ====== ventoy update success ======
+[2024/08/24 12:24:31] ====================================
+[2024/08/24 12:24:31] set percent 100
+[2024/08/24 12:24:31] ventoy_disk_enumerate_all
+[2024/08/24 12:24:31] get disk info sdf
+[2024/08/24 12:24:31] is 4k native disk <sdf> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sdf
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdf
+[2024/08/24 12:24:31] ventoy partition layout check OK: [2048 59996160] [59998208 65536]
+[2024/08/24 12:24:31] now check secure boot for /dev/sdf ...
+[2024/08/24 12:24:31] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/08/24 12:24:31] disk:</dev/sdf 8:80> model:<SanDisk Ultra (USB)> size:30752636928 (32 GB)
+[2024/08/24 12:24:31] /dev/sdf Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/08/24 12:24:31] get disk info nvme0n1
+[2024/08/24 12:24:31] is 4k native disk <nvme0n1> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for nvme0n1
+[2024/08/24 12:24:31] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/24 12:24:31] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:31] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/24 12:24:31] /dev/nvme0n1 NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sdd
+[2024/08/24 12:24:31] is 4k native disk <sdd> <1>
+[2024/08/24 12:24:31] get disk size from sysfs for sdd
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdd
+[2024/08/24 12:24:31] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/24 12:24:31] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/24 12:24:31] /dev/sdd NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sdb
+[2024/08/24 12:24:31] is 4k native disk <sdb> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sdb
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdb
+[2024/08/24 12:24:31] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:31] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/24 12:24:31] /dev/sdb NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sdi
+[2024/08/24 12:24:31] is 4k native disk <sdi> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sdi
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdi
+[2024/08/24 12:24:31] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:31] disk:</dev/sdi 8:128> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/24 12:24:31] /dev/sdi NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sdg
+[2024/08/24 12:24:31] is 4k native disk <sdg> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sdg
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdg
+[2024/08/24 12:24:31] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:31] disk:</dev/sdg 8:96> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/24 12:24:31] /dev/sdg NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sde
+[2024/08/24 12:24:31] is 4k native disk <sde> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sde
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sde
+[2024/08/24 12:24:31] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:24:31] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/24 12:24:31] /dev/sde NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sdc
+[2024/08/24 12:24:31] is 4k native disk <sdc> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sdc
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdc
+[2024/08/24 12:24:31] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/24 12:24:31] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/24 12:24:31] /dev/sdc NO Ventoy detected
+[2024/08/24 12:24:31] get disk info nvme1n1
+[2024/08/24 12:24:31] is 4k native disk <nvme1n1> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for nvme1n1
+[2024/08/24 12:24:31] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/24 12:24:31] Invalid efi part2 name <Restored>
+[2024/08/24 12:24:31] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/24 12:24:31] /dev/nvme1n1 NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sda
+[2024/08/24 12:24:31] is 4k native disk <sda> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sda
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sda
+[2024/08/24 12:24:31] Invalid efi part2 name <My Linux Backups>
+[2024/08/24 12:24:31] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/24 12:24:31] /dev/sda NO Ventoy detected
+[2024/08/24 12:24:31] get disk info sdh
+[2024/08/24 12:24:31] is 4k native disk <sdh> <0>
+[2024/08/24 12:24:31] get disk size from sysfs for sdh
+[2024/08/24 12:24:31] ventoy_get_vtoy_data /dev/sdh
+[2024/08/24 12:24:31] disk /dev/sdh is too small 0
+[2024/08/24 12:24:31] disk:</dev/sdh 8:112> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/24 12:24:31] /dev/sdh NO Ventoy detected
+[2024/08/24 12:24:32] set percent 0
+[2024/08/24 12:24:32] fill_dev_list total disk: 11 showall:0
+[2024/08/24 12:24:32] combox count:7, active:sdf id:3
+[2024/08/24 12:24:35] on_exit_window ...
+[2024/08/24 12:24:35] ######## Ventoy2Disk GTK 1.0.99 exit ########
+[2024/08/24 12:26:30] 
+[2024/08/24 12:26:30] =========================================================
+[2024/08/24 12:26:30] =========================================================
+[2024/08/24 12:26:30] =============== VentoyGui x86_64 ===============
+[2024/08/24 12:26:30] =========================================================
+[2024/08/24 12:26:30] =========================================================
+[2024/08/24 12:26:30] log file is <log.txt>
+[2024/08/24 12:26:30] pid:1040729 ppid:1040721 uid:1001 euid:1001
+[2024/08/24 12:26:30] adjust dir:1  current path:/home/glenn/LLApps/Ventoy
+[2024/08/24 12:26:30] =========RAW ARGS BEGIN===========
+[2024/08/24 12:26:30] argv[0]=<./VentoyGUI.x86_64>
+[2024/08/24 12:26:30] =========RAW ARGS END===========
+[2024/08/24 12:26:30] uname -m <x86_64> 64bit
+[2024/08/24 12:26:30] Build bit is 64 (x86_64)
+[2024/08/24 12:26:30] Now detect the GUI type ...
+[2024/08/24 12:26:30] 2119 libs found in cache format 1
+[2024/08/24 12:26:30] LIB:<libgtk-4.so.1>
+[2024/08/24 12:26:30] LIB:<libgtk-3.so.0>
+[2024/08/24 12:26:30] LIB:<libgtk-x11-2.0.so.0>
+[2024/08/24 12:26:30] LIB:<libQt6Xml.so.6>
+[2024/08/24 12:26:30] LIB:<libQt5X11Extras.so.5>
+[2024/08/24 12:26:30] ldconfig lib flags 0x37
+[2024/08/24 12:26:30] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/08/24 12:26:30] distro_check_gui_env ...
+[2024/08/24 12:26:30] Key arch is not found in json data.
+[2024/08/24 12:26:30] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 12:26:30] Key arch is not found in json data.
+[2024/08/24 12:26:30] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 12:26:30] Key arch is not found in json data.
+[2024/08/24 12:26:30] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 12:26:30] Can not distinguish GTK and QT, default use GTK.
+[2024/08/24 12:26:30] This is gtk3 X environment.
+[2024/08/24 12:26:30] exe = /home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/24 12:26:30] execute permission check success.
+[2024/08/24 12:26:30] EUID check failed.
+[2024/08/24 12:26:30] try restart self by pkexec ...
+[2024/08/24 12:26:30] Find pkexec at </usr/bin/pkexec>
+[2024/08/24 12:26:30] create environment param 49
+[2024/08/24 12:26:30] =========PKEXEC ARGS BEGIN===========
+[2024/08/24 12:26:30] argv[0]=</usr/bin/pkexec>
+[2024/08/24 12:26:30] argv[1]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/24 12:26:30] argv[2]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2311,unix/glenn-pc:/tmp/.ICE-unix/2311
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/51763d3f_0f56_467b_95f5_9ddb6e70cc3d
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.5430
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/08/24 12:26:30] argv[3]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:26:30] =========PKEXEC ARGS END===========
+[2024/08/24 12:26:32] 
+[2024/08/24 12:26:32] =========================================================
+[2024/08/24 12:26:32] =========================================================
+[2024/08/24 12:26:32] =============== VentoyGui x86_64 ===============
+[2024/08/24 12:26:32] =========================================================
+[2024/08/24 12:26:32] =========================================================
+[2024/08/24 12:26:32] log file is <log.txt>
+[2024/08/24 12:26:32] pid:1040729 ppid:1040721 uid:0 euid:0
+[2024/08/24 12:26:32] adjust dir:0  current path:/home/glenn/LLApps/Ventoy
+[2024/08/24 12:26:32] =========RAW ARGS BEGIN===========
+[2024/08/24 12:26:32] argv[0]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/24 12:26:32] argv[1]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2311,unix/glenn-pc:/tmp/.ICE-unix/2311
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/51763d3f_0f56_467b_95f5_9ddb6e70cc3d
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.5430
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/08/24 12:26:32] argv[2]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:26:32] =========RAW ARGS END===========
+[2024/08/24 12:26:32] recover environ 49 49
+[2024/08/24 12:26:32] recover success, argc=1 evecve </home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:26:32] =========EXECVE ARGS BEGIN===========
+[2024/08/24 12:26:32] argv[0]=</home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 12:26:32] =========EXECVE ARGS END===========
+[2024/08/24 12:26:32] ================================================
+[2024/08/24 12:26:32] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/08/24 12:26:32] ================================================
+[2024/08/24 12:26:32] log file is <log.txt> lastsize:80194
+[2024/08/24 12:26:32] ini file is <./Ventoy2Disk.ini>
+[2024/08/24 12:26:32] ventoy_disk_enumerate_all
+[2024/08/24 12:26:32] get disk info sdf
+[2024/08/24 12:26:32] is 4k native disk <sdf> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sdf
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sdf
+[2024/08/24 12:26:32] Not valid ventoy partition layout [2048 234432512] [0 0]
+[2024/08/24 12:26:32] disk:</dev/sdf 8:80> model:<KINGSTON  SA400S37120 (USB)> size:120034123776 (120 GB)
+[2024/08/24 12:26:32] /dev/sdf NO Ventoy detected
+[2024/08/24 12:26:32] get disk info nvme0n1
+[2024/08/24 12:26:32] is 4k native disk <nvme0n1> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for nvme0n1
+[2024/08/24 12:26:32] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/24 12:26:32] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:32] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/24 12:26:32] /dev/nvme0n1 NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sdd
+[2024/08/24 12:26:32] is 4k native disk <sdd> <1>
+[2024/08/24 12:26:32] get disk size from sysfs for sdd
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sdd
+[2024/08/24 12:26:32] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/24 12:26:32] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/24 12:26:32] /dev/sdd NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sdb
+[2024/08/24 12:26:32] is 4k native disk <sdb> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sdb
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sdb
+[2024/08/24 12:26:32] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:32] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/24 12:26:32] /dev/sdb NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sdi
+[2024/08/24 12:26:32] is 4k native disk <sdi> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sdi
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sdi
+[2024/08/24 12:26:32] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:32] disk:</dev/sdi 8:128> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/24 12:26:32] /dev/sdi NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sdg
+[2024/08/24 12:26:32] is 4k native disk <sdg> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sdg
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sdg
+[2024/08/24 12:26:32] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:32] disk:</dev/sdg 8:96> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/24 12:26:32] /dev/sdg NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sde
+[2024/08/24 12:26:32] is 4k native disk <sde> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sde
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sde
+[2024/08/24 12:26:32] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:32] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/24 12:26:32] /dev/sde NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sdc
+[2024/08/24 12:26:32] is 4k native disk <sdc> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sdc
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sdc
+[2024/08/24 12:26:32] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/24 12:26:32] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/24 12:26:32] /dev/sdc NO Ventoy detected
+[2024/08/24 12:26:32] get disk info nvme1n1
+[2024/08/24 12:26:32] is 4k native disk <nvme1n1> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for nvme1n1
+[2024/08/24 12:26:32] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/24 12:26:32] Invalid efi part2 name <Restored>
+[2024/08/24 12:26:32] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/24 12:26:32] /dev/nvme1n1 NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sda
+[2024/08/24 12:26:32] is 4k native disk <sda> <0>
+[2024/08/24 12:26:32] get disk size from sysfs for sda
+[2024/08/24 12:26:32] ventoy_get_vtoy_data /dev/sda
+[2024/08/24 12:26:32] Invalid efi part2 name <My Linux Backups>
+[2024/08/24 12:26:32] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/24 12:26:32] /dev/sda NO Ventoy detected
+[2024/08/24 12:26:32] get disk info sdh
+[2024/08/24 12:26:33] is 4k native disk <sdh> <0>
+[2024/08/24 12:26:33] get disk size from sysfs for sdh
+[2024/08/24 12:26:33] ventoy_get_vtoy_data /dev/sdh
+[2024/08/24 12:26:33] disk /dev/sdh is too small 0
+[2024/08/24 12:26:33] disk:</dev/sdh 8:112> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/24 12:26:33] /dev/sdh NO Ventoy detected
+[2024/08/24 12:26:33] ============= DISK DUMP ============
+[2024/08/24 12:26:33] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sdf [120 GB] KINGSTON  SA400S37120 (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sdg [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sdh [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sdi [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/nvme0n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/nvme1n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/08/24 12:26:33] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/08/24 12:26:33] on_init_window ...
+[2024/08/24 12:26:33] load_languages ...
+[2024/08/24 12:26:33] current language <English (English)>
+[2024/08/24 12:26:33] fill_dev_list total disk: 11 showall:0
+[2024/08/24 12:26:33] combox count:7, active:sdc id:0
+[2024/08/24 12:26:47] install_thread ...
+[2024/08/24 12:26:47] ==================================================================================
+[2024/08/24 12:26:47] ===== ventoy install /dev/sdf style:MBR secureboot:1 align4K:1 reserve:0 =========
+[2024/08/24 12:26:47] ==================================================================================
+[2024/08/24 12:26:47] /dev/sdf mounted </dev/sdf1 /media/glenn/120GB-SSD ntfs3 rw,nosuid,nodev,relatime,uid=1001,gid=1001,iocharset=utf8 0 0
+>
+[2024/08/24 12:26:47] disk is mounted, now try to unmount it ...
+[2024/08/24 12:26:47] umount </dev/sdf> </media/glenn/120GB-SSD> [ success ]
+[2024/08/24 12:26:47] disk is not mounted now, we can do the install ...
+[2024/08/24 12:26:47] start install thread KINGSTON  SA400S37120 (USB) ...
+[2024/08/24 12:26:47] func handler install <{ "result" : "success" }>
+[2024/08/24 12:26:47] ventoy_install_thread run ...
+[2024/08/24 12:26:47] check disk sdf
+[2024/08/24 12:26:47] set percent 1
+[2024/08/24 12:26:47] disk is not mounted now, we can do continue ...
+[2024/08/24 12:26:47] ventoy_clean_disk fd:6 size:120034123776
+[2024/08/24 12:26:47] write disk at off:0 writelen:65536 datalen:65536
+[2024/08/24 12:26:47] write disk at off:120034058240 writelen:65536 datalen:65536
+[2024/08/24 12:26:47] read core.img.xz rc:0 len:455192
+[2024/08/24 12:26:47] ventoy_unxz_stg1_img len:455192 rc:0
+[2024/08/24 12:26:47] read disk.img.xz rc:0 len:13475864
+[2024/08/24 12:26:47] set percent 8
+[2024/08/24 12:26:47] set percent 11
+[2024/08/24 12:26:47] set percent 16
+[2024/08/24 12:26:47] set percent 17
+[2024/08/24 12:26:47] set percent 20
+[2024/08/24 12:26:47] set percent 24
+[2024/08/24 12:26:47] set percent 30
+[2024/08/24 12:26:47] set percent 35
+[2024/08/24 12:26:47] set percent 38
+[2024/08/24 12:26:47] set percent 43
+[2024/08/24 12:26:47] set percent 48
+[2024/08/24 12:26:47] set percent 51
+[2024/08/24 12:26:47] ventoy_unxz_efipart_img len:13475864 rc:0 unxzlen:33554432
+[2024/08/24 12:26:47] Fill MBR part table
+[2024/08/24 12:26:47] Disk signature: 0x54710078
+[2024/08/24 12:26:47] no need to align with 4KB
+[2024/08/24 12:26:47] ReservedSector: 0
+[2024/08/24 12:26:47] Part1StartSector:2048 Part1SectorCount:234374064 Part2StartSector:234376112
+[2024/08/24 12:26:47] Formatting part1 exFAT /dev/sdf ...
+[0124/08/24 12:26:47] Creating... 
+[0124/08/24 12:26:47] Flushing... 
+[2024/08/24 12:26:47] set percent 61
+[2024/08/24 12:26:47] Formatting part2 EFI ...
+[2024/08/24 12:26:47] Formatting part2 EFI offset:120000569344 ...
+[2024/08/24 12:26:47] VentoyProcSecureBoot 1 ...
+[2024/08/24 12:26:47] Secure boot is enabled ...
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/24 12:26:47] Writing legacy grub ...
+[2024/08/24 12:26:47] Write MBR stage1 ...
+[2024/08/24 12:26:47] lseek offset:512(512) writelen:1048064(1048064)
+[2024/08/24 12:26:47] fsync data1...
+[2024/08/24 12:26:47] set percent 80
+[2024/08/24 12:26:47] set percent 80
+[2024/08/24 12:26:47] Checking part2 efi data /dev/sdf ...
+[2024/08/24 12:26:47] set percent 82
+[2024/08/24 12:26:48] set percent 85
+[2024/08/24 12:26:48] set percent 87
+[2024/08/24 12:26:48] set percent 90
+[2024/08/24 12:26:48] efi part data check success
+[2024/08/24 12:26:48] Writting Partition Table style:0...
+[2024/08/24 12:26:48] Writting MBR Partition Table 0 512
+[2024/08/24 12:26:48] fsync data2...
+[2024/08/24 12:26:48] set percent 98
+[2024/08/24 12:26:48] ====================================
+[2024/08/24 12:26:48] ====== ventoy install success ======
+[2024/08/24 12:26:48] ====================================
+[2024/08/24 12:26:48] set percent 100
+[2024/08/24 12:26:48] ventoy_disk_enumerate_all
+[2024/08/24 12:26:48] get disk info sdf
+[2024/08/24 12:26:48] is 4k native disk <sdf> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sdf
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdf
+[2024/08/24 12:26:48] ventoy partition layout check OK: [2048 234374064] [234376112 65536]
+[2024/08/24 12:26:48] now check secure boot for /dev/sdf ...
+[2024/08/24 12:26:48] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/08/24 12:26:48] disk:</dev/sdf 8:80> model:<KINGSTON  SA400S37120 (USB)> size:120034123776 (120 GB)
+[2024/08/24 12:26:48] /dev/sdf Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/08/24 12:26:48] get disk info nvme0n1
+[2024/08/24 12:26:48] is 4k native disk <nvme0n1> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for nvme0n1
+[2024/08/24 12:26:48] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/24 12:26:48] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:48] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/24 12:26:48] /dev/nvme0n1 NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sdd
+[2024/08/24 12:26:48] is 4k native disk <sdd> <1>
+[2024/08/24 12:26:48] get disk size from sysfs for sdd
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdd
+[2024/08/24 12:26:48] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/24 12:26:48] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/24 12:26:48] /dev/sdd NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sdb
+[2024/08/24 12:26:48] is 4k native disk <sdb> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sdb
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdb
+[2024/08/24 12:26:48] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:48] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/24 12:26:48] /dev/sdb NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sdi
+[2024/08/24 12:26:48] is 4k native disk <sdi> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sdi
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdi
+[2024/08/24 12:26:48] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:48] disk:</dev/sdi 8:128> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/24 12:26:48] /dev/sdi NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sdg
+[2024/08/24 12:26:48] is 4k native disk <sdg> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sdg
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdg
+[2024/08/24 12:26:48] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:48] disk:</dev/sdg 8:96> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/24 12:26:48] /dev/sdg NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sde
+[2024/08/24 12:26:48] is 4k native disk <sde> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sde
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sde
+[2024/08/24 12:26:48] NO ventoy efi part layout <2048 0>
+[2024/08/24 12:26:48] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/24 12:26:48] /dev/sde NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sdc
+[2024/08/24 12:26:48] is 4k native disk <sdc> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sdc
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdc
+[2024/08/24 12:26:48] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/24 12:26:48] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/24 12:26:48] /dev/sdc NO Ventoy detected
+[2024/08/24 12:26:48] get disk info nvme1n1
+[2024/08/24 12:26:48] is 4k native disk <nvme1n1> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for nvme1n1
+[2024/08/24 12:26:48] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/24 12:26:48] Invalid efi part2 name <Restored>
+[2024/08/24 12:26:48] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/24 12:26:48] /dev/nvme1n1 NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sda
+[2024/08/24 12:26:48] is 4k native disk <sda> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sda
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sda
+[2024/08/24 12:26:48] Invalid efi part2 name <My Linux Backups>
+[2024/08/24 12:26:48] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/24 12:26:48] /dev/sda NO Ventoy detected
+[2024/08/24 12:26:48] get disk info sdh
+[2024/08/24 12:26:48] is 4k native disk <sdh> <0>
+[2024/08/24 12:26:48] get disk size from sysfs for sdh
+[2024/08/24 12:26:48] ventoy_get_vtoy_data /dev/sdh
+[2024/08/24 12:26:48] disk /dev/sdh is too small 0
+[2024/08/24 12:26:48] disk:</dev/sdh 8:112> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/24 12:26:48] /dev/sdh NO Ventoy detected
+[2024/08/24 12:26:49] set percent 0
+[2024/08/24 12:26:49] fill_dev_list total disk: 11 showall:0
+[2024/08/24 12:26:49] combox count:7, active:sdf id:3
+[2024/08/24 12:26:56] on_exit_window ...
+[2024/08/24 12:26:56] ######## Ventoy2Disk GTK 1.0.99 exit ########
+[2024/08/24 15:50:50] 
+[2024/08/24 15:50:50] =========================================================
+[2024/08/24 15:50:50] =========================================================
+[2024/08/24 15:50:50] =============== VentoyGui x86_64 ===============
+[2024/08/24 15:50:50] =========================================================
+[2024/08/24 15:50:50] =========================================================
+[2024/08/24 15:50:50] log file is <log.txt>
+[2024/08/24 15:50:50] pid:8268 ppid:7996 uid:1001 euid:1001
+[2024/08/24 15:50:50] adjust dir:1  current path:/home/glenn/LLApps/Ventoy
+[2024/08/24 15:50:50] =========RAW ARGS BEGIN===========
+[2024/08/24 15:50:50] argv[0]=<./VentoyGUI.x86_64>
+[2024/08/24 15:50:50] =========RAW ARGS END===========
+[2024/08/24 15:50:50] uname -m <x86_64> 64bit
+[2024/08/24 15:50:50] Build bit is 64 (x86_64)
+[2024/08/24 15:50:50] Now detect the GUI type ...
+[2024/08/24 15:50:50] 2119 libs found in cache format 1
+[2024/08/24 15:50:50] LIB:<libgtk-4.so.1>
+[2024/08/24 15:50:50] LIB:<libgtk-3.so.0>
+[2024/08/24 15:50:50] LIB:<libgtk-x11-2.0.so.0>
+[2024/08/24 15:50:50] LIB:<libQt6Xml.so.6>
+[2024/08/24 15:50:50] LIB:<libQt5X11Extras.so.5>
+[2024/08/24 15:50:50] ldconfig lib flags 0x37
+[2024/08/24 15:50:50] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/08/24 15:50:50] distro_check_gui_env ...
+[2024/08/24 15:50:50] Key arch is not found in json data.
+[2024/08/24 15:50:50] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 15:50:50] Key arch is not found in json data.
+[2024/08/24 15:50:50] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 15:50:50] Key arch is not found in json data.
+[2024/08/24 15:50:50] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/24 15:50:50] Can not distinguish GTK and QT, default use GTK.
+[2024/08/24 15:50:50] This is gtk3 X environment.
+[2024/08/24 15:50:50] exe = /home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/24 15:50:50] execute permission check success.
+[2024/08/24 15:50:50] EUID check failed.
+[2024/08/24 15:50:50] try restart self by pkexec ...
+[2024/08/24 15:50:50] Find pkexec at </usr/bin/pkexec>
+[2024/08/24 15:50:50] create environment param 49
+[2024/08/24 15:50:50] =========PKEXEC ARGS BEGIN===========
+[2024/08/24 15:50:50] argv[0]=</usr/bin/pkexec>
+[2024/08/24 15:50:50] argv[1]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/24 15:50:50] argv[2]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2446,unix/glenn-pc:/tmp/.ICE-unix/2446
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/a4835d9e_fee6_452e_8366_90c943f4cb89
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.77
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+‘>
+[2024/08/24 15:50:50] argv[3]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 15:50:50] =========PKEXEC ARGS END===========
+[2024/08/24 15:50:53] 
+[2024/08/24 15:50:53] =========================================================
+[2024/08/24 15:50:53] =========================================================
+[2024/08/24 15:50:53] =============== VentoyGui x86_64 ===============
+[2024/08/24 15:50:53] =========================================================
+[2024/08/24 15:50:53] =========================================================
+[2024/08/24 15:50:53] log file is <log.txt>
+[2024/08/24 15:50:53] pid:8268 ppid:7996 uid:0 euid:0
+[2024/08/24 15:50:53] adjust dir:0  current path:/home/glenn/LLApps/Ventoy
+[2024/08/24 15:50:53] =========RAW ARGS BEGIN===========
+[2024/08/24 15:50:53] argv[0]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/24 15:50:53] argv[1]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glenn-pc:@/tmp/.ICE-unix/2446,unix/glenn-pc:/tmp/.ICE-unix/2446
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/a4835d9e_fee6_452e_8366_90c943f4cb89
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+PWD=/home/glenn/LLApps/Ventoy
+HOME=/home/glenn
+GNOME_TERMINAL_SERVICE=:1.77
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+LOGNAME=glenn
+LC_PAPER=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+XDG_RUNTIME_DIR=/run/user/1001
+GTK_MODULES=gail:atk-bridge
+XDG_SESSION_ID=c2
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+SHELL=/bin/bash
+LC_TELEPHONE=en_AU.UTF-8
+LC_MEASUREMENT=en_AU.UTF-8
+GDM_LANG=en_AU
+COLORTERM=truecolor
+CINNAMON_VERSION=6.2.9
+XAUTHORITY=/home/glenn/.Xauthority
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+‘>
+[2024/08/24 15:50:53] argv[2]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 15:50:53] =========RAW ARGS END===========
+[2024/08/24 15:50:53] recover environ 49 49
+[2024/08/24 15:50:53] recover success, argc=1 evecve </home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 15:50:53] =========EXECVE ARGS BEGIN===========
+[2024/08/24 15:50:53] argv[0]=</home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/24 15:50:53] =========EXECVE ARGS END===========
+[2024/08/24 15:50:53] ================================================
+[2024/08/24 15:50:53] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/08/24 15:50:53] ================================================
+[2024/08/24 15:50:53] log file is <log.txt> lastsize:104973
+[2024/08/24 15:50:53] ini file is <./Ventoy2Disk.ini>
+[2024/08/24 15:50:53] ventoy_disk_enumerate_all
+[2024/08/24 15:50:53] get disk info sdf
+[2024/08/24 15:50:53] is 4k native disk <sdf> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sdf
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdf
+[2024/08/24 15:50:53] NO ventoy efi part layout <2048 0>
+[2024/08/24 15:50:53] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/24 15:50:53] /dev/sdf NO Ventoy detected
+[2024/08/24 15:50:53] get disk info nvme0n1
+[2024/08/24 15:50:53] is 4k native disk <nvme0n1> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for nvme0n1
+[2024/08/24 15:50:53] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/24 15:50:53] Invalid efi part2 name <Restored>
+[2024/08/24 15:50:53] disk:</dev/nvme0n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/24 15:50:53] /dev/nvme0n1 NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sdd
+[2024/08/24 15:50:53] is 4k native disk <sdd> <1>
+[2024/08/24 15:50:53] get disk size from sysfs for sdd
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdd
+[2024/08/24 15:50:53] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/24 15:50:53] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/24 15:50:53] /dev/sdd NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sdb
+[2024/08/24 15:50:53] is 4k native disk <sdb> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sdb
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdb
+[2024/08/24 15:50:53] NO ventoy efi part layout <2048 0>
+[2024/08/24 15:50:53] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/24 15:50:53] /dev/sdb NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sdi
+[2024/08/24 15:50:53] is 4k native disk <sdi> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sdi
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdi
+[2024/08/24 15:50:53] NO ventoy efi part layout <2048 0>
+[2024/08/24 15:50:53] disk:</dev/sdi 8:128> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/24 15:50:53] /dev/sdi NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sdg
+[2024/08/24 15:50:53] is 4k native disk <sdg> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sdg
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdg
+[2024/08/24 15:50:53] ventoy partition layout check OK: [2048 59996160] [59998208 65536]
+[2024/08/24 15:50:53] now check secure boot for /dev/sdg ...
+[2024/08/24 15:50:53] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/08/24 15:50:53] disk:</dev/sdg 8:96> model:<SanDisk Ultra (USB)> size:30752636928 (32 GB)
+[2024/08/24 15:50:53] /dev/sdg Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/08/24 15:50:53] get disk info sde
+[2024/08/24 15:50:53] is 4k native disk <sde> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sde
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sde
+[2024/08/24 15:50:53] NO ventoy efi part layout <2048 0>
+[2024/08/24 15:50:53] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/24 15:50:53] /dev/sde NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sdc
+[2024/08/24 15:50:53] is 4k native disk <sdc> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sdc
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdc
+[2024/08/24 15:50:53] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/24 15:50:53] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/24 15:50:53] /dev/sdc NO Ventoy detected
+[2024/08/24 15:50:53] get disk info nvme1n1
+[2024/08/24 15:50:53] is 4k native disk <nvme1n1> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for nvme1n1
+[2024/08/24 15:50:53] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/24 15:50:53] NO ventoy efi part layout <2048 0>
+[2024/08/24 15:50:53] disk:</dev/nvme1n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/24 15:50:53] /dev/nvme1n1 NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sda
+[2024/08/24 15:50:53] is 4k native disk <sda> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sda
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sda
+[2024/08/24 15:50:53] Invalid efi part2 name <My Linux Backups>
+[2024/08/24 15:50:53] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/24 15:50:53] /dev/sda NO Ventoy detected
+[2024/08/24 15:50:53] get disk info sdh
+[2024/08/24 15:50:53] is 4k native disk <sdh> <0>
+[2024/08/24 15:50:53] get disk size from sysfs for sdh
+[2024/08/24 15:50:53] ventoy_get_vtoy_data /dev/sdh
+[2024/08/24 15:50:53] disk /dev/sdh is too small 0
+[2024/08/24 15:50:53] disk:</dev/sdh 8:112> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/24 15:50:53] /dev/sdh NO Ventoy detected
+[2024/08/24 15:50:53] ============= DISK DUMP ============
+[2024/08/24 15:50:53] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sdf [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sdg [32 GB] SanDisk Ultra (USB)	Ventoy: 1.0.99 MBR secureboot:1 preserve:0
+[2024/08/24 15:50:53] /dev/sdh [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sdi [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/nvme0n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/nvme1n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/08/24 15:50:53] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/08/24 15:50:53] on_init_window ...
+[2024/08/24 15:50:53] load_languages ...
+[2024/08/24 15:50:53] current language <English (English)>
+[2024/08/24 15:50:53] fill_dev_list total disk: 11 showall:0
+[2024/08/24 15:50:53] combox count:7, active:sdg id:4
+[2024/08/24 15:50:58] on_exit_window ...
+[2024/08/24 15:50:58] ######## Ventoy2Disk GTK 1.0.99 exit ########
+[2024/08/28 09:00:30] 
+[2024/08/28 09:00:30] =========================================================
+[2024/08/28 09:00:30] =========================================================
+[2024/08/28 09:00:30] =============== VentoyGui x86_64 ===============
+[2024/08/28 09:00:30] =========================================================
+[2024/08/28 09:00:30] =========================================================
+[2024/08/28 09:00:30] log file is <log.txt>
+[2024/08/28 09:00:30] pid:8888 ppid:8628 uid:1001 euid:1001
+[2024/08/28 09:00:30] adjust dir:1  current path:/home/glenn/LLApps/Ventoy
+[2024/08/28 09:00:30] =========RAW ARGS BEGIN===========
+[2024/08/28 09:00:30] argv[0]=<./VentoyGUI.x86_64>
+[2024/08/28 09:00:30] =========RAW ARGS END===========
+[2024/08/28 09:00:30] uname -m <x86_64> 64bit
+[2024/08/28 09:00:30] Build bit is 64 (x86_64)
+[2024/08/28 09:00:30] Now detect the GUI type ...
+[2024/08/28 09:00:30] 1961 libs found in cache format 1
+[2024/08/28 09:00:30] LIB:<libgtk-4.so.1>
+[2024/08/28 09:00:30] LIB:<libgtk-3.so.0>
+[2024/08/28 09:00:30] LIB:<libgtk-x11-2.0.so.0>
+[2024/08/28 09:00:30] LIB:<libQt6Xml.so.6>
+[2024/08/28 09:00:30] LIB:<libQt5X11Extras.so.5>
+[2024/08/28 09:00:30] ldconfig lib flags 0x37
+[2024/08/28 09:00:30] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/08/28 09:00:30] distro_check_gui_env ...
+[2024/08/28 09:00:30] Key arch is not found in json data.
+[2024/08/28 09:00:30] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:00:30] Key arch is not found in json data.
+[2024/08/28 09:00:30] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:00:30] Key arch is not found in json data.
+[2024/08/28 09:00:30] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:00:30] Can not distinguish GTK and QT, default use GTK.
+[2024/08/28 09:00:30] This is gtk3 X environment.
+[2024/08/28 09:00:30] exe = /home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/28 09:00:30] execute permission check success.
+[2024/08/28 09:00:30] EUID check failed.
+[2024/08/28 09:00:30] try restart self by pkexec ...
+[2024/08/28 09:00:30] Find pkexec at </usr/bin/pkexec>
+[2024/08/28 09:00:30] create environment param 52
+[2024/08/28 09:00:30] =========PKEXEC ARGS BEGIN===========
+[2024/08/28 09:00:30] argv[0]=</usr/bin/pkexec>
+[2024/08/28 09:00:30] argv[1]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/28 09:00:30] argv[2]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glennpc:@/tmp/.ICE-unix/2042,unix/glennpc:/tmp/.ICE-unix/2042
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/4791c56b_82dc_4106_9e2f_2a1fa77bcd64
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+XAUTHORITY=/home/glenn/.Xauthority
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+LC_MEASUREMENT=en_AU.UTF-8
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+COLORTERM=truecolor
+HOME=/home/glenn
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+GTK_MODULES=gail:atk-bridge
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+PWD=/home/glenn/LLApps/Ventoy
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+QT_AUTO_SCREEN_SCALE_FACTOR=1
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+GNOME_TERMINAL_SERVICE=:1.78
+LOGNAME=glenn
+XDG_RUNTIME_DIR=/run/user/1001
+LC_PAPER=en_AU.UTF-8
+XDG_SESSION_ID=c1
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+LC_TELEPHONE=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+SHELL=/bin/bash
+QT_QPA_PLATFORMTHEME=qt5ct
+GNOME_KEYRING_CONTROL=/run/user/1001/keyring
+CINNAMON_VERSION=6.2.9
+GDM_LANG=en_AU
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/08/28 09:00:30] argv[3]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/28 09:00:30] =========PKEXEC ARGS END===========
+[2024/08/28 09:00:39] 
+[2024/08/28 09:00:39] =========================================================
+[2024/08/28 09:00:39] =========================================================
+[2024/08/28 09:00:39] =============== VentoyGui x86_64 ===============
+[2024/08/28 09:00:39] =========================================================
+[2024/08/28 09:00:39] =========================================================
+[2024/08/28 09:00:39] log file is <log.txt>
+[2024/08/28 09:00:39] pid:8888 ppid:8628 uid:0 euid:0
+[2024/08/28 09:00:39] adjust dir:0  current path:/home/glenn/LLApps/Ventoy
+[2024/08/28 09:00:39] =========RAW ARGS BEGIN===========
+[2024/08/28 09:00:39] argv[0]=</home/glenn/LLApps/Ventoy/./VentoyGUI.x86_64>
+[2024/08/28 09:00:39] argv[1]=<_vtoy_env_str_=SSH_AUTH_SOCK=/run/user/1001/keyring/ssh
+SESSION_MANAGER=local/glennpc:@/tmp/.ICE-unix/2042,unix/glennpc:/tmp/.ICE-unix/2042
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/4791c56b_82dc_4106_9e2f_2a1fa77bcd64
+GTK3_MODULES=xapp-gtk3-module
+XDG_CURRENT_DESKTOP=X-Cinnamon
+LANG=en_AU.UTF-8
+XAUTHORITY=/home/glenn/.Xauthority
+LC_IDENTIFICATION=en_AU.UTF-8
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/glenn
+LANGUAGE=en_AU
+GPG_AGENT_INFO=/run/user/1001/gnupg/S.gpg-agent:0:1
+USER=glenn
+DESKTOP_SESSION=cinnamon
+LC_MEASUREMENT=en_AU.UTF-8
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+COLORTERM=truecolor
+HOME=/home/glenn
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+XDG_VTNR=7
+XDG_SEAT=seat0
+LC_NUMERIC=en_AU.UTF-8
+GTK_MODULES=gail:atk-bridge
+XDG_CONFIG_DIRS=/etc/xdg/xdg-cinnamon:/etc/xdg
+VTE_VERSION=7600
+XDG_SESSION_DESKTOP=cinnamon
+PWD=/home/glenn/LLApps/Ventoy
+QT_ACCESSIBILITY=1
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_TIME=en_AU.UTF-8
+QT_AUTO_SCREEN_SCALE_FACTOR=1
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+GNOME_TERMINAL_SERVICE=:1.78
+LOGNAME=glenn
+XDG_RUNTIME_DIR=/run/user/1001
+LC_PAPER=en_AU.UTF-8
+XDG_SESSION_ID=c1
+XDG_SESSION_TYPE=x11
+LC_MONETARY=en_AU.UTF-8
+PATH=/home/glenn/.local/bin:/home/glenn/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+LC_TELEPHONE=en_AU.UTF-8
+XDG_DATA_DIRS=/usr/share/cinnamon:/usr/share/gnome:/home/glenn/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+SHELL=/bin/bash
+QT_QPA_PLATFORMTHEME=qt5ct
+GNOME_KEYRING_CONTROL=/run/user/1001/keyring
+CINNAMON_VERSION=6.2.9
+GDM_LANG=en_AU
+LC_NAME=en_AU.UTF-8
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_ADDRESS=en_AU.UTF-8
+DISPLAY=:0
+GDMSESSION=cinnamon
+>
+[2024/08/28 09:00:39] argv[2]=<_vtoy_gui_path_=/home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/28 09:00:39] =========RAW ARGS END===========
+[2024/08/28 09:00:39] recover environ 52 52
+[2024/08/28 09:00:39] recover success, argc=1 evecve </home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/28 09:00:39] =========EXECVE ARGS BEGIN===========
+[2024/08/28 09:00:39] argv[0]=</home/glenn/LLApps/Ventoy/tool/x86_64/Ventoy2Disk.gtk3>
+[2024/08/28 09:00:39] =========EXECVE ARGS END===========
+[2024/08/28 09:00:39] ================================================
+[2024/08/28 09:00:39] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/08/28 09:00:39] ================================================
+[2024/08/28 09:00:39] log file is <log.txt> lastsize:118976
+[2024/08/28 09:00:39] ini file is <./Ventoy2Disk.ini>
+[2024/08/28 09:00:39] ventoy_disk_enumerate_all
+[2024/08/28 09:00:39] get disk info sdf
+[2024/08/28 09:00:39] is 4k native disk <sdf> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sdf
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sdf
+[2024/08/28 09:00:39] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:00:39] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/28 09:00:39] /dev/sdf NO Ventoy detected
+[2024/08/28 09:00:39] get disk info nvme0n1
+[2024/08/28 09:00:39] is 4k native disk <nvme0n1> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for nvme0n1
+[2024/08/28 09:00:39] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/28 09:00:39] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:00:39] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/28 09:00:39] /dev/nvme0n1 NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sdd
+[2024/08/28 09:00:39] is 4k native disk <sdd> <1>
+[2024/08/28 09:00:39] get disk size from sysfs for sdd
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sdd
+[2024/08/28 09:00:39] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/28 09:00:39] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/28 09:00:39] /dev/sdd NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sdb
+[2024/08/28 09:00:39] is 4k native disk <sdb> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sdb
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sdb
+[2024/08/28 09:00:39] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:00:39] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/28 09:00:39] /dev/sdb NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sdg
+[2024/08/28 09:00:39] is 4k native disk <sdg> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sdg
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sdg
+[2024/08/28 09:00:39] disk /dev/sdg is too small 0
+[2024/08/28 09:00:39] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/28 09:00:39] /dev/sdg NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sde
+[2024/08/28 09:00:39] is 4k native disk <sde> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sde
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sde
+[2024/08/28 09:00:39] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:00:39] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/28 09:00:39] /dev/sde NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sdc
+[2024/08/28 09:00:39] is 4k native disk <sdc> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sdc
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sdc
+[2024/08/28 09:00:39] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/28 09:00:39] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/28 09:00:39] /dev/sdc NO Ventoy detected
+[2024/08/28 09:00:39] get disk info nvme1n1
+[2024/08/28 09:00:39] is 4k native disk <nvme1n1> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for nvme1n1
+[2024/08/28 09:00:39] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/28 09:00:39] Invalid efi part2 name <Restored>
+[2024/08/28 09:00:39] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/28 09:00:39] /dev/nvme1n1 NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sda
+[2024/08/28 09:00:39] is 4k native disk <sda> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sda
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sda
+[2024/08/28 09:00:39] Invalid efi part2 name <My Linux Backups>
+[2024/08/28 09:00:39] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/28 09:00:39] /dev/sda NO Ventoy detected
+[2024/08/28 09:00:39] get disk info sdh
+[2024/08/28 09:00:39] is 4k native disk <sdh> <0>
+[2024/08/28 09:00:39] get disk size from sysfs for sdh
+[2024/08/28 09:00:39] ventoy_get_vtoy_data /dev/sdh
+[2024/08/28 09:00:39] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:00:39] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/28 09:00:39] /dev/sdh NO Ventoy detected
+[2024/08/28 09:00:39] ============= DISK DUMP ============
+[2024/08/28 09:00:39] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sdf [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sdg [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sdh [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/nvme0n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/nvme1n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/08/28 09:00:39] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/08/28 09:00:39] on_init_window ...
+[2024/08/28 09:00:39] load_languages ...
+[2024/08/28 09:00:39] current language <English (English)>
+[2024/08/28 09:00:39] fill_dev_list total disk: 10 showall:0
+[2024/08/28 09:00:39] combox count:6, active:sdc id:0
+[2024/08/28 09:00:53] on_exit_window ...
+[2024/08/28 09:00:53] ######## Ventoy2Disk GTK 1.0.99 exit ########
+[2024/08/28 09:09:23] 
+[2024/08/28 09:09:23] =========================================================
+[2024/08/28 09:09:23] =========================================================
+[2024/08/28 09:09:23] =============== VentoyGui x86_64 ===============
+[2024/08/28 09:09:23] =========================================================
+[2024/08/28 09:09:23] =========================================================
+[2024/08/28 09:09:23] log file is <log.txt>
+[2024/08/28 09:09:23] pid:20343 ppid:20342 uid:0 euid:0
+[2024/08/28 09:09:23] adjust dir:0  current path:/media/glenn/LastOSLinux/Ventoy
+[2024/08/28 09:09:23] =========RAW ARGS BEGIN===========
+[2024/08/28 09:09:23] argv[0]=</media/glenn/LastOSLinux/Ventoy/VentoyGUI.x86_64>
+[2024/08/28 09:09:23] =========RAW ARGS END===========
+[2024/08/28 09:09:23] uname -m <x86_64> 64bit
+[2024/08/28 09:09:23] Build bit is 64 (x86_64)
+[2024/08/28 09:09:23] Now detect the GUI type ...
+[2024/08/28 09:09:23] 1961 libs found in cache format 1
+[2024/08/28 09:09:23] LIB:<libgtk-4.so.1>
+[2024/08/28 09:09:23] LIB:<libgtk-3.so.0>
+[2024/08/28 09:09:23] LIB:<libgtk-x11-2.0.so.0>
+[2024/08/28 09:09:23] LIB:<libQt6Xml.so.6>
+[2024/08/28 09:09:23] LIB:<libQt5X11Extras.so.5>
+[2024/08/28 09:09:23] ldconfig lib flags 0x37
+[2024/08/28 09:09:23] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/08/28 09:09:23] distro_check_gui_env ...
+[2024/08/28 09:09:23] Key arch is not found in json data.
+[2024/08/28 09:09:23] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:09:23] Key arch is not found in json data.
+[2024/08/28 09:09:23] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:09:23] Key arch is not found in json data.
+[2024/08/28 09:09:23] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:09:23] Can not distinguish GTK and QT, default use GTK.
+[2024/08/28 09:09:23] This is gtk3 X environment.
+[2024/08/28 09:09:23] exe = /media/glenn/LastOSLinux/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/28 09:09:23] execute permission check success.
+[2024/08/28 09:09:23] We have root privileges, just exec /media/glenn/LastOSLinux/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/28 09:09:23] ================================================
+[2024/08/28 09:09:23] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/08/28 09:09:23] ================================================
+[2024/08/28 09:09:23] log file is <log.txt> lastsize:127011
+[2024/08/28 09:09:23] ini file is <./Ventoy2Disk.ini>
+[2024/08/28 09:09:23] ventoy_disk_enumerate_all
+[2024/08/28 09:09:23] get disk info sdf
+[2024/08/28 09:09:23] is 4k native disk <sdf> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sdf
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdf
+[2024/08/28 09:09:23] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:09:23] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/28 09:09:23] /dev/sdf NO Ventoy detected
+[2024/08/28 09:09:23] get disk info nvme0n1
+[2024/08/28 09:09:23] is 4k native disk <nvme0n1> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for nvme0n1
+[2024/08/28 09:09:23] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/28 09:09:23] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:09:23] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/28 09:09:23] /dev/nvme0n1 NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sdd
+[2024/08/28 09:09:23] is 4k native disk <sdd> <1>
+[2024/08/28 09:09:23] get disk size from sysfs for sdd
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdd
+[2024/08/28 09:09:23] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/28 09:09:23] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/28 09:09:23] /dev/sdd NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sdb
+[2024/08/28 09:09:23] is 4k native disk <sdb> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sdb
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdb
+[2024/08/28 09:09:23] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:09:23] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/28 09:09:23] /dev/sdb NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sdi
+[2024/08/28 09:09:23] is 4k native disk <sdi> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sdi
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdi
+[2024/08/28 09:09:23] Not valid ventoy partition layout [2048 120160152] [120162231 2079]
+[2024/08/28 09:09:23] disk:</dev/sdi 8:128> model:< USB  SanDisk 3.2Gen1 (USB)> size:61524148224 (64 GB)
+[2024/08/28 09:09:23] /dev/sdi NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sdg
+[2024/08/28 09:09:23] is 4k native disk <sdg> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sdg
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdg
+[2024/08/28 09:09:23] disk /dev/sdg is too small 0
+[2024/08/28 09:09:23] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/28 09:09:23] /dev/sdg NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sde
+[2024/08/28 09:09:23] is 4k native disk <sde> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sde
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sde
+[2024/08/28 09:09:23] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:09:23] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/28 09:09:23] /dev/sde NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sdc
+[2024/08/28 09:09:23] is 4k native disk <sdc> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sdc
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdc
+[2024/08/28 09:09:23] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/28 09:09:23] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/28 09:09:23] /dev/sdc NO Ventoy detected
+[2024/08/28 09:09:23] get disk info nvme1n1
+[2024/08/28 09:09:23] is 4k native disk <nvme1n1> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for nvme1n1
+[2024/08/28 09:09:23] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/28 09:09:23] Invalid efi part2 name <Restored>
+[2024/08/28 09:09:23] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/28 09:09:23] /dev/nvme1n1 NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sda
+[2024/08/28 09:09:23] is 4k native disk <sda> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sda
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sda
+[2024/08/28 09:09:23] Invalid efi part2 name <My Linux Backups>
+[2024/08/28 09:09:23] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/28 09:09:23] /dev/sda NO Ventoy detected
+[2024/08/28 09:09:23] get disk info sdh
+[2024/08/28 09:09:23] is 4k native disk <sdh> <0>
+[2024/08/28 09:09:23] get disk size from sysfs for sdh
+[2024/08/28 09:09:23] ventoy_get_vtoy_data /dev/sdh
+[2024/08/28 09:09:23] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:09:23] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/28 09:09:23] /dev/sdh NO Ventoy detected
+[2024/08/28 09:09:23] ============= DISK DUMP ============
+[2024/08/28 09:09:23] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sdf [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sdg [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sdh [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sdi [64 GB]  USB  SanDisk 3.2Gen1 (USB)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/nvme0n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/nvme1n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/08/28 09:09:23] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/08/28 09:09:23] on_init_window ...
+[2024/08/28 09:09:23] load_languages ...
+[2024/08/28 09:09:23] current language <English (English)>
+[2024/08/28 09:09:23] fill_dev_list total disk: 11 showall:0
+[2024/08/28 09:09:23] combox count:7, active:sdc id:0
+[2024/08/28 09:10:04] on_exit_window ...
+[2024/08/28 09:10:04] ######## Ventoy2Disk GTK 1.0.99 exit ########
+[2024/08/28 09:34:08] 
+[2024/08/28 09:34:08] =========================================================
+[2024/08/28 09:34:08] =========================================================
+[2024/08/28 09:34:08] =============== VentoyGui x86_64 ===============
+[2024/08/28 09:34:08] =========================================================
+[2024/08/28 09:34:08] =========================================================
+[2024/08/28 09:34:08] log file is <log.txt>
+[2024/08/28 09:34:08] pid:46875 ppid:46874 uid:0 euid:0
+[2024/08/28 09:34:08] adjust dir:0  current path:/home/glenn/Documents/GitHub/LastOSLinux/ISO_Overlay/USB_Overlay/LLTek/Ventoy
+[2024/08/28 09:34:08] =========RAW ARGS BEGIN===========
+[2024/08/28 09:34:08] argv[0]=</home/glenn/Documents/GitHub/LastOSLinux/ISO_Overlay/USB_Overlay/LLTek/Ventoy/VentoyGUI.x86_64>
+[2024/08/28 09:34:08] =========RAW ARGS END===========
+[2024/08/28 09:34:08] uname -m <x86_64> 64bit
+[2024/08/28 09:34:08] Build bit is 64 (x86_64)
+[2024/08/28 09:34:08] Now detect the GUI type ...
+[2024/08/28 09:34:08] 1961 libs found in cache format 1
+[2024/08/28 09:34:08] LIB:<libgtk-4.so.1>
+[2024/08/28 09:34:08] LIB:<libgtk-3.so.0>
+[2024/08/28 09:34:08] LIB:<libgtk-x11-2.0.so.0>
+[2024/08/28 09:34:08] LIB:<libQt6Xml.so.6>
+[2024/08/28 09:34:08] LIB:<libQt5X11Extras.so.5>
+[2024/08/28 09:34:08] ldconfig lib flags 0x37
+[2024/08/28 09:34:08] lib flags GLADE2:[NO] GTK2:[YES] GTK3:[YES] GTK4:[YES] QT4:[NO] QT5:[YES] QT6:[YES]
+[2024/08/28 09:34:08] distro_check_gui_env ...
+[2024/08/28 09:34:08] Key arch is not found in json data.
+[2024/08/28 09:34:08] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:34:08] Key arch is not found in json data.
+[2024/08/28 09:34:08] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:34:08] Key arch is not found in json data.
+[2024/08/28 09:34:08] check <env> <DESKTOP_SESSION> <equal>
+[2024/08/28 09:34:08] Can not distinguish GTK and QT, default use GTK.
+[2024/08/28 09:34:08] This is gtk3 X environment.
+[2024/08/28 09:34:08] exe = /home/glenn/Documents/GitHub/LastOSLinux/ISO_Overlay/USB_Overlay/LLTek/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/28 09:34:08] execute permission check success.
+[2024/08/28 09:34:08] We have root privileges, just exec /home/glenn/Documents/GitHub/LastOSLinux/ISO_Overlay/USB_Overlay/LLTek/Ventoy/tool/x86_64/Ventoy2Disk.gtk3
+[2024/08/28 09:34:08] ================================================
+[2024/08/28 09:34:08] ===== Ventoy2Disk 1.0.99 powered by GTK3.x =====
+[2024/08/28 09:34:08] ================================================
+[2024/08/28 09:34:08] log file is <log.txt> lastsize:135750
+[2024/08/28 09:34:08] ini file is <./Ventoy2Disk.ini>
+[2024/08/28 09:34:08] ventoy_disk_enumerate_all
+[2024/08/28 09:34:08] get disk info sdf
+[2024/08/28 09:34:08] is 4k native disk <sdf> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sdf
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdf
+[2024/08/28 09:34:08] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:08] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/28 09:34:08] /dev/sdf NO Ventoy detected
+[2024/08/28 09:34:08] get disk info nvme0n1
+[2024/08/28 09:34:08] is 4k native disk <nvme0n1> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for nvme0n1
+[2024/08/28 09:34:08] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/28 09:34:08] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:08] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/28 09:34:08] /dev/nvme0n1 NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sdd
+[2024/08/28 09:34:08] is 4k native disk <sdd> <1>
+[2024/08/28 09:34:08] get disk size from sysfs for sdd
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdd
+[2024/08/28 09:34:08] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/28 09:34:08] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/28 09:34:08] /dev/sdd NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sdb
+[2024/08/28 09:34:08] is 4k native disk <sdb> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sdb
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdb
+[2024/08/28 09:34:08] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:08] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/28 09:34:08] /dev/sdb NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sdi
+[2024/08/28 09:34:08] is 4k native disk <sdi> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sdi
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdi
+[2024/08/28 09:34:08] Not valid ventoy partition layout [2048 120160152] [120162231 2079]
+[2024/08/28 09:34:08] disk:</dev/sdi 8:128> model:< USB  SanDisk 3.2Gen1 (USB)> size:61524148224 (64 GB)
+[2024/08/28 09:34:08] /dev/sdi NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sdg
+[2024/08/28 09:34:08] is 4k native disk <sdg> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sdg
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdg
+[2024/08/28 09:34:08] disk /dev/sdg is too small 0
+[2024/08/28 09:34:08] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/28 09:34:08] /dev/sdg NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sde
+[2024/08/28 09:34:08] is 4k native disk <sde> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sde
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sde
+[2024/08/28 09:34:08] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:08] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/28 09:34:08] /dev/sde NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sdc
+[2024/08/28 09:34:08] is 4k native disk <sdc> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sdc
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdc
+[2024/08/28 09:34:08] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/28 09:34:08] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/28 09:34:08] /dev/sdc NO Ventoy detected
+[2024/08/28 09:34:08] get disk info nvme1n1
+[2024/08/28 09:34:08] is 4k native disk <nvme1n1> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for nvme1n1
+[2024/08/28 09:34:08] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/28 09:34:08] Invalid efi part2 name <Restored>
+[2024/08/28 09:34:08] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/28 09:34:08] /dev/nvme1n1 NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sda
+[2024/08/28 09:34:08] is 4k native disk <sda> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sda
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sda
+[2024/08/28 09:34:08] Invalid efi part2 name <My Linux Backups>
+[2024/08/28 09:34:08] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/28 09:34:08] /dev/sda NO Ventoy detected
+[2024/08/28 09:34:08] get disk info sdh
+[2024/08/28 09:34:08] is 4k native disk <sdh> <0>
+[2024/08/28 09:34:08] get disk size from sysfs for sdh
+[2024/08/28 09:34:08] ventoy_get_vtoy_data /dev/sdh
+[2024/08/28 09:34:08] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:08] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/28 09:34:08] /dev/sdh NO Ventoy detected
+[2024/08/28 09:34:08] ============= DISK DUMP ============
+[2024/08/28 09:34:08] /dev/sdc [2048 GB] Samsung PSSD T7 Shield (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sdd [4000 GB] Seagate Expansion Desk (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sde [6001 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sdf [10000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sdg [0 GB] Generic STORAGE DEVICE (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sdh [12000 GB] WD Elements 25A3 (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sdi [64 GB]  USB  SanDisk 3.2Gen1 (USB)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/nvme0n1 [512 GB]  CT500P1SSD8 (nvme)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/nvme1n1 [1024 GB]  CT1000P3PSSD8 (nvme)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sda [4000 GB] ATA ST4000DM000-1F21 (scsi)	Ventoy: NA
+[2024/08/28 09:34:08] /dev/sdb [3000 GB] ATA WDC WD30EZRX-00M (scsi)	Ventoy: NA
+[2024/08/28 09:34:08] on_init_window ...
+[2024/08/28 09:34:08] load_languages ...
+[2024/08/28 09:34:08] current language <English (English)>
+[2024/08/28 09:34:08] fill_dev_list total disk: 11 showall:0
+[2024/08/28 09:34:08] combox count:7, active:sdc id:0
+[2024/08/28 09:34:37] install_thread ...
+[2024/08/28 09:34:37] ==================================================================================
+[2024/08/28 09:34:37] ===== ventoy install /dev/sdi style:MBR secureboot:1 align4K:1 reserve:0 =========
+[2024/08/28 09:34:37] ==================================================================================
+[2024/08/28 09:34:37] /dev/sdi mounted </dev/sdi1 /media/glenn/LastOSLinux ntfs3 rw,nosuid,nodev,relatime,uid=1001,gid=1001,iocharset=utf8 0 0
+>
+[2024/08/28 09:34:37] disk is mounted, now try to unmount it ...
+[2024/08/28 09:34:37] umount </dev/sdi> </media/glenn/LastOSLinux> [ success ]
+[2024/08/28 09:34:37] disk is not mounted now, we can do the install ...
+[2024/08/28 09:34:37] start install thread  USB  SanDisk 3.2Gen1 (USB) ...
+[2024/08/28 09:34:37] func handler install <{ "result" : "success" }>
+[2024/08/28 09:34:37] ventoy_install_thread run ...
+[2024/08/28 09:34:37] check disk sdi
+[2024/08/28 09:34:37] set percent 1
+[2024/08/28 09:34:37] disk is not mounted now, we can do continue ...
+[2024/08/28 09:34:37] ventoy_clean_disk fd:8 size:61524148224
+[2024/08/28 09:34:37] write disk at off:0 writelen:65536 datalen:65536
+[2024/08/28 09:34:37] write disk at off:61524082688 writelen:65536 datalen:65536
+[2024/08/28 09:34:37] read core.img.xz rc:0 len:455192
+[2024/08/28 09:34:37] set percent 6
+[2024/08/28 09:34:37] ventoy_unxz_stg1_img len:455192 rc:0
+[2024/08/28 09:34:37] read disk.img.xz rc:0 len:13475864
+[2024/08/28 09:34:37] set percent 9
+[2024/08/28 09:34:37] set percent 12
+[2024/08/28 09:34:37] set percent 16
+[2024/08/28 09:34:37] set percent 19
+[2024/08/28 09:34:37] set percent 22
+[2024/08/28 09:34:37] set percent 29
+[2024/08/28 09:34:37] set percent 33
+[2024/08/28 09:34:37] set percent 37
+[2024/08/28 09:34:37] set percent 41
+[2024/08/28 09:34:37] set percent 46
+[2024/08/28 09:34:37] set percent 50
+[2024/08/28 09:34:37] set percent 58
+[2024/08/28 09:34:37] ventoy_unxz_efipart_img len:13475864 rc:0 unxzlen:33554432
+[2024/08/28 09:34:37] Fill MBR part table
+[2024/08/28 09:34:37] Disk signature: 0xb7f72f3e
+[2024/08/28 09:34:37] no need to align with 4KB
+[2024/08/28 09:34:37] ReservedSector: 0
+[2024/08/28 09:34:37] Part1StartSector:2048 Part1SectorCount:120096768 Part2StartSector:120098816
+[2024/08/28 09:34:37] Formatting part1 exFAT /dev/sdi ...
+[0124/08/28 09:34:37] Creating... 
+[0124/08/28 09:34:37] Flushing... 
+[2024/08/28 09:34:38] set percent 61
+[2024/08/28 09:34:38] Formatting part2 EFI ...
+[2024/08/28 09:34:38] Formatting part2 EFI offset:61490593792 ...
+[2024/08/28 09:34:38] VentoyProcSecureBoot 1 ...
+[2024/08/28 09:34:38] Secure boot is enabled ...
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] set percent 70
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] write disk writelen:1048576 datalen:1048576 [ success ]
+[2024/08/28 09:34:38] Writing legacy grub ...
+[2024/08/28 09:34:38] Write MBR stage1 ...
+[2024/08/28 09:34:38] lseek offset:512(512) writelen:1048064(1048064)
+[2024/08/28 09:34:38] fsync data1...
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:38] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] set percent 80
+[2024/08/28 09:34:39] Checking part2 efi data /dev/sdi ...
+[2024/08/28 09:34:40] set percent 82
+[2024/08/28 09:34:40] set percent 83
+[2024/08/28 09:34:40] set percent 87
+[2024/08/28 09:34:40] set percent 90
+[2024/08/28 09:34:40] set percent 93
+[2024/08/28 09:34:40] efi part data check success
+[2024/08/28 09:34:40] Writting Partition Table style:0...
+[2024/08/28 09:34:40] Writting MBR Partition Table 0 512
+[2024/08/28 09:34:40] fsync data2...
+[2024/08/28 09:34:40] ====================================
+[2024/08/28 09:34:40] ====== ventoy install success ======
+[2024/08/28 09:34:40] ====================================
+[2024/08/28 09:34:40] set percent 100
+[2024/08/28 09:34:40] ventoy_disk_enumerate_all
+[2024/08/28 09:34:40] get disk info sdf
+[2024/08/28 09:34:40] is 4k native disk <sdf> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sdf
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdf
+[2024/08/28 09:34:40] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:40] disk:</dev/sdf 8:80> model:<WD Elements 25A3 (USB)> size:10000797794304 (10000 GB)
+[2024/08/28 09:34:40] /dev/sdf NO Ventoy detected
+[2024/08/28 09:34:40] get disk info nvme0n1
+[2024/08/28 09:34:40] is 4k native disk <nvme0n1> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for nvme0n1
+[2024/08/28 09:34:40] /sys/block/nvme0n1/device/vendor not exist 
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/nvme0n1
+[2024/08/28 09:34:40] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:40] disk:</dev/nvme0n1 259:0> model:< CT500P1SSD8 (nvme)> size:500107862016 (512 GB)
+[2024/08/28 09:34:40] /dev/nvme0n1 NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sdd
+[2024/08/28 09:34:40] is 4k native disk <sdd> <1>
+[2024/08/28 09:34:40] get disk size from sysfs for sdd
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdd
+[2024/08/28 09:34:40] Not valid ventoy partition layout [2048 976750592] [0 0]
+[2024/08/28 09:34:40] disk:</dev/sdd 8:48> model:<Seagate Expansion Desk (USB)> size:4000787025920 (4000 GB)
+[2024/08/28 09:34:40] /dev/sdd NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sdb
+[2024/08/28 09:34:40] is 4k native disk <sdb> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sdb
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdb
+[2024/08/28 09:34:40] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:40] disk:</dev/sdb 8:16> model:<ATA WDC WD30EZRX-00M (scsi)> size:3000592982016 (3000 GB)
+[2024/08/28 09:34:40] /dev/sdb NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sdi
+[2024/08/28 09:34:40] is 4k native disk <sdi> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sdi
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdi
+[2024/08/28 09:34:40] ventoy partition layout check OK: [2048 120096768] [120098816 65536]
+[2024/08/28 09:34:40] now check secure boot for /dev/sdi ...
+[2024/08/28 09:34:40] /EFI/BOOT/grubx64_real.efi find, secure boot in enabled
+[2024/08/28 09:34:40] disk:</dev/sdi 8:128> model:< USB  SanDisk 3.2Gen1 (USB)> size:61524148224 (64 GB)
+[2024/08/28 09:34:40] /dev/sdi Ventoy:<1.0.99> MBR secureboot:1 preserve:0
+[2024/08/28 09:34:40] get disk info sdg
+[2024/08/28 09:34:40] is 4k native disk <sdg> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sdg
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdg
+[2024/08/28 09:34:40] disk /dev/sdg is too small 0
+[2024/08/28 09:34:40] disk:</dev/sdg 8:96> model:<Generic STORAGE DEVICE (USB)> size:0 (0 GB)
+[2024/08/28 09:34:40] /dev/sdg NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sde
+[2024/08/28 09:34:40] is 4k native disk <sde> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sde
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sde
+[2024/08/28 09:34:40] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:40] disk:</dev/sde 8:64> model:<WD Elements 25A3 (USB)> size:6001140957184 (6001 GB)
+[2024/08/28 09:34:40] /dev/sde NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sdc
+[2024/08/28 09:34:40] is 4k native disk <sdc> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sdc
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdc
+[2024/08/28 09:34:40] Not valid ventoy partition layout [2048 3907024065] [0 0]
+[2024/08/28 09:34:40] disk:</dev/sdc 8:32> model:<Samsung PSSD T7 Shield (USB)> size:2000398934016 (2048 GB)
+[2024/08/28 09:34:40] /dev/sdc NO Ventoy detected
+[2024/08/28 09:34:40] get disk info nvme1n1
+[2024/08/28 09:34:40] is 4k native disk <nvme1n1> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for nvme1n1
+[2024/08/28 09:34:40] /sys/block/nvme1n1/device/vendor not exist 
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/nvme1n1
+[2024/08/28 09:34:40] Invalid efi part2 name <Restored>
+[2024/08/28 09:34:40] disk:</dev/nvme1n1 259:2> model:< CT1000P3PSSD8 (nvme)> size:1000204886016 (1024 GB)
+[2024/08/28 09:34:40] /dev/nvme1n1 NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sda
+[2024/08/28 09:34:40] is 4k native disk <sda> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sda
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sda
+[2024/08/28 09:34:40] Invalid efi part2 name <My Linux Backups>
+[2024/08/28 09:34:40] disk:</dev/sda 8:0> model:<ATA ST4000DM000-1F21 (scsi)> size:4000787030016 (4000 GB)
+[2024/08/28 09:34:40] /dev/sda NO Ventoy detected
+[2024/08/28 09:34:40] get disk info sdh
+[2024/08/28 09:34:40] is 4k native disk <sdh> <0>
+[2024/08/28 09:34:40] get disk size from sysfs for sdh
+[2024/08/28 09:34:40] ventoy_get_vtoy_data /dev/sdh
+[2024/08/28 09:34:40] NO ventoy efi part layout <2048 0>
+[2024/08/28 09:34:40] disk:</dev/sdh 8:112> model:<WD Elements 25A3 (USB)> size:12000105070592 (12000 GB)
+[2024/08/28 09:34:40] /dev/sdh NO Ventoy detected
+[2024/08/28 09:34:47] set percent 0
+[2024/08/28 09:34:47] fill_dev_list total disk: 11 showall:0
+[2024/08/28 09:34:47] combox count:7, active:sdi id:6
+[2024/08/28 09:34:49] on_exit_window ...
+[2024/08/28 09:34:49] ######## Ventoy2Disk GTK 1.0.99 exit ########

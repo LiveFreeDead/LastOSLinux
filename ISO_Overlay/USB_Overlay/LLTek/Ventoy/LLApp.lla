@@ -1,0 +1,19 @@
+[LLFile]
+Title=Ventoy
+Version=1.0.99
+Description=Make bootable USB drives. Then copy in ISO's or other kinds of bootable options right from the USB drive (no more constant formatting USB's for bootbale OS's again)
+URL=https://sourceforge.net/projects/ventoy/
+Category=Burning
+BuildType=LLApp
+AppPath=$HOME/LLApps/Ventoy
+Priority=80
+[Meta]
+Installedsize=1
+[Ventoy.desktop]
+Exec=$HOME/LLApps/Ventoy/StartVentoyGUI.sh
+Comment=Make bootable USB drives
+Path=$HOME/LLApps/Ventoy
+Icon=$HOME/LLApps/Ventoy/LLApp.png
+Categories=Burning;
+Extensions=
+Terminal=False
