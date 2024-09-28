@@ -11,6 +11,14 @@ sudo ./Tools/remove-old-kernels.sh exec
 #sudo grep -lZ 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"' /etc/default/grub| sudo xargs -0 sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"|GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=2 splash"|g'
 #sudo update-grub
 
+#Make sure calamares is actually installed (may glitch out if packages are missing or anything).
+#Install Calamares installer (It also configures it, but I do it later on as well just in case)
+sudo eggs calamares -i
+
+#Re copy the Calamares theme etc
+sudo cp -rf OS_Overlay/usr/lib/penguins-eggs/addons/eggs/theme /usr/lib/penguins-eggs/addons/eggs/theme
+
+
 #Copy exclude list
 sudo cp -f OS_Overlay/etc/penguins-eggs.d/exclude.list /etc/penguins-eggs.d/
 sudo chmod 775 "/etc/penguins-eggs.d/exclude.list"
