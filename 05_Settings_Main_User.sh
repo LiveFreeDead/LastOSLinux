@@ -150,13 +150,12 @@ gsettings set org.cinnamon.desktop.screensaver lock-delay 0
 gsettings set org.cinnamon.desktop.session idle-delay 900
 
 
+#Add LastOS File Types for LLApp/Game files
+bash ./Tools/AddLastOSFileTypes.sh
+
 #Change Main Menu icon to LastOS
 cd $HOME/.config/cinnamon/spices/menu@cinnamon.org/
 grep -lZ '"value": "linuxmint-logo-ring-symbolic"' 0.json | xargs -0 sed -i 's|"value": "linuxmint-logo-ring-symbolic"|"value": "/usr/share/icons/Start Button.png"|g'
-
-
-#Add LastOS File Types for LLApp/Game files
-bash ./Tools/AddLastOSFileTypes.sh
 
 #####################################################################################################################################
 
