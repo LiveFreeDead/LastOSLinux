@@ -25,8 +25,10 @@ if [ "$(whoami)" == "live" ]; then
 	gsettings set org.cinnamon.desktop.background picture-uri 'file:///usr/share/backgrounds/lastos/LiveWallpaper.jpg'
     #Show Hidden Files By Default (Handy in LiveOS)
     gsettings set org.nemo.preferences show-hidden-files true
+    killall conky
     mv -f $HOME/.config/conky/conky.conf $HOME/.config/conky/conky.conf.old
     mv -f $HOME/.config/conky/conky.conf.live $HOME/.config/conky/conky.conf
+    conky
     exit
 fi
 
