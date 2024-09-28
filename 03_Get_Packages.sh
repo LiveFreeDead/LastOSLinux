@@ -69,7 +69,9 @@ sudo apt install -y qt5ct adwaita-qt
 #For DaVinici Resolve these are needed: (libasound2 <-Packaged removed from Mint 22, so need to use skip_package in divinci)
 sudo apt install -y libapr1 libaprutil1 libglib2.0-0 libxcb-cursor0
 
-sudo apt install -y liboss4-salsa-asound2 liboss4-salsa2
+sudo apt install -y liboss4-salsa2
+
+#Never EVER install liboss4-salsa-asound2 - this removes Cinnamon and wont boot anymore
 
 #These ones aren't in mint v22 yet, so exclude from main list for now
 #sudo apt install -y pinta isomaster brave-browser
