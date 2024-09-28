@@ -1,0 +1,1 @@
+This file is needed to detect which drive is the source USB/DVD
