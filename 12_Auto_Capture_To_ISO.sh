@@ -18,6 +18,14 @@ sudo Tools/Egg1-Bind.sh
 echo Copying Overlay, wait...
 sudo cp -R ISO_Overlay/* /home/eggs/iso
 
+#Set scripts etc to executable (Not sure this works, but worth a try)
+chmod +x /home/eggs/iso/MakeUSB.sh
+chmod +x /home/eggs/iso/USB_Overlay/LLTek/Ventoy/*.sh
+chmod +x /home/eggs/iso/USB_Overlay/LLTek/Ventoy/VentoyGUI.x86_64
+chmod +x /home/eggs/iso/USB_Overlay/LLTek/Ventoy/VentoyGUI.i386
+chmod +x /home/eggs/iso/USB_Overlay/LLTek/Ventoy/VentoyGUI.aarch64
+chmod +x /home/eggs/iso/USB_Overlay/LLTek/Ventoy/VentoyGUI.mips64el
+
 #Rename the ISO internal name from "-V3.0" and Linux To LastOSLinux
 sudo grep -lZ '"-V3.0"' /home/eggs/ovarium/mkisofs | sudo xargs -0 sed -i 's|"-V3.0"|"LastOSLinux"|g'
 sudo grep -lZ 'Linux' /home/eggs/ovarium/mkisofs | sudo xargs -0 sed -i 's|-V Linux|-V LastOSLinux|g'
