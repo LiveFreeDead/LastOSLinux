@@ -10,9 +10,6 @@ sudo cp -rf OS_Overlay/usr/* /usr
 #Build Plymouth so it's theme sticks
 sudo update-initramfs -u -k all
 
-#Change Host name
-hostnamectl set-hostname LastOSLinuxLive
-
 #Update repo's
 sudo apt -qq update -y 
 #sudo apt -qq upgrade -y 

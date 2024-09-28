@@ -28,3 +28,5 @@ sudo chmod 775 "/etc/penguins-eggs.d/exclude.list"
 #Below only copies the .config folder, not useful for building a LastOS skel folder, do manually with my own script
 #sudo eggs tools skel -u $(whoami)
 
+#Change Host name, moved to end of scripts so it doesn't interfere as it seems to make sudo stop working for some things and even changed the calamares to krill
+hostnamectl set-hostname LastOSLinuxLive
