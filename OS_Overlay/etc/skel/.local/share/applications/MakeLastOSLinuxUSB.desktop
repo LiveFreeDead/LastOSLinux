@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Make LastOSLinux USB
+Exec="/LastOS/Tools/MakeLastOSUSB.sh"
+Path=/LastOS/Tools
+Comment=Format and make a LastOSLinux USB stick
+Terminal=false
+Icon=/LastOS/LLMakeUSB.png
+Type=Application
+Categories=Other
+X-Desktop-File-Install-Version=0.26

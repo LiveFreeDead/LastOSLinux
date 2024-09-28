@@ -1,0 +1,7 @@
+In Ventoy pick your USB disk you want to format and make bootable, make sure you understand it will delete all data on the DISK not just a partition.
+
+Once the USB is formated and ready, copy your downloaded LastOSLinux_amd64_202x-xx-xx-xxxx.iso file (* Not it's contents) to the USB drive called ventoy that you just prepared above (May need to safely remove and re-insert the USB disk for write access with some devices)
+
+Copy the USB_Overlay folder "contents" that should open to /LastOS/Tools/USB_Overlay (* Not the folder, just the contents inside it) to the USB drive called ventoy
+
+You are then able to add your applications and games to your USB drive in the LLTek/ sub folders, put apps in LLTek/LLAppsInstalls and games in LLTek/LLGamesInstalls etc.
