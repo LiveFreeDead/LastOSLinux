@@ -25,11 +25,11 @@ sudo apt-get -qq update -y
 
 #Get Apps and Games 
 #To Get Proton working - Steam needs to be ran and logged in, then you need to add a game and configure a game to use Proton compatability, then you can right click a .exe and open it with proton using that games configurations)
-sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-customizer notepadqq bleachbit cpu-x flameshot gparted htop jstest-gtk simplescreenrecorder rar unrar catfish qbittorrent uget dconf-editor meld xfburn asunder qpdfview mediainfo-gui kid3 ffmpegthumbs remmina rapid-photo-downloader pdfarranger soundconverter cherrytree retext stacer makeself archivemount gambas3 fastfetch dos2unix nomacs
+sudo apt install -y steam protontricks ffmpeg mint-meta-codecs trash-cli grub-customizer cpu-x flameshot gparted htop jstest-gtk simplescreenrecorder rar unrar catfish qbittorrent uget dconf-editor meld xfburn asunder qpdfview mediainfo-gui kid3 ffmpegthumbs remmina rapid-photo-downloader pdfarranger soundconverter cherrytree retext stacer makeself archivemount gambas3 fastfetch dos2unix nomacs
 
 #krita <-This needs resources, so not including it as default
 
-#plank geany audacity okular filezilla obs-studio lutris playonlinux vlc darktable lbreakout2 kmahjongg kmines kpat ksudoku - Trying to reduce size so it fits on a DVD 4.7gb
+# bleachbit notepadqq plank geany audacity okular filezilla obs-studio lutris playonlinux vlc darktable lbreakout2 kmahjongg kmines kpat ksudoku - Trying to reduce size so it fits on a DVD 4.7gb
 
 #Get i386 libs to make even more games work (like DOTT, Full Throttle, Gish etc)
 sudo apt install -y libasound2:i386 libasound2-data libasound2-plugins:i386 libsdl2-2.0-0:i386 libfltk1.3:i386
@@ -85,11 +85,12 @@ if ! [ -f "google-chrome-stable_current_amd64.deb" ] ; then
 fi
 sudo apt install -y ./google-chrome-stable_current_amd64.deb
 
+#Gonna try without this now
 ##AIMP (I use this instead of a ppApp to initilize the older WINE so that any MINT system configs are in place prior to installing the newer WINE from the PPA
-cp debs/aimp_5.30-2549_amd64.deb $HOME/aimp.deb
-sudo chmod 777 $HOME/aimp.deb
-sudo apt install -y $HOME/aimp.deb
-sudo rm -f $HOME/aimp.deb
+#cp debs/aimp_5.30-2549_amd64.deb $HOME/aimp.deb
+#sudo chmod 777 $HOME/aimp.deb
+#sudo apt install -y $HOME/aimp.deb
+#sudo rm -f $HOME/aimp.deb
 
 #DeadBeef Music Player
 cp debs/deadbeef-static_1.9.6-1_amd64.deb $HOME/deadbeef.deb
