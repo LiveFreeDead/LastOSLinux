@@ -1,0 +1,142 @@
+conky.config = {
+
+--  Window Settings
+    own_window = true,
+    own_window_type = 'desktop',
+    own_window_transparent = true,
+    own_window_hints = 'undecorated,below,skip_taskbar,skip_pager,sticky',
+    own_window_colour = '000000',
+    own_window_class = 'Conky',
+    own_window_title = 'BunsenLabs Default Conky',
+
+-- ARGB can be used for real transparency
+own_window_argb_visual = true, -- Options: true|false
+
+-- NOTE that a composite manager is required for real transparency and ARGB will not
+-- work as desired (in most cases) in conjunction with 'own_window_type override'.
+own_window_type = 'normal',
+own_window_transparent = false,
+
+-- When ARGB visuals are enabled, use the following to modify the alpha value. Valid
+-- range is 0-255, where 0 is 0% opacity, and 255 is 100% opacity.
+own_window_argb_value = 20,
+
+    minimum_width = 230, minimum_height = 0,-- width | height
+    maximum_width = 230,
+
+    gap_x = 30,-- left | right
+    gap_y = 30,-- up | down
+
+    alignment = 'top_right',
+--  End Window Settings
+
+
+--  Font Settings
+-- Use Xft (anti-aliased font and stuff)
+    use_xft = true,
+
+--font = 'Liberation Mono:bold:size=10',
+--font = 'Liberation Sans:size=10',
+    font = 'Sans-serif:size=11',
+
+-- Alpha of Xft font. Must be a value at or between 1 and 0
+    xftalpha = 1,
+
+-- Force UTF8? requires XFT
+    override_utf8_locale = true,
+
+    uppercase = false,
+--  End Font Settings
+
+
+--  Color Settings
+    draw_shades = false,
+    default_shade_color = '000000',
+
+    draw_outline = false,-- amplifies text if true
+    default_outline_color = '000000',
+
+    default_color = 'E6EEF7',
+    color1 = '969CA6',
+    color3 = 'BEC3C8',
+--  End Color Settings
+
+
+--  Borders Section
+    draw_borders = false,
+-- Stippled borders?
+    stippled_borders = 5,
+-- border margins
+    border_inner_margin = 5,
+    border_outer_margin = 0,
+-- border width
+    border_width = 2,
+-- graph borders
+    draw_graph_borders = false,
+--default_graph_height = 15,
+--default_graph_width = 40,
+--  End Borders Section
+
+
+--  Miscellaneous Section
+-- Boolean value, if true, Conky will be forked to background when started.
+    background = true,
+
+-- Adds spaces around certain objects to stop them from moving other things
+-- around, this only helps if you are using a mono font
+-- Options: right, left or none
+    use_spacer = 'none',
+
+-- Default and Minimum size is 256 - needs more for single commands that
+-- "call" a lot of text IE: bash scripts
+--text_buffer_size = 6144,
+
+-- Subtract (file system) buffers from used memory?
+    no_buffers = true,
+
+-- change GiB to G and MiB to M
+    short_units = true,
+
+-- Imlib2 image cache size, in bytes. Default 4MiB Increase this value if you use
+-- $image lots. Set to 0 to disable the image cache.
+    imlib_cache_size = 0,
+
+-- Use the Xdbe extension? (eliminates flicker)
+-- It is highly recommended to use own window with this one
+-- so double buffer won't be so big.
+    double_buffer = true,
+
+-- Maximum size of user text buffer, i.e. layout below TEXT line in config file
+-- (default is 16384 bytes)
+--max_user_text = 16384,
+
+-- Desired output unit of all objects displaying a temperature. Parameters are
+-- either "fahrenheit" or "celsius". The default unit is degree Celsius.
+--temperature_unit = 'Fahrenheit',
+
+-- Update interval in seconds
+    update_interval = 1,
+
+--  End Miscellaneous Section
+};
+
+;conky.text = [[
+${color1}User: live ${alignr}Password: live
+${color1}$hr
+${color1}PC Name:${color3} ${alignr}$nodename
+${color1}LAN IP:${color3} ${alignr}${exec hostname -I | awk '{print $1}'}
+${color1}Gateway IP:${color3} ${alignr}${exec ip route list | awk ' /^default/ {print $3}'}
+${color1}Kernel:${color3} ${alignr}$kernel
+${color1}Architecture:${color3} ${alignr}$machine
+${color1}Uptime:${color3} ${alignr}$uptime
+${color1}Frequency:${color3} ${alignr}$freq_g${color3}GHz
+${color1}Write Cache:${color3} ${alignr}${exec grep -e Dirty: /proc/meminfo | awk '{print $2/100}' | awk '{printf("%d\n",$1 + 0.5)}' }
+${color1}RAM:${color3} ${goto 60}$mem/$memmax ${goto 165}${voffset 3}${membar 4}
+${color1}Swap:${color3} ${goto 60}$swap/$swapmax ${goto 165}${voffset 3}${swapbar 4}
+${color1}CPU:${color3} ${goto 60}$cpu% ${goto 165}${voffset 3}${cpubar 4}
+${color1}Processes:${color3} $processes ${goto 140}${color1}Running:${color3}${alignr} $running_processes
+${color1}$hr
+File systems:
+/ ${color3}${goto 60}${fs_used /}/${fs_size /} ${goto 165}${voffset 3}${fs_bar 4 /}
+${color1}/home ${color3}${goto 60}${fs_used /home/}/${fs_size /home/} ${goto 165}${voffset 3}${fs_bar 4 /home/}
+]]
