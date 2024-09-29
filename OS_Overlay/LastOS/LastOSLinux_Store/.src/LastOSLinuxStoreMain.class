@@ -198,7 +198,7 @@ Public Sub Form_Open()
     If LLM.UseOnlineRepository = True Then
       Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
       Try Kill "/LastOS/LastOSLinux_Store/RemoteWebLinks.db" ' Clear previous checks  
-      GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/WebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
+      GetOnlineFile("https://raw.githubusercontent.com/LiveFreeDead/LastOSLinux/refs/heads/main/OS_Overlay/LastOS/LastOSLinux_Store/RemoteWebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
       While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
         Wait (0.01)
         If ForceClose = True Then Quit ' No point in looping the user already quit
