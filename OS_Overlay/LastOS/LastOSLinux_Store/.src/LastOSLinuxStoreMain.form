@@ -113,7 +113,7 @@
     MoveScaled(61,60,9,3)
     Visible = False
     Foreground = Color.White
-    Text = ("Instal Size:")
+    Text = ("Install Size:")
   }
   { ItemInstallSize Label
     MoveScaled(71,60,4,3)
