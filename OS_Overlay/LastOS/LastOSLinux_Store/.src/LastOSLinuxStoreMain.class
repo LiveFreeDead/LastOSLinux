@@ -604,7 +604,8 @@ Public Sub GetAllItemsFromPath(InPath As String)
     'Uncompressed Linux items now
       For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
         'Get Files:
-        If Access(DirInPath, gb.Read) Then
+        'Message("Here 1")
+        If Access(InPath & "/" & DirInPath, gb.Read) Then
           For Each FileIn In Dir(InPath & "/" & DirInPath, "*.ll?")      
             If FileIn = "LLApp.lla" Or FileIn = "LLGame.llg" Then 'Only do items with valid file (Until I add tar support)     
               If LLMod.LoadLLFile(InPath & DirInPath & "/" & FileIn) = True Then 'Dropped extra slash & "/"
@@ -630,7 +631,7 @@ Public Sub GetAllItemsFromPath(InPath As String)
       'Uncompressed Wine items now
       For Each DirInPath In Dir(InPath, "[^.]*", gb.Directory)
         'Get Files:
-        If Access(DirInPath, gb.Read) Then
+        If Access(InPath & "/" & DirInPath, gb.Read) Then
           For Each FileIn In Dir(InPath & "/" & DirInPath, "*.?p?")      
             If FileIn = "ssApp.app" Or FileIn = "ppApp.app" Or FileIn = "ppGame.ppg" Then 'Only do items with valid file
               If LLMod.LoadSSFile(InPath & DirInPath & "/" & FileIn) = True Then
