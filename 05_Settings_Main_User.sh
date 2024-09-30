@@ -88,6 +88,7 @@ gsettings set org.cinnamon.desktop.interface gtk-theme "LastOS-Orchis-Dark-Compa
 gsettings set org.cinnamon.desktop.interface icon-theme "Windows-10-master"
 gsettings set org.cinnamon.theme name "LastOS-Orchis-Dark-Compact"
 gsettings set org.gnome.desktop.interface gtk-theme "LastOS-Orchis-Dark-Compact"
+gsettings set org.x.apps.portal color-scheme "prefer-dark"
 
 #Set White Mouse Cursor
 gsettings set org.cinnamon.desktop.interface cursor-theme "DMZ-White"
