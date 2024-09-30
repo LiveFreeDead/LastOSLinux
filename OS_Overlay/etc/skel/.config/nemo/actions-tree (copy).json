@@ -1,0 +1,210 @@
+{
+  "toplevel": [
+    {
+      "uuid": "mintstick.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "91_delete-workspace.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "92_show-expo.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "mintstick-verify.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "change-background.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "set-resolution.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "warpinator-send.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "mount-archive.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "90_new-launcher.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "add-desklets.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "90_new-workspace.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "mintstick-format.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "sample.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "set-as-background.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "LastOS Tools",
+      "type": "submenu",
+      "user-label": "LastOS Tools",
+      "user-icon": null,
+      "children": [
+        {
+          "uuid": "lastos-llfile-install.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        },
+        {
+          "uuid": "lastos-llfile-editor.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        },
+        {
+          "uuid": "lastos-llfile-compress.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        },
+        {
+          "uuid": "lastos-llfile-build.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        }
+      ]
+    },
+    {
+      "uuid": "rename_admin.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "xkill@eson57.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "xed_sudoedit.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "attach_to_email_tbird.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "cinnamon-system-settings@100savage.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "extract-to.root.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "extract-to.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "paste-into-file@anaximeno.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "gnome-system-monitor@100savage.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "calculate-md5sum@schorschii.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "lastos-sanitize.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "copy-path-to-clipboard@claudiux.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "take_ownership.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "webp-to-png@tomunek.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    },
+    {
+      "uuid": "create-desktop-shortcut@anaximeno.nemo_action",
+      "type": "action",
+      "user-label": null,
+      "user-icon": null
+    }
+  ]
+}

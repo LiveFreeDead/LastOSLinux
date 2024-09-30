@@ -1,0 +1,36 @@
+{
+  "toplevel": [
+    {
+      "uuid": "LastOS Tools",
+      "type": "submenu",
+      "user-label": "LastOS Tools",
+      "user-icon": null,
+      "children": [
+        {
+          "uuid": "lastos-llfile-install.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        },
+        {
+          "uuid": "lastos-llfile-editor.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        },
+        {
+          "uuid": "lastos-llfile-compress.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        },
+        {
+          "uuid": "lastos-llfile-build.nemo_action",
+          "type": "action",
+          "user-label": null,
+          "user-icon": null
+        }
+      ]
+    }
+  ]
+}
