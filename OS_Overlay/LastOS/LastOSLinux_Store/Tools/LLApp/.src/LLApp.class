@@ -24,6 +24,7 @@ Public CurrScript As String = "Script"
 
 Public Sub Form_Open()
   Dim S As String
+  Dim UseThisPath As String
   Dim OldLineFileIn As String
   Dim TmpSudoScript As String
   LLMod.AppPath = LLMod.Slashed(Application.Path) ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
@@ -75,6 +76,14 @@ Public Sub Form_Open()
       
       'Do Pre Checks on the input
       If S = "/usr/bin/llapp" Then S = CurrentPath 'If the user runs it from a folder, use the folder not the llapp symbolic link
+      
+      'This fixes missing folders issue, so you can open a LLApp.lla or game file and it'll use the current path, not blank
+      If S = "/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Then S = LLMod.Slashed(CurrentPath)
+      
+      If IsDir(S) Then S = LLMod.Slashed(S) 'Make sure it's slashed if it's a folder)
+      
+      'Message(S)
+      
       If Right(S, 7) = ".gambas" Then Continue 'Right clicking on a folder bacground only passes the name of the ran file, nothing good can come from this.   
          
       'Clean Inputs
@@ -88,7 +97,9 @@ Public Sub Form_Open()
 
       
       If LLMod.Slashed(S) = LLMod.Slashed(User.Home) & "Desktop/" Then Continue ' Don't process if only the Desktop given, dangerous
-
+      
+      'Keep a copy incase the last folder detected is broken Glenn 2027
+      If S <> "" Then UseThisPath = S
       'Message(S)
       'Replace quotes with nothing so the folder is just the folder with spaces (no quotes)
       S = Replace(S, Chr(34), "")
@@ -208,17 +219,25 @@ Public Sub Form_Open()
       End If
       Quit 
     End Select
-
+  End If
+  
+  'Message("!" & LineFileIn & "!")
+  
+  If LineFileIn = "" Then 'Last restore, use current path
+    If UseThisPath <> "" Then 
+    LineFileIn = UseThisPath
+    End If
   End If
   
   If Right(LineFileIn, 4) = ".tar" Then CompressIn = True 'Make sure it's set if it is opened as such
   If CompressIn = True Then LLApp.CompressBuild.Value = True ' Tick the box, so it will know to save the edit as compressed again and not just the llg lla file
-  If Left(LineFileIn, 1) <> "/" Then 'Add Path
+  If Left(LineFileIn, 1) <> "/" Then 'Add Path    
     LineFileIn = Application.Dir & "/" & LineFileIn
     'Message(Application.Dir)
     'Message(LineFileIn)
   End If
   
+  'Message(Left(LineFileIn, LLMod.InStrRevSingle(LineFileIn, "/"))) 
   'Message(LineFileIn)
   
   LLMod.LLBuildType = "LLApp" 'Default To App (Before trying to load in one)
@@ -305,6 +324,28 @@ Public Sub Form_Open()
   
   'Made it here, populate the Catalog Combo with correct type
   BuildTypeCheck_Click
+  
+  Dim TryPat As String
+  If IsDir(LineFileIn) Then  
+    TryPat = LineFileIn
+  Else 'It's a file
+    TryPat = Left(LineFileIn, LLMod.InStrRevSingle(LineFileIn, "/") - 1) 'Minus 1 removes slash at end
+  End If
+  'Message(TryPat)
+  'Fill default Include and BuildTo paths if blank
+  'Message(TryPat)
+  Select Case TryPat
+  Case User.Home & "/Desktop"
+  Case User.Home
+  Case "" 'Needs some sort of path given or will fail anyway
+  Case "/home"
+  
+  Case Else
+    If Exist(TryPat) Then
+      If IncludeFolder.Text = "" Then IncludeFolder.Text = TryPat 'Only do it if empty
+      If BuildToFolder.Text = "" Then BuildToFolder.Text = TryPat 'Only do it if empty
+    End If
+  End Select
   
 End
 
