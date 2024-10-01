@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.1.9 2024-09-27-01
+'LastOS v1.2.0 2024-10-01-02
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -10,6 +10,8 @@ Public RefreshPanel As Boolean = False
 Public Win7zCmd As String = Chr(34) & "C:" & Chr(92) & "Program Files" & Chr(92) & "SetupS.SendTo" & Chr(92) & "Tools" & Chr(92) & "7z.exe" & Chr(34) & " -mtc -aoa x "
 
 Public Linux7z As String = Application.Path & "/Tools/7zzs"
+
+Public FlatpakDest As String
 
 'LLItem Data
 Public LLTitle As String
@@ -933,8 +935,10 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   Dim DesktopFile As String
   Dim DesktopOutPath As String = User.Home & "/.local/share/applications/"
   Dim TmpPath As String
+  Dim TmpINI As String
   Dim PanelPath As String
   Dim IconFix As String
+  Dim TimeOut As Integer
   
   'If tar (compressed) Then extract it to temp and install it
   If Right(LLAFile, 4) = ".tar" Then LLCompressed = True Else LLCompressed = False  
@@ -989,14 +993,14 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
       'If Exist(InstallToPath) Then Shell "chmod -R 775 " & Chr(34) & InstallToPath & Chr(34) Wait    
       'Run the script, don't wait for it to finish (Incase a script gets hung up I don't want to stop the installer
       If Exist(InstallToPath & "LLScript.sh") Then
-        ExpandScript(InstallToPath & "LLScript.sh")          
+        ExpandScript(InstallToPath & "LLScript.sh", InstallToPath & "LLScript.sh")          
         Try Chmod InstallToPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)
         Shell "cd " & Chr(34) & InstallToPath & Chr(34) & " && bash " & Chr(34) & InstallToPath & "LLScript.sh" & Chr(34) Wait  'I now wait as I'll do my best to not use sudo things that stop the installs 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
       End If
       If Exist(InstallToPath & "LLScript_Sudo.sh") Then
-        ExpandScript(InstallToPath & "LLScript_Sudo.sh")          
+        ExpandScript(InstallToPath & "LLScript_Sudo.sh", InstallToPath & "LLScript_Sudo.sh")          
         Try Chmod InstallToPath & "LLScript_Sudo.sh" To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)        
         If LLScriptSudoContent = "" Then LLScriptSudoContent = "#!/bin/bash" & Chr(10) & Chr(10) 'Make script have header if empty
@@ -1006,12 +1010,28 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
       If TmpPath = "" Then TmpPath = LLINIPath 'If not a tar then it uses the current path off USB or DVD etc
       If Exist(TmpPath & "LLScript.sh") Then
+        TmpINI = "/tmp/LLScript.sh"      
         'ExpandScript(InstallToPath & "LLScript.sh")          
-        Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        'Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
+        ' Glenn 2027
+        'Message(TmpPath & "LLScript.sh")
+        'Shell "cp -f " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) & " " & TmpINI
+        
+        ExpandScript(TmpPath & "LLScript.sh", TmpINI)
+        TimeOut = 0
+        While Not Exist(TmpINI)
+          Wait (0.01)
+          TimeOut = TimeOut + 1          
+          If TimeOut > 100 Then Break
+        Wend
+        Try Chmod TmpINI To "rwxrwxr--" 'Make script file executable
         'MakeAllEXE(TmpPath)
-        Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        'Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpPath & "LLScript.sh" & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
+        Shell "cd " & Chr(34) & TmpPath & Chr(34) & " && bash " & Chr(34) & TmpINI & Chr(34) Wait  'Can't disable waiting here or it loses access to the temp path, so we Wait 'Disabled Waiting for the script to end so it can install other things. (LEAVE THIS ONE ALONE)
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
         'Message(TmpPath)
+        Try Kill (TmpINI)
       End If
       If Exist(TmpPath & "LLScript_Sudo.sh") Then
         'ExpandScript(InstallToPath & "LLScript.sh")          
@@ -1290,6 +1310,11 @@ Public Function ExpPath(PathIn As String) As String
 
   PathIn = Replace(PathIn, "$HOME", Homes, gb.IgnoreCase) ' Do this last, so others longer have time to expand
   
+  'Change --user to --system if set to, else leaves as set in App/Game
+  If FlatpakDest = "system" Then PathIn = Replace(PathIn, "--user", "--system", gb.IgnoreCase)
+  If FlatpakDest = "user" Then PathIn = Replace(PathIn, "--system", "--user", gb.IgnoreCase)  
+    
+  
   Return PathIn
 End
 
@@ -1358,12 +1383,13 @@ Public Sub ExpandWinScript(ScriptIn As String)
   
 End
 
-Public Sub ExpandScript(ScriptIn As String)
+Public Sub ExpandScript(ScriptIn As String, ScriptTmpOut As String)
   LLAppPath = ExpWinPath(LLAppPath)  
 
   Dim I As Integer
-  
+  'Message("1")
   If Not Exist(ScriptIn) Then Return 'Failed
+  'Message("2")
   Dim ScriptOrigContent As String
   Dim ScriptOrigContentSP As String[]
   Dim ScriptOut As String
@@ -1379,8 +1405,12 @@ Public Sub ExpandScript(ScriptIn As String)
       ScriptOut &= WS & Chr(10)
     End If
   Next
+  'Message("3")
   'Need to write the script somewhere to run it, may be off ISO so non writable
-  Try File.Save(ScriptIn, ScriptOut) 'If the path isn't writable this will fail.
+  'Message(ScriptIn & "..." & ScriptOut)
+  'Try File.Save(ScriptIn, ScriptOut) 'If the path isn't writable this will fail.
+  'Message(ScriptIn & "_New.sh")
+  Try File.Save(ScriptTmpOut, ScriptOut) 'If the path isn't writable this will fail.
   
 End
 

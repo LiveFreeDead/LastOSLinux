@@ -27,6 +27,11 @@ Public Sub Form_Open()
   Dim UseThisPath As String
   Dim OldLineFileIn As String
   Dim TmpSudoScript As String
+  
+  'Easy way to set the destination of Flatpaks
+  If Exist("/LastOS/LastOSLinux_Store/Flatpak-system") Then LLMod.FlatpakDest = "system"
+  If Exist("/LastOS/LastOSLinux_Store/Flatpak-user") Then LLMod.FlatpakDest = "user"
+  
   LLMod.AppPath = LLMod.Slashed(Application.Path) ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)
   If LLMod.AppPath = "/usr/bin" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"
   If LLMod.AppPath = "/usr/bin/" Then LLMod.AppPath = "/LastOS/LastOSLinux_Store/Tools/LLApp"

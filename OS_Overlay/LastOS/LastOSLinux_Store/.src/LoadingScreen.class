@@ -188,6 +188,11 @@ Public Sub LoadStyle(StyleFile As String)
 End
 
 Public Sub LoadSettings(SettingsFile As String)
+
+  'Easy way to set the destination of Flatpaks
+  If Exist("/LastOS/LastOSLinux_Store/Flatpak-system") Then LLMod.FlatpakDest = "system"
+  If Exist("/LastOS/LastOSLinux_Store/Flatpak-user") Then LLMod.FlatpakDest = "user"
+  
   If Exist(SettingsFile) Then
     
     Print "Loading Settings: " & SettingsFile
