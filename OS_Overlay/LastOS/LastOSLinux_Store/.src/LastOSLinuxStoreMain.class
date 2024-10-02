@@ -1974,6 +1974,7 @@ Public Sub Items_KeyRelease()
   If LLMod.StoreMode = 0 And Key.Code = Key["I"] And Key.Control Then SelectInvert()
   
   If LLMod.StoreMode = 1 And Key.Code = Key["F"] And Key.Control Then AddFavorite
+  If LLMod.StoreMode = 1 And Key.Code = Key["R"] And Key.Control Then RemoveFavorite
   
   'If Key.Code = Key["F5"] Then ReScanItems() 'Moved to form event
   
@@ -2612,6 +2613,7 @@ Public Sub DoContextMenu()
     hMenu.Text = "Add To Favorites"
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "RemoveFavorite"
+    hMenu.Shortcut = "Ctrl+R"
     hMenu.Text = "Remove From Favorites"
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "MakeDesktop"
