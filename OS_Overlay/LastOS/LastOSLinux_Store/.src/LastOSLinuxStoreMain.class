@@ -51,6 +51,7 @@ Public ScreenShotCounter As Integer
 
 Public CtrlPressed As Boolean
 Public ShiftPressed As Boolean
+Public AltPressed As Boolean
 
 Public RunningItemKey As Integer
 
@@ -1784,14 +1785,15 @@ Public Sub Form_Close()
   
   'Clean up downloader (Will quit after download??? or instant?)
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
-  
-  'Saves settings to User.Home &/ ".config/gambas3" &/ Application.Name & ".conf"
+
+  'Saves settings to User.Home &/ ".config/gambas3" &/ Application.Name & ".conf"  
   Settings["Window/Top"] = Me.Top
   Settings["Window/Left"] = Me.Left
   Settings["Window/Height"] = Me.Height
   Settings["Window/Width"] = Me.Width
   Settings["ScaleItems"] = ScaleItems
   Settings["ScaleDescription"] = ScaleDescription
+  Settings.Save
   
   ForceClose = True
   ScreenResolution.Close
@@ -1799,6 +1801,7 @@ Public Sub Form_Close()
   Theme.Close
   MiniInstaller.Close
   LoadingScreen.Close
+  MySettings.Close
 End
 
 Public Sub Form_BeforeArrange()
@@ -1856,20 +1859,85 @@ Public Sub Items_MouseWheel()
 End
 
 Public Sub Form_KeyPress()
-  If Key.Control Then
-    CtrlPressed = True
-  End If
+  If Key.Control Then CtrlPressed = True
   If Key.Shift Then ShiftPressed = True
+  If Key.Alt Then AltPressed = True
 End
 
 Public Sub Form_KeyRelease()
+
+    If LLMod.StoreMode = 0 Then 'Store
+      If CtrlPressed And Key.Code = Key["O"] Then LoadPreset()
+      If CtrlPressed And Key.Code = Key["S"] Then SavePreset()      
+    Else ' Launcher
+      
+    End If
+    
+    If AltPressed And Key.Code = Key["S"] Then SaveCurrentList()
+    If AltPressed And Key.Code = Key["E"] Then EditItem()
+    
     CtrlPressed = False
     ShiftPressed = False
+    AltPressed = False
     
-    'Doesn't need to be here (Or should it only be here?)
+    'Doesn't need to be here (Or should it only be here?) - Only be here!
     If Key.Code = Key["F5"] Then ReScanItems()
     If Key.Code = Key["ESC"] Then Me.Close 'Quit
+    
+    If Key.Code = Key["F7"] Then 'Change Modes
+      If LLMod.StoreMode = 0 Then
+        LLMod.StoreMode = 1
+      Else
+        LLMod.StoreMode = 0
+      End If
+      ReScanItems()
+    End If  
+    
+    If Key.Code = Key["F8"] Then MySettings.Show 'Settings
+    
+    If Key.Code = Key["F3"] Then AddManualLocation()
+    
+    If Key.Code = Key["F9"] Then Data.Show
+    
+    If Key.Code = Key["F11"] Then
+      If LLM.FullScreenMode = False Then
+        LLM.FullScreenMode = True        
+      Else
+        LLM.FullScreenMode = False
+      End If
+      FullScreenToggle()
+    End If
 End
+
+Public Sub AddManualLocation()
+  Dim I As Integer
+  Dialog.Title = "Choose a Folder to Scan for Items"
+  Dialog.Path = User.Home
+  Dialog.FilterIndex = 0
+  If Dialog.SelectDirectory() Then
+    Return ' User pressed Cancel -
+  Endif
+  If ManualLocationCount >= 1 Then
+    For I = 0 To ManualLocationCount - 1
+      If ManualLocation[I] = Dialog.Path Then Return ' Don't add existing location to manual locations
+    Next
+  End If
+  ManualLocation[ManualLocationCount] = Dialog.Path
+  ManualLocationCount = ManualLocationCount + 1
+  'Add selected folder and save to manual folder paths
+  SaveManualLocations      
+  'Rescan all items
+  'Clear All Known Items first
+  Data.ClearDataFields() 'This now does the Column Adding and naming scheme
+  'Get new items
+  GetItemPaths()
+  'Redo Categories
+  GenerateCategoryList()
+  'Redo main Lists
+  GenerateMainList()   
+  
+End
+
 
 Public Sub Category_KeyRelease()
   Category_Click() 'Click Category
@@ -2334,6 +2402,8 @@ End
 
 Public Sub Items_KeyPress()
   If Key.Control Then Return 'Skip any presses with Ctrl Held in
+  If Key.Alt Then Return 'Skip any presses with Alt Held in
+  If Key.Shift Then Return 'Skip any presses with Shift Held in
   Dim I As Integer
   '48 to 57 = 0,1...9
   '65 to 90 = a to z
@@ -2430,6 +2500,14 @@ Public Sub DoContextMenu()
   
   ContextMenu.Children.Clear
   
+  If LLMod.StoreMode = 1 Then
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "RunWithResolution"
+    hMenu.Text = "Run With Resolution"
+    hMenu.Shortcut = "Shift+Enter"
+    hMenu = New Menu(ContextMenu) As "POP" 'Spacer
+  End If
+  
 'Select Menu
   If LLMod.StoreMode = 0 Then 'Install Mode only
     SelectMenu = New Menu(ContextMenu, False)
@@ -2437,14 +2515,16 @@ Public Sub DoContextMenu()
     
     hMenu = New Menu(SelectMenu) As "POP"
     hMenu.Name = "Select1"
-    hMenu.Text = "Select All"
-    'hMenu.Shortcut = "Ctrl+A" ' No need for hotkeys listing, makes it ugly.
+    hMenu.Text = "Select All"    
+    hMenu.Shortcut = "Ctrl+A" ' No need for hotkeys listing, makes it ugly.
     hMenu = New Menu(SelectMenu) As "POP"
     hMenu.Name = "Select2"
     hMenu.Text = "Select None"
+    hMenu.Shortcut = "Ctrl+N"
     hMenu = New Menu(SelectMenu) As "POP"
     hMenu.Name = "Select3"
     hMenu.Text = "Invert Selection"
+    hMenu.Shortcut = "Ctrl+I"
     hMenu = New Menu(ContextMenu) As "POP"
   End If
   
@@ -2510,15 +2590,18 @@ Public Sub DoContextMenu()
   If LLMod.StoreMode = 0 Then 'Install Mode only    
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "LoadPreset"
+    hMenu.Shortcut = "Ctrl+O"
     hMenu.Text = "Load From Preset"
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "SavePreset"
+    hMenu.Shortcut = "Ctrl+S"
     hMenu.Text = "Save To Preset"
   End If
   
   If LLMod.StoreMode = 1 Then 'Launcher Mode
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "AddFavorite"
+    hMenu.Shortcut = "Ctrl+F"
     hMenu.Text = "Add To Favorites"
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "RemoveFavorite"
@@ -2530,13 +2613,15 @@ Public Sub DoContextMenu()
   
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "SaveCurrentList"
-  hMenu.Text = "Save Current List"
-  hMenu = New Menu(ContextMenu) As "POP"
-  hMenu.Name = "ReScanItems"
-  hMenu.Text = "(Re)Scan For Items"
+  hMenu.Text = "Save Current List"  
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "AddManualLocation"
+  hMenu.Shortcut = "F3"
   hMenu.Text = "Add Manual Location"
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "ReScanItems"
+  hMenu.Shortcut = "F5"
+  hMenu.Text = "(Re)Scan For Items"
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "OpenItemLocation"
   hMenu.Text = "Open Item Location"
@@ -2544,6 +2629,34 @@ Public Sub DoContextMenu()
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "EditItem"
   hMenu.Text = "Edit Item"
+
+  hMenu = New Menu(ContextMenu) As "POP" 'Spacer
+    
+  If LLMod.StoreMode = 0 Then     
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "BuildRepository"
+    hMenu.Text = "Build Repository"
+  End If
+    
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "ChangeMode"
+  hMenu.Shortcut = "F7"
+  hMenu.Text = "Change Mode (Store/Launcher)"
+  
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "Debugging"
+  hMenu.Shortcut = "F9"
+  hMenu.Text = "Debugging"
+  
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "FullScreen"
+  hMenu.Shortcut = "F11"
+  hMenu.Text = "FullScreen Toggle"
+  
+  hMenu = New Menu(ContextMenu) As "POP"
+  hMenu.Name = "MySettings"
+  hMenu.Shortcut = "F8"
+  hMenu.Text = "Settings"
   
   ContextMenu.Popup(Mouse.ScreenX, Mouse.ScreenY)
 End
@@ -2551,7 +2664,6 @@ End
 Public Sub POP_Click()  
   Dim I As Integer
   Dim OpenPath As String 
-  Dim BT As String
   
   Select Last.Name
     Case "Select1"            
@@ -2659,17 +2771,7 @@ Public Sub POP_Click()
     Case "EditItem"
       If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
       
-      OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
-      BT = Data.Items[Items.Current.Key - 1, Data.CBuildType].Text
-      If Not Exist(OpenPath) Then
-        Message("Item not found or not local")
-        Return
-      End If
-      If BT = "LLApp" Or BT = "LLGame" Then        
-        Shell LLMod.Slashed(LLMod.AppPath) & "Tools/LLApp/LLApp.gambas -edit " & Chr(34) & OpenPath & Chr(34)
-      Else 'SetupS
-        Shell "wine " & Chr(34) & "$HOME/.wine/dosdevices/c:/Program Files/SetupS.SendTo/ssEditor/ssEditor.exe" & Chr(34) & " " & Chr(34) & OpenPath & Chr(34)
-      End If
+      EditItem()
     Case "AddManualLocation"
       Dialog.Title = "Choose a Folder to Scan for Items"
       Dialog.Path = User.Home
@@ -2694,9 +2796,59 @@ Public Sub POP_Click()
       'Redo Categories
       GenerateCategoryList()
       'Redo main Lists
-      GenerateMainList()            
+      GenerateMainList()    
+    Case "BuildRepository"
+       BuildRepository()
+    Case "Debugging"
+       Data.Show
+    Case "MySettings"
+      MySettings.Show
+    Case "RunWithResolution"
+      ShiftPressed = True
+      RunGame(CurrentItemKey)
+    Case "ChangeMode"
+      If LLMod.StoreMode = 0 Then
+        LLMod.StoreMode = 1
+      Else
+        LLMod.StoreMode = 0
+      End If
+      ReScanItems()
+    Case "FullScreen"
+      If LLM.FullScreenMode = False Then
+        LLM.FullScreenMode = True        
+      Else
+        LLM.FullScreenMode = False
+      End If
+      FullScreenToggle()
   End Select
 End
+
+Public Sub EditItem()
+  
+  If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+  
+  Dim OpenPath As String
+  Dim BT As String
+  
+  OpenPath = Data.Items[Items.Current.Key - 1, Data.CPathINI].Text
+  BT = Data.Items[Items.Current.Key - 1, Data.CBuildType].Text
+  If Not Exist(OpenPath) Then
+    Message("Item not found or not local")
+    Return
+  End If
+  If BT = "LLApp" Or BT = "LLGame" Then        
+    Shell LLMod.Slashed(LLMod.AppPath) & "Tools/LLApp/LLApp.gambas -edit " & Chr(34) & OpenPath & Chr(34)
+  Else 'SetupS
+    Shell "wine " & Chr(34) & "$HOME/.wine/dosdevices/c:/Program Files/SetupS.SendTo/ssEditor/ssEditor.exe" & Chr(34) & " " & Chr(34) & OpenPath & Chr(34)
+  End If
+
+End
+
+
+Public Sub FullScreenToggle()
+    LastOSLinuxStoreMain.FullScreen = LLM.FullScreenMode
+End
+
 
 Public Sub SaveManualLocations()
   Dim I As Integer
@@ -3294,9 +3446,14 @@ Public Sub BuildRepository()
   Dim Tx As String
   Dim INIType As String
   Dim DestPath As String
+  Dim OldTitle As String
+  OldTitle = Title.Text
   
   If LLM.DataItemsRows < 0 Then Return
   For I = 0 To LLM.DataItemsRows
+    
+    Title.Text = "Building Repo: " & Str(I) & "/" & LLM.DataItemsRows
+    Wait (0.01) 'Redraw
     
     'Check if item is local or skip (can't build a repo with remote items)
     If InStr(Data.Items[I, Data.CFileINI].Text, "%dbpath%/", 1) Then Continue
@@ -3383,6 +3540,9 @@ Public Sub BuildRepository()
       End If      
     End If
   Next
+  
+  Title.Text = OldTitle
+  
   If RepoContent <> "" Then 'Don't bother with an empty file
     FileOut = RepoDirDB & "LastOSLinuxRepository.db"
     Try File.Save(FileOut, RepoContent)    
@@ -3631,7 +3791,9 @@ Public Sub StartPushed()
   MovieTimer.Enabled = False 'Just in case
   'Check if ctrl is held to build Repository
   If LLMod.StoreMode = 0 And CtrlPressed = True Then 'Only make Repo's out of Install Mode items (not Launcher)
-    CtrlPressed = False ' Just make sure it resets  
+    CtrlPressed = False ' Just make sure it resets
+    ShiftPressed = False
+    AltPressed = False
     BuildRepository()
     Return
   End If

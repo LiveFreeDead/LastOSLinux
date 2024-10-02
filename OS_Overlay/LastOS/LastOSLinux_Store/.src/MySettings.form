@@ -1,0 +1,112 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,100,60)
+  Text = ("LastOSLinux Store Settings")
+  Resizable = False
+  Stacking = Window.Above
+  { SetUpdateCheck CheckBox
+    MoveScaled(1,2,22,4)
+    ToolTip = ("This makes store check for updates on startup")
+    Text = ("Check for Updates")
+  }
+  { SetQuitOnComplete CheckBox
+    MoveScaled(25,2,22,4)
+    ToolTip = ("This will exit Store when items are finnished installing")
+    Text = ("Quit On Complete")
+  }
+  { SetUseLocal CheckBox
+    MoveScaled(1,20,20,4)
+    ToolTip = ("This will make the local drives scanned for items")
+    Text = ("Use Local Items:")
+    Value = CheckBox.True
+  }
+  { SetUseOnline CheckBox
+    MoveScaled(1,40,25,4)
+    ToolTip = ("This will make it scan remote databases for items")
+    Text = ("Use Online Repositories:")
+  }
+  { SetUseCache CheckBox
+    MoveScaled(25,20,26,4)
+    ToolTip = ("Scans the local Cached Repositories")
+    Text = ("Use Cached Repository")
+    Value = CheckBox.True
+  }
+  { SetUseLocalDB CheckBox
+    MoveScaled(1,7,21,4)
+    ToolTip = ("Enables using Local DB files instead of scanning each time")
+    Text = ("Use Local DB Files")
+  }
+  { SetOnlyUseLocalDB CheckBox
+    MoveScaled(25,7,26,4)
+    ToolTip = ("Enablesonly using LocalDB files, doesn't scan for new items")
+    Text = ("Only Use Local DB Files")
+  }
+  { SetUseVideoPlayback CheckBox
+    MoveScaled(53,2,18,4)
+    ToolTip = ("Enabled Video Playback if video found for items")
+    Text = ("Video Playback")
+  }
+  { SetVideoVolume ValueBox
+    MoveScaled(74,2,5,4)
+    ToolTip = ("Set Video Volume")
+    Text = ("20")
+  }
+  { Label1 Label
+    MoveScaled(81,2,17,4)
+    ToolTip = ("Set Video Volume")
+    Text = ("Set Video Volume")
+  }
+  { SetScanmnt CheckBox
+    MoveScaled(74,20,16,4)
+    ToolTip = ("Scans /mnt/ for items in folders")
+    Text = ("Scan /mnt/")
+    Value = CheckBox.True
+  }
+  { SetScanmedia CheckBox
+    MoveScaled(53,20,18,4)
+    ToolTip = ("Scans /media/ for items in folders")
+    Text = ("Scan /media/")
+    Value = CheckBox.True
+  }
+  { SetCopyPackagesIntoRepository CheckBox
+    MoveScaled(53,7,17,4)
+    ToolTip = ("This will copy the packages to the local Repository build folder")
+    Text = ("Copy to Repo")
+  }
+  { SetRepoBuilder CheckBox
+    MoveScaled(74,7,25,4)
+    ToolTip = ("If your constantly building repositories, this stops it using the Cached Repositores to not contaminate the repository with extra items")
+    Text = ("Repo Builder No-Cache")
+  }
+  { SetFlatpakUser RadioButton Flatpak
+    Name = "SetFlatpakUser"
+    MoveScaled(1,12,19,4)
+    Tag = "user"
+    ToolTip = ("Make all Flatpaks install as User")
+    Text = ("Flatpak as User")
+    Value = True
+  }
+  { SetFlatpakSystem RadioButton Flatpak
+    Name = "SetFlatpakSystem"
+    MoveScaled(25,12,26,4)
+    Tag = "system"
+    ToolTip = ("Make all Flatpaks install System Wide")
+    Text = ("Flatpak as System Wide")
+  }
+  { SetOnlineRepos TextArea
+    MoveScaled(1,45,98,12)
+  }
+  { SetManualLocations TextArea
+    MoveScaled(1,25,98,12)
+  }
+  { SetDefaultRepos Button
+    MoveScaled(27,40,20,4)
+    Text = ("Default Repositories")
+  }
+  { SetSaveRescan Button
+    MoveScaled(79,37,20,4)
+    ToolTip = ("Saves settings and ReScans For Items")
+    Text = ("Save And ReScan")
+  }
+}

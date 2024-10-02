@@ -53,6 +53,12 @@ dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom2/command
 dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom2/name "'Fix Screen Res'"
 dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom2/binding "['<Alt>Break']"
 
+#ctrl shift f4 to close all wine stuff, wineserver -k
+dconf write /org/cinnamon/desktop/keybindings/custom-list "['custom0', 'custom1', 'custom2', 'custom3']"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command "'quitwine.sh'"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name "'Kill WINE 2'"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom3/binding "['<Primary><Shift>F4']"
+
 #Make Mouse window move Modifier Super Key instead of ALT so Photoshop works with alt key to set Source
 dconf write /org/gnome/desktop/wm/preferences/mouse-button-modifier "'<Super>'"
 dconf write /org/cinnamon/desktop/wm/preferences/mouse-button-modifier "'<Super>'"

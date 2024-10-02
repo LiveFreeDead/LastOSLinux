@@ -1,5 +1,7 @@
 ' Gambas module file
 
+Public FullScreenMode As Boolean = False
+
 Public HideOnline As Boolean
 Public HideLocal As Boolean
 

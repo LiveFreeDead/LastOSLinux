@@ -1,0 +1,171 @@
+' Gambas class file
+
+Public OrigManualLocs As String
+
+Public Sub Form_Close()
+  Me.Hide
+  'Save settings here
+  SetSettings()
+  If LastOSLinuxStoreMain.ForceClose = False Then Stop Event 'Cancel Close, we only hide here unless forced
+End
+
+Public Sub Form_Open()
+  SetDefaultRepos.Visible = False
+  If Exist("/LastOS/LastOSLinux_Store/DefaultRepositoryList.ini") Then SetDefaultRepos.Visible = True
+  GetSettings()
+End
+
+Public Sub GetSettings()
+  SetUpdateCheck.Value = LLM.CheckForUpdate
+  SetQuitOnComplete.Value = LLM.QuitOnComplete
+  SetUseLocal.Value = LLM.UseLocal
+  SetUseOnline.Value = LLM.UseOnlineRepository
+  SetUseCache.Value = LLM.UseCacheRepository
+  SetUseLocalDB.Value = LLM.UseLocalDBFiles
+  SetOnlyUseLocalDB.Value = LLM.SkipScanIfDBFile
+  SetUseVideoPlayback.Value = LLM.UseVideoPlayback
+  SetVideoVolume.Value = LLM.VideoVolume * 100
+  SetScanmnt.Value = LLM.MntScan
+  SetScanmedia.Value = LLM.MediaScan
+  SetCopyPackagesIntoRepository.Value = LLM.CopyPackagesIntoRepository
+  
+  If Exist("/LastOS/LastOSLinux_Store/RepoBuilderNoCache") Then SetRepoBuilder.Value = True
+  
+  If Exist("/LastOS/LastOSLinux_Store/Flatpak-user") Then SetFlatpakUser.Value = True
+  If Exist("/LastOS/LastOSLinux_Store/Flatpak-system") Then SetFlatpakSystem.Value = True
+  
+  If Exist("/LastOS/LastOSLinux_Store/ManualLocations.ini") Then    
+    Try SetManualLocations.Text = File.Load("/LastOS/LastOSLinux_Store/ManualLocations.ini")
+    OrigManualLocs = SetManualLocations.Text
+  End If
+  
+  If Exist("/LastOS/LastOSLinux_Store/RepositoryList.ini") Then
+    Try SetOnlineRepos.Text = File.Load("/LastOS/LastOSLinux_Store/RepositoryList.ini")
+  End If
+  
+End Sub
+
+
+Public Sub SetSettings()
+  Dim SetOutText As String
+  SetOutText = "CheckForUpdate=" & TrueText(LLM.CheckForUpdate) & Chr(10)
+  SetOutText &= "QuitOnComplete=" & TrueText(LLM.QuitOnComplete) & Chr(10)
+  SetOutText &= "UseLocal=" & TrueText(LLM.UseLocal) & Chr(10)
+  SetOutText &= "UseOnlineRepository=" & TrueText(LLM.UseOnlineRepository) & Chr(10)
+  SetOutText &= "UseCacheRepository=" & TrueText(LLM.UseCacheRepository) & Chr(10)
+  SetOutText &= "UseLocalDBFiles=" & TrueText(LLM.UseLocalDBFiles) & Chr(10)
+  SetOutText &= "SkipScanIfDBFile=" & TrueText(LLM.SkipScanIfDBFile) & Chr(10)
+  SetOutText &= "UseVideoPlayback=" & TrueText(LLM.UseVideoPlayback) & Chr(10)
+  SetOutText &= "VideoVolume=" & Str(LLM.VideoVolume * 100) & Chr(10)
+  SetOutText &= "mntScan=" & TrueText(LLM.MntScan) & Chr(10)
+  SetOutText &= "mediaScan=" & TrueText(LLM.MediaScan) & Chr(10)
+  SetOutText &= "CopyPackagesIntoRepository=" & TrueText(LLM.CopyPackagesIntoRepository) & Chr(10)
+
+  'Message(SetOutText)
+  'Save LastOSLinuxStoreSettings.ini With above settings
+  Try File.Save("/LastOS/LastOSLinux_Store/LastOSLinuxStoreSettings.ini", SetOutText)
+  
+  'Save Repo List
+  Try File.Save("/LastOS/LastOSLinux_Store/RepositoryList.ini", SetOnlineRepos.Text)
+  
+  'Save Manual Location List
+  'If Not OrigManualLocs = SetManualLocations.Text Then
+   Try File.Save("/LastOS/LastOSLinux_Store/ManualLocations.ini", SetManualLocations.Text) 'Always save it, may as well
+  'End If
+  
+End Sub
+
+Public Function TrueText(ValIn As String) As String
+  If LLMod.IsTrue(ValIn) = True Then Return "True"
+  Return "False"
+End
+
+
+Public Sub SetUpdateCheck_Click()
+  LLM.CheckForUpdate = SetUpdateCheck.Value
+End
+
+Public Sub Form_GotFocus()
+  GetSettings()
+End
+
+Public Sub SetQuitOnComplete_Click()
+  LLM.QuitOnComplete = SetQuitOnComplete.Value
+End
+
+Public Sub SetUseLocal_Click()
+  LLM.UseLocal = SetUseLocal.Value
+End
+
+Public Sub SetUseOnline_Click()
+  LLM.UseOnlineRepository = SetUseOnline.Value
+End
+
+Public Sub SetUseCache_Click()
+  LLM.UseCacheRepository = SetUseCache.Value
+End
+
+Public Sub SetUseLocalDB_Click()
+  LLM.UseLocalDBFiles = SetUseLocalDB.Value
+End
+
+Public Sub SetOnlyUseLocalDB_Click()
+  LLM.SkipScanIfDBFile = SetOnlyUseLocalDB.Value
+End
+
+Public Sub SetUseVideoPlayback_Click()
+  LLM.UseVideoPlayback = SetUseVideoPlayback.Value
+End
+
+Public Sub SetVideoVolume_Change()
+  If SetVideoVolume.Text = "" Then SetVideoVolume.Text = "0"
+  If Val(SetVideoVolume.Text) >= 100 Then SetVideoVolume.Text = 100
+  If Val(SetVideoVolume.Text) <= 0 Then SetVideoVolume.Text = 0
+  LLM.VideoVolume = SetVideoVolume.Text / 100
+End
+
+Public Sub SetScanmnt_Click()
+  LLM.MntScan = SetScanmnt.Value
+End
+
+Public Sub SetScanmedia_Click()
+  LLM.MediaScan = SetScanmedia.Value
+End
+
+Public Sub SetCopyPackagesIntoRepository_Click()
+  LLM.CopyPackagesIntoRepository = SetCopyPackagesIntoRepository.Value
+End
+
+Public Sub SetRepoBuilder_Click()
+
+  If SetRepoBuilder.Value = True Then 
+    Try File.Save("/LastOS/LastOSLinux_Store/RepoBuilderNoCache", "Enabled")
+  Else
+    Try Kill ("/LastOS/LastOSLinux_Store/RepoBuilderNoCache")
+  End If
+
+End
+
+Public Sub Flatpak_Click()
+  Select Case Last.Tag
+  Case "user"
+    Try File.Save("/LastOS/LastOSLinux_Store/Flatpak-user", "Enabled")
+    Try Kill ("/LastOS/LastOSLinux_Store/Flatpak-system")
+  Case "system"
+    Try File.Save("/LastOS/LastOSLinux_Store/Flatpak-system", "Enabled")
+    Try Kill ("/LastOS/LastOSLinux_Store/Flatpak-user")
+  End Select
+End
+
+Public Sub SetDefaultRepos_Click()
+  SetOnlineRepos.Text = File.Load("/LastOS/LastOSLinux_Store/DefaultRepositoryList.ini")
+End
+
+Public Sub SetSaveRescan_Click()
+  SetSettings()
+  MySettings.Hide
+  'If Not OrigManualLocs = SetManualLocations.Text Then 'Only rescan if changed locations to scan
+  LastOSLinuxStoreMain.ReScanItems() 'Actually always rescan as the changes to the other settings will cause different results.
+  'End If
+End
+
