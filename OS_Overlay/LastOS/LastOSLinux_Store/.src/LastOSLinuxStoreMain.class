@@ -744,9 +744,9 @@ Public Sub SaveToLocalDB(InPath As String)
     Next
     If RepoContent <> "" Then 'Don't bother with an empty file
       Try File.Save(LocalDB, RepoContent) 'Save DB File if able to
-      Try Shell "touch " & Chr(34) & LocalDBCache & ".a" & Chr(34) ' Touch after DB creation to make it up to date, only if a DB is made
+      Try Shell "touch " & Chr(34) & LocalDBCache & ".a" & Chr(34) Wait' Touch after DB creation to make it up to date, only if a DB is made
       If Not Exist(LocalDBCache & ".a") Then 'Touch failed, just make the file with echo
-        Try Shell "echo '.' > " & Chr(34) & LocalDBCache & ".a" & Chr(34) ' Create DB to make it up to date, only if a DB is made and so it skips making a new db unless forced rescan
+        Try Shell "echo '.' > " & Chr(34) & LocalDBCache & ".a" & Chr(34) Wait' Create DB to make it up to date, only if a DB is made and so it skips making a new db unless forced rescan
       End If
     End If
   End If
@@ -1881,6 +1881,10 @@ Public Sub Form_KeyRelease()
         If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
         MakeDesktop(Items.Current.Key - 1)    
       End If
+      If AltPressed And Key.Code = Key["A"] Then 
+        If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+        BuildToDesktop(Data.Items[Items.Current.Key - 1, Data.CPathINI].Text)
+      End If
     End If
     
     CtrlPressed = False
@@ -2619,6 +2623,10 @@ Public Sub DoContextMenu()
     hMenu.Name = "MakeDesktop"
     hMenu.Shortcut = "Alt+D"
     hMenu.Text = "Make Desktop Shortcut"
+    hMenu = New Menu(ContextMenu) As "POP"
+    hMenu.Name = "BuildToDesktop"
+    hMenu.Shortcut = "Alt+A"
+    hMenu.Text = "Auto Build To Desktop"
   End If
   
   hMenu = New Menu(ContextMenu) As "POP"
@@ -2766,7 +2774,10 @@ Public Sub POP_Click()
       RemoveFavorite      
     Case "MakeDesktop"
       If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
-      MakeDesktop(Items.Current.Key - 1)      
+      MakeDesktop(Items.Current.Key - 1)
+    Case "BuildToDesktop"
+      If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+      BuildToDesktop(Data.Items[Items.Current.Key - 1, Data.CPathINI].Text)      
     Case "SaveCurrentList" 
       SaveCurrentList()
     Case "ReScanItems"   
@@ -3714,7 +3725,7 @@ Public Sub DownTime_Timer()
     Print "Curl Test: )" & Test & "("
     If Trim(Test) = "" Then 'No Internet or very dodgy item, just abort all internet and try the next item that gets sent here
       Print "Failed: " & GetURL
-      Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
+      Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload" Wait
     Else ' Try to get item
       If InStr(Test, "404", 1) Then '404 not found
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Skipping Missing Item: " & QueueURL[QueueUpTo] & Chr(34)
@@ -3724,7 +3735,7 @@ Public Sub DownTime_Timer()
           Shell "notify-send " & Chr(34) & "Skipping Missing Item: " & GetURL & Chr(34)        
           Print "Skipping Missing Item: " & GetURL
         End If
-        Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
+        Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload" Wait
       Else ' It exist, download it
         FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
@@ -3746,7 +3757,7 @@ Public Sub DownTime_Timer()
           If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
         Else 'Failed, Clean Up
           Shell "notify-send " & Chr(34) & "Failed Downloading Item: " & QueueLocal[QueueUpTo] & Chr(34)
-          Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload"
+          Shell "echo 'done' > " & RepositoryPathLocal & "FailedDownload" Wait
           Print "Failed Downloading Item: " & QueueLocal[QueueUpTo]
           FailedDownload = True
         End If
@@ -3920,3 +3931,24 @@ Public Sub Stats_DblClick()
   Try Clipboard.Copy(Stats.Text)
 
 End
+
+Public Sub BuildToDesktop(IniFile As String)
+  
+  Dim DesktopOutPath As String = User.Home & "/Desktop/"  
+  'Message(LLMod.Slashed(IniFile) & "LLGame.llg")
+  If Exist(LLMod.Slashed(IniFile) & "LLGame.llg") Then  
+    LLMod.LLTitle = ""
+    LLMod.LoadLLFile(LLMod.Slashed(IniFile) & "LLGame.llg")
+    If LLMod.LLTitle <> "" Then
+      Title.Text = LLMod.LLTitle & " is building on desktop..."
+      Shell "mkdir -p " & Chr(34) & DesktopOutPath & LLMod.LLTitle & Chr(34) Wait
+      Shell "cp -rf " & Chr(34) & LLMod.Slashed(IniFile) & "." & Chr(34) & " " & Chr(34) & DesktopOutPath & LLMod.LLTitle & Chr(34) Wait
+      Shell "cd " & Chr(34) & DesktopOutPath & LLMod.LLTitle & Chr(34) & " && llapp -c" Wait
+      Message("Built " & LLMod.LLTitle & " to the Desktop")
+    End If
+  Else
+    Message(LLMod.Slashed(IniFile) & "LLGame.llg" & " not found" & Chr(10) & Chr(10) & "You can currently only compress Linux Games")
+  End If
+    
+End
+
