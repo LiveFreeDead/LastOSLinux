@@ -1876,6 +1876,13 @@ Public Sub Form_KeyRelease()
     If AltPressed And Key.Code = Key["S"] Then SaveCurrentList()
     If AltPressed And Key.Code = Key["E"] Then EditItem()
     
+    If LLMod.StoreMode = 1 Then 
+      If AltPressed And Key.Code = Key["D"] Then 
+        If Items[Items.Current.Key] = Null Then Return 'No Item Text, skip
+        MakeDesktop(Items.Current.Key - 1)    
+      End If
+    End If
+    
     CtrlPressed = False
     ShiftPressed = False
     AltPressed = False
@@ -2608,11 +2615,13 @@ Public Sub DoContextMenu()
     hMenu.Text = "Remove From Favorites"
     hMenu = New Menu(ContextMenu) As "POP"
     hMenu.Name = "MakeDesktop"
+    hMenu.Shortcut = "Alt+D"
     hMenu.Text = "Make Desktop Shortcut"
   End If
   
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "SaveCurrentList"
+  hMenu.Shortcut = "Alt+S"
   hMenu.Text = "Save Current List"  
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "AddManualLocation"
@@ -2628,6 +2637,7 @@ Public Sub DoContextMenu()
   
   hMenu = New Menu(ContextMenu) As "POP"
   hMenu.Name = "EditItem"
+  hMenu.Shortcut = "Alt+E"
   hMenu.Text = "Edit Item"
 
   hMenu = New Menu(ContextMenu) As "POP" 'Spacer
