@@ -3379,7 +3379,7 @@ Public Sub BuildRepository()
         'Need to copy the .tar, .apz and .pgz files here and if the source isn't a compressed item then do so.
         DestPath = RepoDir & Right(Data.Items[I, Data.CFileINI].Text, Len(Data.Items[I, Data.CFileINI].Text) - LLMod.InStrRevSingle(Data.Items[I, Data.CFileINI].Text, "/"))
         If Exist(DestPath) Then Try Kill DestPath
-        Try Copy Data.Items[I, Data.CFileINI].Text To DestPath
+        If LLM.CopyPackagesIntoRepository = True Then Try Copy Data.Items[I, Data.CFileINI].Text To DestPath 'Only copy packages if specified in Settings
       End If      
     End If
   Next

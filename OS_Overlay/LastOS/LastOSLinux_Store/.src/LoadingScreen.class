@@ -242,7 +242,9 @@ Public Sub LoadSettings(SettingsFile As String)
           Case "mntscan"
             LLM.MntScan = LLMod.IsTrue(LineData)
           Case "mediascan"
-            LLM.MediaScan = LLMod.IsTrue(LineData)            
+            LLM.MediaScan = LLMod.IsTrue(LineData)
+          Case "copypackagesintorepository"
+            LLM.CopyPackagesIntoRepository = LLMod.IsTrue(LineData)
           End Select
         End If
       End If
