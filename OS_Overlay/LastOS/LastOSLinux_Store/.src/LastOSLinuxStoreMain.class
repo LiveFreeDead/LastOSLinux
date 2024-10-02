@@ -2482,9 +2482,17 @@ Public Sub MakeDesktop(RefID As Integer) 'This only gets used by Launcher mode s
   DesktopContent &= "Version=1.0" & Chr(10)
   DesktopContent &= "Name=" & Data.Items[RefID, Data.CLnkTitle].Text & Chr(10)
   If Lower(Data.Items[RefID, Data.CBuildType].Text) = "llapp" Or Lower(Data.Items[RefID, Data.CBuildType].Text) = "llgame" Then
-    DesktopContent &= "Exec=" & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(10)
+    If ShiftPressed = False Then
+      DesktopContent &= "Exec=" & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(10)
+    Else
+      DesktopContent &= "Exec=run-1080p " & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(10)
+    End If
   Else 'Windows item
-    DesktopContent &= "Exec=wine " & Chr(34) & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(34) & Chr(10)
+    If ShiftPressed = False Then
+      DesktopContent &= "Exec=wine " & Chr(34) & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(34) & Chr(10)
+    Else
+      DesktopContent &= "Exec=run-1080p wine " & Chr(34) & LLMod.ExpPath(Data.Items[RefID, Data.CLnkExec].Text) & Chr(34) & Chr(10)
+    End If
   End If
   DesktopContent &= "Path=" & LLMod.ExpPath(Data.Items[RefID, Data.CLnkRunPath].Text) & Chr(10)
   DesktopContent &= "Comment=" & Data.Items[RefID, Data.CLnkComment].Text & Chr(10)
