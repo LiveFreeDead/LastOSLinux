@@ -303,6 +303,8 @@ Public Sub Form_Open()
   Me.Width = Settings["Window/Width", Me.Width]
   ScaleItems = Settings["ScaleItems", ScaleItems]
   ScaleDescription = Settings["ScaleDescription", ScaleDescription]
+  LLM.FullScreenMode = Settings["LLM.FullScreenMode", LLM.FullScreenMode]
+  FullScreenToggle()
     
   'Make StartButton a Tab Stop
   StartButton.NoTabFocus = False
@@ -1793,6 +1795,7 @@ Public Sub Form_Close()
   Settings["Window/Width"] = Me.Width
   Settings["ScaleItems"] = ScaleItems
   Settings["ScaleDescription"] = ScaleDescription
+  Settings["LLM.FullScreenMode"] = LLM.FullScreenMode
   Settings.Save
   
   ForceClose = True
@@ -3712,10 +3715,12 @@ Public Sub DownTime_Timer()
   Dim I As Integer
   Dim LocalName As String
   Dim GetURL As String
+  Dim Prog As String
+  Dim ShowProg As Boolean
+  Dim ProgPerc As String
   QueueUpTo = 0
   DownTime.Enabled = False  
   'DownloadingDone is the gate keeper, it'll make sure only one at a time downloads
-  
   While QueueUpTo < QueueCount
     If Exist(QueueLocal[QueueUpTo] & ".partial") Then Shell "rm " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) Wait ' Removal partial download if exist
     
@@ -3747,16 +3752,27 @@ Public Sub DownTime_Timer()
       Else ' It exist, download it
         FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
+        Try Kill ("/tmp/lldownload")
         Print "Downloading: " & GetURL
-        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " 2>&1 | sed -nru '/[0-9]%/ s/.* ([0-9]+)%.*/" & Chr(92) & "1/p' > /tmp/lldownload && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+ 
+        If MiniInstaller.Stats.Text = "Downloading..." Then ShowProg = True
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
-          Wait (0.01)
-          'Print "Here: " & Proc.Value
+          Wait (0.05)
+          If ShowProg = True Then
+            Try Prog = File.Load("/tmp/lldownload")
+            Try ProgPerc = Right(Prog, 6)
+            ProgPerc = Trim(Right(ProgPerc, InStr(ProgPerc, Chr(10), 1)))
+            If ProgPerc <> "" Then
+              MiniInstaller.Stats.Text = ProgPerc & "% Downloaded..."
+            End If
+          End If
           If ForceClose = True Then Break ' No point in looping the user already quit (Doesn't work yet)
           If Proc.Value <> 0 Then 'Errored out
             Break
           End If
         Wend
+        Try Kill ("/tmp/lldownload")
         If Proc.Value = 0 Then
           If Exist(QueueLocal[QueueUpTo] & ".partial") Then 'If you don't have access to the file then it's better to try to delete it and then not move/overwrite as it asks if you want to try, this stops automation.
             If Exist(QueueLocal[QueueUpTo]) Then Try Kill QueueLocal[QueueUpTo]
