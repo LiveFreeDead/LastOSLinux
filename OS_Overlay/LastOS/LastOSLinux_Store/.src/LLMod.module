@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.0 2024-10-02-01
+'LastOS v1.2.1 2024-10-03-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -576,7 +576,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
     LLScriptSudoFile = DirIn & "LLScript_Sudo.sh"
     hFile = Open LLMod.LLScriptSudoFile For Input
     LLScriptSudo = Trim(hFile.Load(LLMod.LLScriptSudoFile))
-    hFile.close
+    hFile.close  
   End If
 
   'Load whole file and Split it into individual Lines      
@@ -703,6 +703,9 @@ Public Function LoadLLFile(FileIn As String) As Boolean
   'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded
   'If Exist(TmpPath) Then Shell "rm -r " & Chr(34) & TmpPath & Chr(34) Wait
   Return True
+  Catch 'This disables ALL errors, but we return false so th other functions know to not use the attempted loaded LLFile, remark it out if editing this Sub
+    ClearLLData 'Make sure other function don't get partial data for an item
+  Return False
 End
 
 Public Function Slashed(InPath As String) As String
