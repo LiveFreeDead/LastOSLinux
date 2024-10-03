@@ -99,6 +99,9 @@ grep -qF '/.wine/drive_c' ~/.config/gtk-3.0/bookmarks || echo file://$HOME/.wine
 #Move Downloads to the top of the pinned items
 grep "Downloads" ~/.config/gtk-3.0/bookmarks > out && grep -v "Downloads" ~/.config/gtk-3.0/bookmarks >> out && mv out ~/.config/gtk-3.0/bookmarks
 
+#Run Settings
+/LastOS/LastOSLinux_Settings/Settings &
+
 #Install Vulkan to make Wine games run better - Just use steam, safer and contained
 #bash /LastOS/Scripts-Wine/vulkan/setup-vulkan.sh
 
