@@ -475,7 +475,7 @@ Public Sub GetItemPaths()
   End If
   
   'Use the local Repository cache and see what goodies it has before defaulting to using the online one?
-  If LLM.UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
+  If LLMod.StoreMode = 0 And LLM.UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
   
   'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
   If LLMod.StoreMode = 0 And LLM.UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode  
@@ -494,7 +494,8 @@ Public Sub GetItemsInPath(DirToCheck As String)
       Wait (0.07) 'Redraw loading screen, it needs a little time to redraw
     End If
     Dim I As Integer
-    If Right(DirToCheck, 1) <> "/" Then DirToCheck &= "/" ' Add Slash
+    'If Right(DirToCheck, 1) <> "/" Then DirToCheck &= "/" ' Add Slash
+    DirToCheck = LLMod.Slashed(DirToCheck)
     If Data.ScanPaths.Count > 0 Then
       For I = 0 To Data.ScanPaths.Count - 1
         If DirToCheck = Data.ScanPaths[I].Text Then Return 'Already Scanned this path
@@ -2839,7 +2840,8 @@ Public Sub POP_Click()
       MySettings.Show
     Case "RunWithResolution"
       ShiftPressed = True
-      RunGame(CurrentItemKey)
+      'BuildToDesktop(Data.Items[Items.Current.Key - 1, Data.CPathINI].Text)
+      RunGame(Items.Current.Key - 1)
     Case "ChangeMode"
       If LLMod.StoreMode = 0 Then
         LLMod.StoreMode = 1
