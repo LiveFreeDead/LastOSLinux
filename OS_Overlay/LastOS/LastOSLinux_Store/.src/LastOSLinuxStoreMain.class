@@ -475,7 +475,7 @@ Public Sub GetItemPaths()
   End If
   
   'Use the local Repository cache and see what goodies it has before defaulting to using the online one?
-  If LLMod.StoreMode = 0 And LLM.UseCacheRepository = True Then GetItemsInPath(RepositoryPathLocal)
+  If LLMod.StoreMode = 0 And LLM.UseCacheRepository = True And LLM.RepoBuilderNoCache = False Then GetItemsInPath(RepositoryPathLocal)
   
   'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
   If LLMod.StoreMode = 0 And LLM.UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode  

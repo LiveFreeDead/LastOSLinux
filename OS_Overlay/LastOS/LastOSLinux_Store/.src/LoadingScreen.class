@@ -224,9 +224,11 @@ Public Sub LoadSettings(SettingsFile As String)
             If LLM.UseOnlineRepository = False Then LLM.HideOnline = True ' No point in showing the items if they are turned of, but the user still can if they want (local cached items etc), if LLM.UseCacheRepository it will still show them ones
           Case "usecacherepository" 
             If Exist("/LastOS/RepoBuilderNoCache") Then
-              LLM.UseCacheRepository = False
+              'LLM.UseCacheRepository = False
+              LLM.RepoBuilderNoCache = True
             Else 'Check what user sets
-              LLM.UseCacheRepository = LLMod.IsTrue(LineData)
+              'LLM.UseCacheRepository = LLMod.IsTrue(LineData)
+              LLM.RepoBuilderNoCache = False
             End If
           Case "uselocaldbfiles"
             LLM.UseLocalDBFiles = LLMod.IsTrue(LineData)

@@ -17,6 +17,7 @@ Public VideoVolume As Float = 0.2 '20%
 Public MntScan As Boolean = True
 Public MediaScan As Boolean = True
 Public CopyPackagesIntoRepository As Boolean = True
+Public RepoBuilderNoCache As Boolean = False
 
 Public ClosedMini As Boolean = False
 
