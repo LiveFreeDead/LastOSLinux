@@ -475,7 +475,9 @@ Public Sub GetItemPaths()
   End If
   
   'Use the local Repository cache and see what goodies it has before defaulting to using the online one?
-  If LLMod.StoreMode = 0 And LLM.UseCacheRepository = True And LLM.RepoBuilderNoCache = False Then GetItemsInPath(RepositoryPathLocal)
+  If LLMod.StoreMode = 0 And LLM.UseCacheRepository = True Then 
+    If LLM.RepoBuilderNoCache = False Then GetItemsInPath(RepositoryPathLocal)
+  End If
   
   'Get Repository Database (Do this last so it defaults to local versions of apps and games if they exist
   If LLMod.StoreMode = 0 And LLM.UseOnlineRepository = True Then GetRepositoryDatabase() 'Only does this if installation mode  
@@ -546,6 +548,10 @@ Public Sub GetAllItemsFromPath(InPath As String)
   
   If Not Access(InPath, gb.Read) Then Return 'Can't read it, don't even try
   If Not Exist(InPath) Then Return ' The Folder Doesn't even exist, get outta here
+  
+  If InPath = RepositoryPathLocal Then
+    If Exist("/LastOS/LastOSLinux_Store/RepoBuilderNoCache") Then Return ' Never scan this folder if RepoBulder
+  Endif
   
   If Exist(InPath & ".llignore") Then
     'Print "Ignoring: " & InPath
