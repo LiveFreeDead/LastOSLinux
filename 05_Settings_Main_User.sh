@@ -59,6 +59,18 @@ dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command
 dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name "'Kill WINE 2'"
 dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom3/binding "['<Primary><Shift>F4']"
 
+#Alt + = For Brightness Up
+dconf write /org/cinnamon/desktop/keybindings/custom-list "['custom0', 'custom1', 'custom2', 'custom3', 'custom4']"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom4/command "'xdotool key --clearmodifiers XF86MonBrightnessUp'"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom4/name "'Brightness Up'"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom4/binding "['<Alt>equal']"
+
+#Alt + - For Brightness Down
+dconf write /org/cinnamon/desktop/keybindings/custom-list "['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5']"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command "'xdotool key --clearmodifiers XF86MonBrightnessDown'"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name "'Brightness Down'"
+dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/custom5/binding "['<Alt>minus']"
+
 #Make Mouse window move Modifier Super Key instead of ALT so Photoshop works with alt key to set Source
 dconf write /org/gnome/desktop/wm/preferences/mouse-button-modifier "'<Super>'"
 dconf write /org/cinnamon/desktop/wm/preferences/mouse-button-modifier "'<Super>'"
