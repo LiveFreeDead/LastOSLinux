@@ -42,5 +42,5 @@ cd $HOME/.config/cinnamon/spices/menu@cinnamon.org/
 grep -lZ '"value": "linuxmint-logo-ring-symbolic"' 0.json | xargs -0 sed -i 's|"value": "linuxmint-logo-ring-symbolic"|"value": "/usr/share/icons/Start Button.png"|g'
 
 #Restart Desktop (Let Icon Auto-Arrange be disable for this Session)
-nemo-desktop --quit
-nemo --no-default-window &
+#nemo-desktop --quit
+#nemo --no-default-window &
