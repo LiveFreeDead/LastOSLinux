@@ -1,0 +1,38 @@
+Windows Registry Editor Version 5.00
+
+;Make WINE Dark --------------
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ThemeManager]
+"ThemeActive"="0"
+
+[HKEY_CURRENT_USER\Control Panel\Colors]
+"ActiveBorder"="43 43 43"
+"ActiveTitle"="43 43 43"
+"AppWorkSpace"="60 64 72"
+"Background"="43 43 43"
+"ButtonAlternativeFace"="200 0 0"
+"ButtonDkShadow"="0 0 0"
+"ButtonFace"="69 69 69"
+"ButtonHilight"="88 88 88" ;Highlights not borders
+"ButtonLight"="88 88 88" ;Window Border
+"ButtonShadow"="60 64 72"
+"ButtonText"="230 230 230"
+"GradientActiveTitle"="43 43 43"
+"GradientInactiveTitle"="43 43 43"
+"GrayText"="212 212 212"
+"Hilight"="12 117 222"
+"HilightText"="255 255 255"
+"InactiveBorder"="43 43 43"
+"InactiveTitle"="43 43 43"
+"InactiveTitleText"="230 230 230"
+"InfoText"="159 167 180"
+"InfoWindow"="43 43 43"
+"Menu"="43 43 43"
+"MenuBar"="43 43 43"
+"MenuHilight"="12 117 222"
+"MenuText"="230 230 230"
+"Scrollbar"="64 64 64"
+"TitleText"="230 230 230"
+"Window"="64 64 64"
+"WindowFrame"="43 43 43"
+"WindowText"="230 230 230"
+;-----------------------------------
