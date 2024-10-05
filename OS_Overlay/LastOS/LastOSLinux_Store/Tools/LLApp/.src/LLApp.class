@@ -99,7 +99,9 @@ Public Sub Form_Open()
       End If
       
       If LLMod.Slashed(S) = LLMod.Slashed(User.Home) Then Continue ' Don't process if only the home dir given, dangerous
-
+      
+      If InStr(S, "/LastOS/LastOSLinux_Store/Tools/LLApp", 1) Then Continue 'Also don't do apps path, don't want to delete the contents
+      
       
       If LLMod.Slashed(S) = LLMod.Slashed(User.Home) & "Desktop/" Then Continue ' Don't process if only the Desktop given, dangerous
       
@@ -228,6 +230,8 @@ Public Sub Form_Open()
   
   'Message("!" & LineFileIn & "!")
   
+  'Message(UseThisPath)
+  
   If LineFileIn = "" Then 'Last restore, use current path
     If UseThisPath <> "" Then 
     LineFileIn = UseThisPath
@@ -255,6 +259,15 @@ Public Sub Form_Open()
   
   'Try to load in a file from either the path or the file name
   'Message("1")
+  
+  'Last Checks
+  If InStr(LineFileIn, "/LastOS/LastOSLinux_Store/Tools/LLApp", 1) Then LineFileIn = ""
+  If LineFileIn = User.Home Then LineFileIn = ""
+  If InStr(LineFileIn, "/usr/bin", 1) Then LineFileIn = ""
+  
+  
+  
+  
   If LineFileIn <> "" Then    
     'Message("2", LineFileIn)
     LoadFileIn(LineFileIn)'Message(LineFileIn)
@@ -336,22 +349,48 @@ Public Sub Form_Open()
   Else 'It's a file
     TryPat = Left(LineFileIn, LLMod.InStrRevSingle(LineFileIn, "/") - 1) 'Minus 1 removes slash at end
   End If
+  
+  TryPat = LLMod.Slashed(TryPat)
+  
   'Message(TryPat)
   'Fill default Include and BuildTo paths if blank
-  'Message(TryPat)
+  'Message(TryPat)  
   Select Case TryPat
-  Case User.Home & "/Desktop"
-  Case User.Home
-  Case "" 'Needs some sort of path given or will fail anyway
-  Case "/home"
-  
+  Case User.Home & "/Desktop/"
+    TryPat = "/tmp/not set"
+    IncludeFolder.Text = TryPat 'Given up
+    BuildToFolder.Text = TryPat 'Given up
+  Case User.Home & "/"
+    TryPat = "/tmp/not set"
+    IncludeFolder.Text = TryPat 'Given up
+    BuildToFolder.Text = TryPat 'Given up
+  Case "/" 'Needs some sort of path given or will fail anyway
+    TryPat = "/tmp/not set"
+    IncludeFolder.Text = TryPat 'Given up
+    BuildToFolder.Text = TryPat 'Given up
+  Case "/home/"
+    TryPat = "/tmp/not set"
+    IncludeFolder.Text = TryPat 'Given up
+    BuildToFolder.Text = TryPat 'Given up
+  Case "/usr/bin/"
+    TryPat = "/tmp/not set"
+    IncludeFolder.Text = TryPat 'Given up
+    BuildToFolder.Text = TryPat 'Given up
   Case Else
-    If Exist(TryPat) Then
+    'Last Checks
+    If InStr(TryPat, "/LastOS/LastOSLinux_Store/Tools/LLApp", 1) Then TryPat = "/tmp/not set"
+    If TryPat = User.Home Then TryPat = "/tmp/not set"
+    If TryPat = User.Home & "/" Then TryPat = "/tmp/not set"
+    
+    If Exist(TryPat) Then      
       If IncludeFolder.Text = "" Then IncludeFolder.Text = TryPat 'Only do it if empty
       If BuildToFolder.Text = "" Then BuildToFolder.Text = TryPat 'Only do it if empty
+    Else
+      TryPat = "/tmp/not set"
+      IncludeFolder.Text = TryPat 'Given up
+      BuildToFolder.Text = TryPat 'Given up
     End If
   End Select
-  
 End
 
 Public Sub MetaBut_Click()

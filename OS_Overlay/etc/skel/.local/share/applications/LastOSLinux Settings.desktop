@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=LastOSLinux Settings
+Exec="/LastOS/LastOSLinux_Settings/Settings" "%f"
+Path=/LastOS/LastOSLinux_Settings/
+Comment=The Welcome Screen Settings
+Terminal=false
+Icon=/LastOS/LastOSLinux_Settings/Settings Resources/Logo.png
+Type=Application
+Categories=Other
+X-Desktop-File-Install-Version=0.26
