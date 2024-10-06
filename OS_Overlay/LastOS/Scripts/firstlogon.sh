@@ -186,7 +186,7 @@ until [ -e "$HOME/.wine/drive_c/Program Files/SetupS.SendTo/Licenses/GNU.General
 done
 #echo "File Exists"
 #wait a sec for it to finish
-sleep 4
+sleep 5
 
 #echo "kill stuck setups"
 killall ssControlPanel.exe
