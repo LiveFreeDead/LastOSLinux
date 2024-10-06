@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.1 2024-10-03-01
+'LastOS v1.2.2 2024-10-06-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -453,6 +453,9 @@ Public Function LoadSSFile(FileIn As String) As Boolean
   'If Exist(TmpPath) Then Shell "rm -r " & Chr(34) & TmpPath & Chr(34) Wait
   
   Return True
+  
+  Catch 'Disable Error checking
+    Return False
 End
 
 
@@ -469,6 +472,9 @@ Public Function LoadLLFile(FileIn As String) As Boolean
   
   If Not Exist(FileIn) Then Return False 'No point if file doesn't exist
   If IsDir(FileIn) Then Return False 'It's only a directory, get out of here
+  
+  'Check if it's actually a ssApp and abort in that case
+  If Right(FileIn, 4) = ".apz" Then Return False
   
   'Clear Any Existing Data
   ClearLLData()
@@ -581,7 +587,9 @@ Public Function LoadLLFile(FileIn As String) As Boolean
 
   'Load whole file and Split it into individual Lines      
   Dim LLFile As String[]
-  Dim LineID, LineData As String  
+  Dim LineID, LineData As String
+  
+  If IsDir(FileIn) Then Return False 'I don't know why it made it this far thinking it was a file, but maybe a ssApp snuck though and only pointed at a folder
   
   hFile = Open FileIn For Input
   WholeFile = hFile.Load(FileIn)
@@ -943,6 +951,9 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   Dim IconFix As String
   Dim TimeOut As Integer
   
+  If IsDir(LLAFile) Then Return False
+  If Not Exist(LLAFile) Then Return False
+  
   'If tar (compressed) Then extract it to temp and install it
   If Right(LLAFile, 4) = ".tar" Then LLCompressed = True Else LLCompressed = False  
   If LLCompressed = True Then
@@ -1097,6 +1108,9 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   If TmpPath <> "" Then Try Kill (TmpPath & "/*.tar") ' Clean up after itself (Just the big stuff)
   If TmpPath <> "" Then Try Kill (TmpPath & "/*.tar.gz") ' Clean up after itself (Just the big stuff)
   Return True 'No Problems
+  
+  Catch 'Disable Error checking
+    Return False
 End
 
 Public Function InstallppFile(PPFile As String) As Boolean
@@ -1108,6 +1122,9 @@ Public Function InstallppFile(PPFile As String) As Boolean
   Dim TmpPath As String
   Dim CategoryFix As String
   Dim IconFix As String
+  
+  If IsDir(PPFile) Then Return False
+  If Not Exist(PPFile) Then Return False
   
   'If apz, pgz (compressed) Then extract it to temp and install it
   If Right(PPFile, 4) = ".apz" Or Right(PPFile, 4) = ".pgz" Then LLCompressed = True Else LLCompressed = False   
@@ -1223,6 +1240,9 @@ Public Function InstallppFile(PPFile As String) As Boolean
   
    If TmpPath <> "" Then Try Kill (TmpPath & "/*.7z") ' Clean up after itself (Just the big stuff)
   Return True 'No Problems
+  
+  Catch 'Disable Error checking
+    Return False
 End
 
 Public Function Extract(Archive As String, OutPath As String, ExcludesIncludes As String) As Boolean
