@@ -17,6 +17,9 @@ sudo apt update -y
 
 #Cleanup extras
 
+#Clean LastOS No Cache Repo Builder so end users get to use their cached items (icons in store etc).
+rm /LastOS/LastOSLinux_Store/RepoBuilderNoCache
+
 #Recent Files
 rm $HOME/.local/share/recently-used.xbel
 touch $HOME/.local/share/recently-used.xbel
