@@ -172,8 +172,28 @@ fi
 #install SetupS (Do this last as it has been known to stop installing and we don't want it to interfere with the other stuff
 #notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/01_SetupS.SendTo.Suite_v24.05.22.0_ssApp.exe"
 notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "/LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe"
-#wine /LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe
-wine /LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe /silent
+
+#wine /LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe /silent
+
+#New Method with time out
+rm -f "$HOME/.wine/drive_c/Program Files/SetupS.SendTo/Licenses/GNU.General.Public.License_GPLv3.txt"
+
+wine /LastOS/Scripts-Wine/Install.SetupS_v24.05.22.0.exe /silent &
+
+t=0
+until [ -e "$HOME/.wine/drive_c/Program Files/SetupS.SendTo/Licenses/GNU.General.Public.License_GPLv3.txt" ] || (( t++ >= 16 )); do
+  sleep 1
+done
+#echo "File Exists"
+#wait a sec for it to finish
+sleep 4
+
+#echo "kill stuck setups"
+killall ssControlPanel.exe
+#Below shouldn't be needed but I'll leave for reference
+#sleep 5
+#killall Install.SetupS_v24.05.22.0.exe
+
 
 FILES="/LastOS/WindowsApps/*"
 for f in $FILES
