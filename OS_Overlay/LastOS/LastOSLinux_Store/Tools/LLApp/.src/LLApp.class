@@ -300,7 +300,7 @@ Public Sub Form_Open()
   
   If LineInstall = True Then
     If LLMod.LLTitle <> "" Then 'Only install items with a Title (else it's probably a dud item anyway)
-      TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
+      TmpSudoScript = LLMod.TempPath & "LLTmp_Sudo" & Str(Rand(1, 999999)) & ".sh"
       If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installing LLApp/Game:" & Chr(34) & " " & Chr(34) & LineFileIn & Chr(34)
       LLMod.InstallLLFile(LineFileIn)
       
@@ -342,55 +342,56 @@ Public Sub Form_Open()
   
   'Made it here, populate the Catalog Combo with correct type
   BuildTypeCheck_Click
-  
-  Dim TryPat As String
-  If IsDir(LineFileIn) Then  
-    TryPat = LineFileIn
-  Else 'It's a file
-    TryPat = Left(LineFileIn, LLMod.InStrRevSingle(LineFileIn, "/") - 1) 'Minus 1 removes slash at end
-  End If
-  
-  TryPat = LLMod.Slashed(TryPat)
-  
-  'Message(TryPat)
-  'Fill default Include and BuildTo paths if blank
-  'Message(TryPat)  
-  Select Case TryPat
-  Case User.Home & "/Desktop/"
-    TryPat = "/tmp/not set"
-    IncludeFolder.Text = TryPat 'Given up
-    BuildToFolder.Text = TryPat 'Given up
-  Case User.Home & "/"
-    TryPat = "/tmp/not set"
-    IncludeFolder.Text = TryPat 'Given up
-    BuildToFolder.Text = TryPat 'Given up
-  Case "/" 'Needs some sort of path given or will fail anyway
-    TryPat = "/tmp/not set"
-    IncludeFolder.Text = TryPat 'Given up
-    BuildToFolder.Text = TryPat 'Given up
-  Case "/home/"
-    TryPat = "/tmp/not set"
-    IncludeFolder.Text = TryPat 'Given up
-    BuildToFolder.Text = TryPat 'Given up
-  Case "/usr/bin/"
-    TryPat = "/tmp/not set"
-    IncludeFolder.Text = TryPat 'Given up
-    BuildToFolder.Text = TryPat 'Given up
-  Case Else
-    'Last Checks
-    If InStr(TryPat, "/LastOS/LastOSLinux_Store/Tools/LLApp", 1) Then TryPat = "/tmp/not set"
-    If TryPat = User.Home Then TryPat = "/tmp/not set"
-    If TryPat = User.Home & "/" Then TryPat = "/tmp/not set"
+  If CompressIn = False Then 'Don't do this if editing a .tar file
+    Dim TryPat As String
+    If IsDir(LineFileIn) Then  
+      TryPat = LineFileIn
+    Else 'It's a file
+      TryPat = Left(LineFileIn, LLMod.InStrRevSingle(LineFileIn, "/") - 1) 'Minus 1 removes slash at end
+    End If
     
-    If Exist(TryPat) Then      
-      If IncludeFolder.Text = "" Then IncludeFolder.Text = TryPat 'Only do it if empty
-      If BuildToFolder.Text = "" Then BuildToFolder.Text = TryPat 'Only do it if empty
-    Else
+    TryPat = LLMod.Slashed(TryPat)
+    
+    'Message(TryPat)
+    'Fill default Include and BuildTo paths if blank
+    'Message(TryPat)  
+    Select Case TryPat
+    Case User.Home & "/Desktop/"
       TryPat = "/tmp/not set"
       IncludeFolder.Text = TryPat 'Given up
       BuildToFolder.Text = TryPat 'Given up
-    End If
-  End Select
+    Case User.Home & "/"
+      TryPat = "/tmp/not set"
+      IncludeFolder.Text = TryPat 'Given up
+      BuildToFolder.Text = TryPat 'Given up
+    Case "/" 'Needs some sort of path given or will fail anyway
+      TryPat = "/tmp/not set"
+      IncludeFolder.Text = TryPat 'Given up
+      BuildToFolder.Text = TryPat 'Given up
+    Case "/home/"
+      TryPat = "/tmp/not set"
+      IncludeFolder.Text = TryPat 'Given up
+      BuildToFolder.Text = TryPat 'Given up
+    Case "/usr/bin/"
+      TryPat = "/tmp/not set"
+      IncludeFolder.Text = TryPat 'Given up
+      BuildToFolder.Text = TryPat 'Given up
+    Case Else
+      'Last Checks
+      If InStr(TryPat, "/LastOS/LastOSLinux_Store/Tools/LLApp", 1) Then TryPat = "/tmp/not set"
+      If TryPat = User.Home Then TryPat = "/tmp/not set"
+      If TryPat = User.Home & "/" Then TryPat = "/tmp/not set"
+      
+      If Exist(TryPat) Then      
+        If IncludeFolder.Text = "" Then IncludeFolder.Text = TryPat 'Only do it if empty
+        If BuildToFolder.Text = "" Then BuildToFolder.Text = TryPat 'Only do it if empty
+      Else
+        TryPat = "/tmp/not set"
+        IncludeFolder.Text = TryPat 'Given up
+        BuildToFolder.Text = TryPat 'Given up
+      End If
+    End Select
+  End If
 End
 
 Public Sub MetaBut_Click()
@@ -544,6 +545,7 @@ Public Sub LoadFileIn(FileIn As String)
     TitleText.Text = LLMod.LLTitle
     VersionText.Text = LLMod.LLVersion
     DescriptionText.Text = LLMod.LLDescription
+    DescriptionText.Pos = 0
     URLText.Text = LLMod.LLURL
     CatCombo.Text = LLMod.LLCategory
     InstallToText.Text = Trim(LLMod.LLAppPath)

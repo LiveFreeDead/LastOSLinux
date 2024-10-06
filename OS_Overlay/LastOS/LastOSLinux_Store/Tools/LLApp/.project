@@ -2,7 +2,7 @@
 Title=LLApp
 Startup=LLApp
 Icon=Tools/LastOS.png
-Version=1.3.380
+Version=1.4.386
 Component=gb.image
 Component=gb.gui.qt
 Component=gb.form

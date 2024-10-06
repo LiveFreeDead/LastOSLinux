@@ -7,6 +7,11 @@ Public Sub Form_Open()
   Me.Foreground = &hFFFFFF
   Status.Foreground = &hFFFFFF
   Status.Top = Me.Height - Status.Height - 5
+  If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then 
+    Try Kill (LLMod.TempPath)
+  End If
+  If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34)
+  
   
   'Get App's Folder
   LLM.AppPath = Application.Path ' Application.Path is the apps path, Application.Dir is the PWD (Current Directory)

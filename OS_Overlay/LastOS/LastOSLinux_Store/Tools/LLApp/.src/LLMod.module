@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.2 2024-10-06-01
+'LastOS v1.2.3 2024-10-06-04
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -74,12 +74,15 @@ Public LLMovieFile As String
 Public LLScreenshotFile As String
 Public LLScreenshot As Image
 
+'TempPath - As /tmp/ is limited to 4gb I need to use my own temp folder
+Public TempPath As String = User.Home & "/.lltemp/"
+
 'Post Install Script
 Public LLScript As String 'Post Processing Script
 Public LLScriptFile As String
 
 Public LLScriptSudo As String 'Post Processing Script
-Public LLScriptSudoFile As String = "/tmp/LastOSLinuxStore_Sudo.sh"
+Public LLScriptSudoFile As String = TempPath & "/LastOSLinuxStore_Sudo.sh"
 Public LLScriptSudoContent As String
 
 'Others
@@ -216,7 +219,7 @@ Public Function LoadSSFile(FileIn As String) As Boolean
   OriginalFileIn = ""
   If LLCompressed = True Then
     Randomize
-    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
+    TmpPath = TempPath & "LLTmp" & Str(Rand(1, 999999)) & "/"
     If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     If Exist(TmpPath) Then Shell "chmod 775 " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "7z -mtc -aoa e " & Chr(34) & FileIn & Chr(34) & " -o" & Chr(34) & TmpPath & Chr(34) & " *.app *.ppg *App.jpg *App.png *App.ico *Game.jpg *Game.png *Game.ico" Wait
@@ -486,12 +489,15 @@ Public Function LoadLLFile(FileIn As String) As Boolean
   OriginalFileIn = ""
   If LLCompressed = True Then
     Randomize
-    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
+    TmpPath = TempPath & "LLTmp" & Str(Rand(1, 999999)) & "/"
     If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     If Exist(TmpPath) Then Shell "chmod 775 " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "tar -xf " & Chr(34) & FileIn & Chr(34) & " -C " & Chr(34) & TmpPath & Chr(34) & " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz" Wait
-    ExtractFast(FileIn, TmpPath, " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz")    
-
+    'ExtractFast(FileIn, TmpPath, " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz" & " --exclude=*.deb" & " --exclude=*.run")    
+    
+    'Glenn 2027
+    ExtractFast(FileIn, TmpPath, " --wildcards " & Chr(34) & "*.lla" & Chr(34) & " " & Chr(34) & "*.llg" & Chr(34) & " " & Chr(34) & "*.sh" & Chr(34) & " " & Chr(34) & "*.jpg" & Chr(34) & " " & Chr(34) & "*.png" & Chr(34) & " " & Chr(34) & "*.ico" & Chr(34) & " " & Chr(34) & "*.svg" & Chr(34) & " " & Chr(34) & "*.mp4" & Chr(34))
+    
     OriginalFileIn = FileIn
     FileIn = TmpPath 'Make it load below like normal, just need to deal with screenshot loading now
     If Exist(FileIn & "LLGame.llg") = True Then 
@@ -958,8 +964,8 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
   If Right(LLAFile, 4) = ".tar" Then LLCompressed = True Else LLCompressed = False  
   If LLCompressed = True Then
     Randomize
-    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
-    'If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
+    TmpPath = TempPath & "LLTmp" & Str(Rand(1, 999999)) & "/"
+    If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "tar -xf " & Chr(34) & LLAFile & Chr(34) & " -C " & Chr(34) & TmpPath & Chr(34) Wait
     Extract(LLAFile, TmpPath, "")
 
@@ -1024,7 +1030,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
     Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
       If TmpPath = "" Then TmpPath = LLINIPath 'If not a tar then it uses the current path off USB or DVD etc
       If Exist(TmpPath & "LLScript.sh") Then
-        TmpINI = "/tmp/LLScript.sh"      
+        TmpINI = TempPath & "LLScript.sh"      
         'ExpandScript(InstallToPath & "LLScript.sh")          
         'Try Chmod TmpPath & "LLScript.sh" To "rwxrwxr--" 'Make script file executable
         ' Glenn 2027
@@ -1130,8 +1136,8 @@ Public Function InstallppFile(PPFile As String) As Boolean
   If Right(PPFile, 4) = ".apz" Or Right(PPFile, 4) = ".pgz" Then LLCompressed = True Else LLCompressed = False   
   If LLCompressed = True Then
     Randomize
-    TmpPath = Temp$("LLTmp" & Str(Rand(1, 999999))) & "/"
-    'If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
+    TmpPath = TempPath & "LLTmp" & Str(Rand(1, 999999)) & "/"
+    If Not Exist(TmpPath) Then Shell "mkdir -p " & Chr(34) & TmpPath & Chr(34) Wait
     'Shell "7z -mtc -aoa x " & Chr(34) & PPFile & Chr(34) & " -o" & Chr(34) & TmpPath & Chr(34) Wait '& " *.app *.ppg *App.jpg *App.png 
     Extract(ppFile, TmpPath, "")
     
@@ -1269,6 +1275,9 @@ End
 
 Public Function ExtractFast(Archive As String, OutPath As String, ExcludesIncludes As String) As Boolean
   If Not Exist(Archive) Then Return False
+  
+  'Print "ExtractFast: " & Archive & " " & ExcludesIncludes
+  
   If Lower(Right(Archive, 4)) = ".tar" Then 'tar
     If Not Exist(OutPath) Then Execute("mkdir -p " & Chr(34) & OutPath & Chr(34), "")
     If Exist(OutPath) Then Shell "chmod 775 " & Chr(34) & OutPath & Chr(34) Wait
@@ -1452,6 +1461,8 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   APP = Lower(Trim(Replace(APP, ")", ""))) 'Remove Brackets
   APP = Replace(APP, " ", ".") 'Remove Spaces
   
+  
+  If Not Exist(TempPath) Then Shell "mkdir -p " & Chr(34) & TempPath & Chr(34)
   'MIME Type
   'Print "MIME Output"
   
@@ -1461,7 +1472,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   
   Shell "xdg-icon-resource install --context mimetypes --size 48 " & LOGO & " application-x-" & APP Wait
   
-  FileOut = "/tmp/" & APP & "-mime.xml"
+  FileOut = TempPath & APP & "-mime.xml"
   FileContent = "<?xml version=" & Chr(34) & "1.0" & Chr(34) & " encoding=" & Chr(34) & "UTF-8" & Chr(34) & "?>" & Chr(10)
   FileContent &= "<mime-info xmlns=" & Chr(34) & "http://www.freedesktop.org/standards/shared-mime-info" & Chr(34) & ">" & Chr(10)
   FileContent &= "    <mime-type type=" & Chr(34) & "application/x-" & APP & Chr(34) & ">" & Chr(10)
@@ -1495,7 +1506,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   
   'Print "Desktop Output"
   'Desktop Association
-  FileOut = "/tmp/" & APP & ".desktop"
+  FileOut = TempPath & APP & ".desktop"
   FileContent = "[Desktop Entry]" & Chr(10)
   FileContent &= "Name=" & OrigAppName & Chr(10)
   FileContent &= "Exec=" & EXECU & Chr(10)

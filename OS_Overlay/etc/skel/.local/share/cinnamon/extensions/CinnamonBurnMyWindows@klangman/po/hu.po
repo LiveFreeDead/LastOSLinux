@@ -5,14 +5,14 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CinnamonBurnMyWindows@klangman 0.9.2\n"
+"Project-Id-Version: CinnamonBurnMyWindows@klangman 0.9.3\n"
 "Report-Msgid-Bugs-To: https://github.com/linuxmint/cinnamon-spices-"
 "extensions/issues\n"
 "POT-Creation-Date: 2024-09-17 22:20-0400\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Claudiux <claude.clerc@gmail.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,28 +20,27 @@ msgstr ""
 
 #. 6.2/extension.js:207 6.2/extension.js:436
 msgid "Error"
-msgstr "Erreur"
+msgstr "Hiba"
 
 #. 6.2/extension.js:207
 msgid "was NOT enabled"
-msgstr "n'a PAS été activée"
+msgstr "NEM volt engedélyezve"
 
 #. 6.2/extension.js:208
 msgid "The existing extension"
-msgstr "L'extension existante"
+msgstr "A meglévő bővítmény"
 
 #. 6.2/extension.js:208
 msgid "conflicts with this extension."
-msgstr "est en conflit avec cette extension."
+msgstr "ütközik ezzel a bővitménnyel."
 
 #. 6.2/extension.js:437
 msgid ""
 "The previously focused window is not backed by an application and therefore "
 "application specific effects can not be applied to that window"
 msgstr ""
-"La fenêtre précédemment sélectionnée n'est pas liée à une application et, "
-"par conséquent, les effets spécifiques à l'application ne peuvent pas être "
-"appliqués à cette fenêtre"
+"Az előzőleg fókuszált ablakot nem támogatja alkalmazás, ezért "
+"alkalmazásspecifikus effektusok nem alkalmazhatók arra az ablakra"
 
 #. 6.2->settings-schema.json->apparition-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -49,11 +48,11 @@ msgstr ""
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Apparition.js:94
 msgid "Apparition"
-msgstr "Apparition"
+msgstr "Megjelenik"
 
 #. 6.2/effects/BrokenGlass.js:152
 msgid "Broken Glass"
-msgstr "Broken Glass (Verre brisé)"
+msgstr "Törött üveg"
 
 #. 6.2->settings-schema.json->doom-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -61,7 +60,7 @@ msgstr "Broken Glass (Verre brisé)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Doom.js:101
 msgid "Doom"
-msgstr "Doom (Cascade)"
+msgstr "Doom"
 
 #. 6.2->settings-schema.json->energize-a-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -69,7 +68,7 @@ msgstr "Doom (Cascade)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/EnergizeA.js:90
 msgid "Energize A"
-msgstr "Energize A (Énergie A)"
+msgstr "Energizálja A"
 
 #. 6.2->settings-schema.json->energize-b-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -77,31 +76,31 @@ msgstr "Energize A (Énergie A)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/EnergizeB.js:92
 msgid "Energize B"
-msgstr "Energize B (Énergie B)"
+msgstr "Energizálja B"
 
 #. 6.2/effects/Fire.js:114
 msgid "Fire"
-msgstr "Fire (Feu)"
+msgstr "Tűz"
 
 #. 6.2/effects/Fire.js:168
 msgid "Default Fire"
-msgstr "Default Fire (Feu par défaut)"
+msgstr "Alapértelmezett Tűz"
 
 #. 6.2/effects/Fire.js:178
 msgid "Hell Fire"
-msgstr "Hell Fire (Feu d'Enfer)"
+msgstr "Pokol Tüze"
 
 #. 6.2/effects/Fire.js:188
 msgid "Dark and Smutty"
-msgstr "Dark and Smutty (Sombre et coquin)"
+msgstr "Sötét és piszkos"
 
 #. 6.2/effects/Fire.js:198
 msgid "Cold Breeze"
-msgstr "Cold Breeze (Brise fraîche)"
+msgstr "Hideg szellő"
 
 #. 6.2/effects/Fire.js:208
 msgid "Santa is Coming"
-msgstr "Santa is Coming (Le Père Noël arrive)"
+msgstr "Jön a Mikulás"
 
 #. 6.2->settings-schema.json->glide-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -109,7 +108,7 @@ msgstr "Santa is Coming (Le Père Noël arrive)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Glide.js:93
 msgid "Glide"
-msgstr "Glide (Glissement)"
+msgstr "Siklik"
 
 #. 6.2->settings-schema.json->glitch-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -117,7 +116,7 @@ msgstr "Glide (Glissement)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Glitch.js:97
 msgid "Glitch"
-msgstr "Glitch (Déhanchement)"
+msgstr "Glitch"
 
 #. 6.2->settings-schema.json->hexagon-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -125,7 +124,7 @@ msgstr "Glitch (Déhanchement)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Hexagon.js:106
 msgid "Hexagon"
-msgstr "Hexagon (Hexagone)"
+msgstr "Hatszög"
 
 #. 6.2->settings-schema.json->incinerate-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -133,15 +132,15 @@ msgstr "Hexagon (Hexagone)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Incinerate.js:144
 msgid "Incinerate"
-msgstr "Incinerate (Incinération)"
+msgstr "Felgyújt"
 
 #. 6.2/effects/Matrix.js:124
 msgid "Matrix"
-msgstr "Matrix (Matrice)"
+msgstr "Mátrix"
 
 #. 6.2/effects/PaintBrush.js:114
 msgid "Paint Brush"
-msgstr "Brosse à peindre"
+msgstr "Ecset"
 
 #. 6.2->settings-schema.json->pixel-wheel-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -149,7 +148,7 @@ msgstr "Brosse à peindre"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/PixelWheel.js:88
 msgid "Pixel Wheel"
-msgstr "Pixel Wheel (Roue de pixels)"
+msgstr "Pixeles Kerék"
 
 #. 6.2->settings-schema.json->pixel-wipe-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -157,7 +156,7 @@ msgstr "Pixel Wheel (Roue de pixels)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/PixelWipe.js:114
 msgid "Pixel Wipe"
-msgstr "Pixel Wipe (Pixel par pixel)"
+msgstr "Pixeles Törlés"
 
 #. 6.2->settings-schema.json->pixelate-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -165,7 +164,7 @@ msgstr "Pixel Wipe (Pixel par pixel)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Pixelate.js:88
 msgid "Pixelate"
-msgstr "Pixelate (Pixellisation)"
+msgstr "Pixelesít"
 
 #. 6.2->settings-schema.json->portal-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -173,15 +172,15 @@ msgstr "Pixelate (Pixellisation)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Portal.js:99
 msgid "Portal"
-msgstr "Portal (Portail magique)"
+msgstr "Portál"
 
 #. 6.2/effects/SnapOfDisintegration.js:124
 msgid "Snap of Disintegration"
-msgstr "Vitesse de désintégration"
+msgstr "Szétesés pillanata"
 
 #. 6.2/effects/TRexAttack.js:121
 msgid "T-Rex Attack"
-msgstr "T-Rex Attack (Attaque de T-Rex)"
+msgstr "T-Rex támadás"
 
 #. 6.2->settings-schema.json->tv-effect-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -189,7 +188,7 @@ msgstr "T-Rex Attack (Attaque de T-Rex)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/TVEffect.js:90
 msgid "TV Effect"
-msgstr "TV Effect (Allumage de TV)"
+msgstr "TV effektus"
 
 #. 6.2->settings-schema.json->tv-glitch-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -197,7 +196,7 @@ msgstr "TV Effect (Allumage de TV)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/TVGlitch.js:99
 msgid "TV Glitch"
-msgstr "TV Glitch (Arrêt de TV)"
+msgstr "TV Glitch"
 
 #. 6.2->settings-schema.json->wisps-random-include->description
 #. 6.2->settings-schema.json->effect-selector->options
@@ -205,131 +204,130 @@ msgstr "TV Glitch (Arrêt de TV)"
 #. 6.2->settings-schema.json->close-window-effect->options
 #. 6.2/effects/Wisps.js:101
 msgid "Wisps"
-msgstr "Wisps (Sillages de bulles)"
+msgstr "Foszlányok"
 
 #. metadata.json->name
 msgid "Burn My Windows"
-msgstr "Brûle mes fenêtres"
+msgstr "Égjenek el az ablakaim"
 
 #. metadata.json->description
 msgid ""
 "Window open/close effects based on the Burn-My-Windows Gnome extension by "
 "Schneegans"
 msgstr ""
-"Effets d'ouverture/fermeture de fenêtres basés sur l'extension Gnome Burn-My-"
-"Windows de Schneegans"
+"A Schneegans által készített Burn-My-Windows Gnome bővítményen alapuló "
+"ablak nyitási/zárási effektek"
 
 #. 6.2->settings-schema.json->general-page->title
 msgid "General"
-msgstr "Général"
+msgstr "Általános"
 
 #. 6.2->settings-schema.json->effects-page->title
 msgid "Effect Settings"
-msgstr "Paramétrage des effets"
+msgstr "Effekt beállítások"
 
 #. 6.2->settings-schema.json->random-page->title
 msgid "Random Effects"
-msgstr "Effets aléatoires"
+msgstr "Véletlen effektusok"
 
 #. 6.2->settings-schema.json->general-settings->title
 msgid "Burn My Windows General Settings"
-msgstr "Brûle mes fenêtres - Paramètres généraux"
+msgstr "Égjenek el az ablakaim általános beállításai"
 
 #. 6.2->settings-schema.json->app-specific-settings->title
 msgid "Application Specific Settings"
-msgstr "Paramètres spécifiques aux applications"
+msgstr "Alkalmazásspecifikus beállítások"
 
 #. 6.2->settings-schema.json->effect-selector-section->title
 msgid "Effect Selector"
-msgstr "Sélecteur d'effet"
+msgstr "Effektus választó"
 
 #. 6.2->settings-schema.json->effect-settings->title
 msgid "Effect Specific Settings"
-msgstr "Paramètres propres à l'effet"
+msgstr "Effekt specifikus beállítások"
 
 #. 6.2->settings-schema.json->random-section->title
 msgid "Effects included in the randomized sets:"
-msgstr "Effets compris dans les effets aléatoires :"
+msgstr "A véletlenszerű készletekben szereplő effektusok:"
 
 #. 6.2->settings-schema.json->app-rules->description
 msgid "Application Specific Rules"
-msgstr "Règles propres à l'application"
+msgstr "Alkalmazásspecifikus szabályok"
 
 #. 6.2->settings-schema.json->app-rules->columns->title
 msgid "Enabled"
-msgstr "Activé"
+msgstr "Engedélyezve"
 
 #. 6.2->settings-schema.json->app-rules->columns->title
 msgid "Open Effect"
-msgstr "Ouverture"
+msgstr "Megnyitási effektus"
 
 #. 6.2->settings-schema.json->app-rules->columns->title
 msgid "Close Effect"
-msgstr "Fermeture"
+msgstr "Bezárási effektus"
 
 #. 6.2->settings-schema.json->app-rules->columns->title
 msgid "Application"
-msgstr "Application"
+msgstr "Alkalmazás"
 
 #. 6.2->settings-schema.json->app-rules->tooltip
 msgid "A list of application with special effect rules"
-msgstr "Liste des applications associées à des effets particuliers"
+msgstr "A különleges effektussal rendelkező alkalmazások listája"
 
 #. 6.2->settings-schema.json->app-rules-button->description
 msgid "Add entry for the application of the most recently focused window"
-msgstr ""
-"Ajout d'une entrée pour l'application associée à la dernière fenêtre "
-"sélectionnée"
+msgstr "Bejegyzés hozzáadása a legutóbb fókuszált ablak alkalmazásához"
 
 #. 6.2->settings-schema.json->app-rules-button->tooltip
 msgid ""
 "Focus a window you want to enable application specific setting for then "
 "return here and press this button."
 msgstr ""
-"Sélectionnez une fenêtre pour laquelle vous souhaitez activer un paramètre "
-"spécifique à l'application, puis revenez ici et appuyez sur ce bouton."
+"Fókuszáljon arra az ablakra, amelyben engedélyezni szeretné az "
+"alkalmazásspecifikus beállításokat, majd térjen vissza ide, és nyomja meg "
+"ezt a gombot."
 
 #. 6.2->settings-schema.json->random-title->description
 msgid "Effect"
-msgstr "Effet"
+msgstr "Effektus"
 
 #. 6.2->settings-schema.json->effect-selector->description
 msgid "Show settings for effect:"
-msgstr "Afficher les paramètres de l'effet :"
+msgstr "A hatás beállításainak megjelenítése:"
 
 #. 6.2->settings-schema.json->open-window-effect->options
 #. 6.2->settings-schema.json->close-window-effect->options
 msgid "Randomized"
-msgstr "Aléatoire"
+msgstr "Véletlenszerű"
 
 #. 6.2->settings-schema.json->open-window-effect->options
 #. 6.2->settings-schema.json->close-window-effect->options
 msgid "None"
-msgstr "Aucun"
+msgstr "Semmi"
 
 #. 6.2->settings-schema.json->open-window-effect->description
 msgid "Open window effect"
-msgstr "Effet d'ouverture"
+msgstr "Megnyitás ablak effektusa"
 
 #. 6.2->settings-schema.json->close-window-effect->description
 msgid "Close window effect"
-msgstr "Effet de fermeture"
+msgstr "Bezárás ablak effektusa"
 
 #. 6.2->settings-schema.json->apparition-shake-intensity->description
 msgid "Shake Intensity"
-msgstr "Intensité des secousses"
+msgstr "Rázkódás intenzitása"
 
 #. 6.2->settings-schema.json->apparition-twirl-intensity->description
 msgid "Twirl Intensity"
-msgstr "Intensité du tournoiement"
+msgstr "Csavar intenzitása"
 
 #. 6.2->settings-schema.json->apparition-suction-intensity->description
 msgid "Suction Intensity"
-msgstr "Intensité de l'aspiration"
+msgstr "Szívódás intenzitása"
 
 #. 6.2->settings-schema.json->apparition-randomness->description
 msgid "Randomness"
-msgstr "Aléatoire"
+msgstr "Véletlenszerűség"
 
 #. 6.2->settings-schema.json->apparition-animation-time->description
 #. 6.2->settings-schema.json->doom-animation-time->description
@@ -347,22 +345,22 @@ msgstr "Aléatoire"
 #. 6.2->settings-schema.json->tv-glitch-animation-time->description
 #. 6.2->settings-schema.json->wisps-animation-time->description
 msgid "Effect Duration (milliseconds)"
-msgstr "Durée de l'effet (millisecondes)"
+msgstr "Effektus időtartama (ezredmásodperc)"
 
 #. 6.2->settings-schema.json->doom-horizontal-scale->description
 msgid "Horizontal Scale"
-msgstr "Échelle horizontale"
+msgstr "Vízszintes skála"
 
 #. 6.2->settings-schema.json->doom-vertical-scale->description
 msgid "Vertical Scale"
-msgstr "Échelle verticale"
+msgstr "Függőleges skála"
 
 #. 6.2->settings-schema.json->doom-pixel-size->description
 #. 6.2->settings-schema.json->pixelate-pixel-size->description
 #. 6.2->settings-schema.json->pixel-wheel-pixel-size->description
 #. 6.2->settings-schema.json->pixel-wipe-pixel-size->description
 msgid "Pixel Size"
-msgstr "Taille d'un pixel"
+msgstr "Képpont méret"
 
 #. 6.2->settings-schema.json->energize-a-scale->description
 #. 6.2->settings-schema.json->energize-b-scale->description
@@ -373,7 +371,7 @@ msgstr "Taille d'un pixel"
 #. 6.2->settings-schema.json->tv-glitch-scale->description
 #. 6.2->settings-schema.json->wisps-scale->description
 msgid "Scale"
-msgstr "Échelle"
+msgstr "Skála"
 
 #. 6.2->settings-schema.json->energize-a-color->description
 #. 6.2->settings-schema.json->energize-b-color->description
@@ -383,90 +381,90 @@ msgstr "Échelle"
 #. 6.2->settings-schema.json->tv-effect-color->description
 #. 6.2->settings-schema.json->tv-glitch-color->description
 msgid "Color"
-msgstr "Couleur"
+msgstr "Szín"
 
 #. 6.2->settings-schema.json->glide-squish->description
 msgid "Squish"
-msgstr "Squish (Écrasement)"
+msgstr "Összenyom"
 
 #. 6.2->settings-schema.json->glide-tilt->description
 msgid "Tilt"
-msgstr "Inclinaison"
+msgstr "Döntés"
 
 #. 6.2->settings-schema.json->glide-shift->description
 msgid "Shift"
-msgstr "Maj"
+msgstr "Eltolás"
 
 #. 6.2->settings-schema.json->glitch-strength->description
 #. 6.2->settings-schema.json->tv-glitch-strength->description
 msgid "Strength"
-msgstr "Force"
+msgstr "Erő"
 
 #. 6.2->settings-schema.json->glitch-speed->description
 #. 6.2->settings-schema.json->tv-glitch-speed->description
 msgid "Speed"
-msgstr "Vitesse"
+msgstr "Sebesség"
 
 #. 6.2->settings-schema.json->hexagon-line-width->description
 msgid "Mesh Line Width"
-msgstr "Largeur de la ligne de maillage"
+msgstr "Hálós vonal szélessége"
 
 #. 6.2->settings-schema.json->hexagon-line-color->description
 msgid "Line Color"
-msgstr "Couleur du trait"
+msgstr "Vonal színe"
 
 #. 6.2->settings-schema.json->hexagon-glow-color->description
 msgid "Glow Color"
-msgstr "Couleur de l'éclat"
+msgstr "Ragyogás színe"
 
 #. 6.2->settings-schema.json->hexagon-additive-blending->description
 msgid "Additive Blending"
-msgstr "Mélange additionnel"
+msgstr "Adalékos keverés"
 
 #. 6.2->settings-schema.json->hexagon-additive-blending->tooltip
 msgid "You may want to enable this for dark window themes."
-msgstr "Vous pouvez activer cette option pour les thèmes de fenêtres sombres."
+msgstr "Ezt sötét ablaktémák esetén érdemes engedélyezni."
 
 #. 6.2->settings-schema.json->incinerate-turbulence->description
 msgid "Turbulence"
-msgstr "Turbulence"
+msgstr "Turbulencia"
 
 #. 6.2->settings-schema.json->incinerate-use-pointer->description
 msgid "Start at Pointer"
-msgstr "Commencer au curseur"
+msgstr "Az egérmutatónál induljon"
 
 #. 6.2->settings-schema.json->incinerate-use-pointer->tooltip
 msgid "If disabled, a random location will be chosen."
-msgstr "S'il est désactivé, un emplacement aléatoire sera choisi."
+msgstr "Ha le van tiltva, akkor egy véletlenszerű hely kerül kiválasztásra."
 
 #. 6.2->settings-schema.json->pixelate-noise->description
 msgid "Noise"
-msgstr "Bruit"
+msgstr "Zaj"
 
 #. 6.2->settings-schema.json->pixel-wheel-spoke-count->description
 msgid "Spoke Count"
-msgstr "Nombre de rayons"
+msgstr "Küllők száma"
 
 #. 6.2->settings-schema.json->portal-rotation-speed->description
 msgid "Rotation Speed"
-msgstr "Vitesse de rotation"
+msgstr "Forgási sebesség"
 
 #. 6.2->settings-schema.json->portal-whirling->description
 msgid "Whirling"
-msgstr "Whirling (Tourbillon)"
+msgstr "Örvénylő"
 
 #. 6.2->settings-schema.json->portal-details->description
 msgid "Details"
-msgstr "Détails"
+msgstr "Részletek"
 
 #. 6.2->settings-schema.json->wisps-color-1->description
 msgid "Color #1"
-msgstr "Couleur n°1"
+msgstr "Szín #1"
 
 #. 6.2->settings-schema.json->wisps-color-2->description
 msgid "Color #2"
-msgstr "Couleur n°2"
+msgstr "Szín #2"
 
 #. 6.2->settings-schema.json->wisps-color-3->description
 msgid "Color #3"
-msgstr "Couleur n°3"
+msgstr "Szín #3"

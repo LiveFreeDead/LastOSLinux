@@ -124,7 +124,13 @@ Public Sub Form_Open()
     GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/.version", "/tmp/version")
     While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
       Wait (0.01)
-      If ForceClose = True Then Quit ' No point in looping the user already quit
+      If ForceClose = True Then
+        'Delete Temp Folder
+        If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+        If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+        Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
+        Quit ' No point in looping the user already quit
+      End If
       If Exist("/tmp/version") Then Break 'Gets out of While, it's downloaded
     Wend
     If Not Exist(RepositoryPathLocal & "FailedDownload") Then 'If can't download the version file, then there is no internet?
@@ -143,7 +149,13 @@ Public Sub Form_Open()
           GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
           While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
             Wait (0.01)
-            If ForceClose = True Then Quit ' No point in looping the user already quit
+            If ForceClose = True Then
+              'Delete Temp Folder
+              If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+              If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+              Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
+              Quit ' No point in looping the user already quit
+            End If
             If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
           Wend
           
@@ -161,7 +173,13 @@ Public Sub Form_Open()
             GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas", "/tmp/LLApp.gambas")
             While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
               Wait (0.01)
-              If ForceClose = True Then Quit ' No point in looping the user already quit
+              If ForceClose = True Then
+                'Delete Temp Folder
+                If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+                If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+                Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
+                Quit ' No point in looping the user already quit
+              End If
               If Exist("/tmp/LLApp.gambas") Then Break 'Gets out of While, it's downloaded
             Wend
             
@@ -185,6 +203,10 @@ Public Sub Form_Open()
             Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" & OrigArgs 'The args transfer to next call after update
             LoadingScreen.Hide 'Just hide the loading screen until we quit after a second, then the new one will start
             Wait (1)
+            'Delete Temp Folder
+            If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+            If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+            Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
             Quit
           End If
         End If
@@ -202,7 +224,13 @@ Public Sub Form_Open()
       GetOnlineFile("https://raw.githubusercontent.com/LiveFreeDead/LastOSLinux/refs/heads/main/OS_Overlay/LastOS/LastOSLinux_Store/RemoteWebLinks.db", "/LastOS/LastOSLinux_Store/RemoteWebLinks.db")
       While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
         Wait (0.01)
-        If ForceClose = True Then Quit ' No point in looping the user already quit
+        If ForceClose = True Then
+          'Delete Temp Folder
+          If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+          If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+          Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
+          Quit ' No point in looping the user already quit
+        End If
         If Exist("/LastOS/LastOSLinux_Store/RemoteWebLinks.db") Then Break 'Gets out of While, it's downloaded
       Wend
     End If
@@ -712,7 +740,7 @@ Public Sub SaveToLocalDB(InPath As String)
         Tx = Data.Items[I, J].Text
         'Keep Icons in a .LLFileDB folder on the USB
         If J = Data.CFileIcon Then
-          If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
+          If Exist(Data.Items[I, Data.CFileIcon].Text) And Left(Tx, Len(LLMod.TempPath)) = LLMod.TempPath Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
             Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)            
             OutFile = LocalDBCache & UN & Right(Data.Items[I, Data.CFileIcon].Text, 4)
             If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
@@ -721,7 +749,7 @@ Public Sub SaveToLocalDB(InPath As String)
         End If
         'Worked so well for Icons, try with Screenshots
         If J = Data.CFileScreenshot Then
-          If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, 5) = "/tmp/" Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
+          If Exist(Data.Items[I, Data.CFileScreenshot].Text) And Left(Tx, Len(LLMod.TempPath)) = LLMod.TempPath Then 'Only do the Temp path ones as the others are Not stored in compressed items anyway
             Tx = "%dbpath%/.LLFileDB/" & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
             OutFile = LocalDBCache & UN & Right(Data.Items[I, Data.CFileScreenshot].Text, 4)
             If Exist(OutFile) Then Try Kill OutFile  'Remove existing Icon if found
@@ -731,7 +759,7 @@ Public Sub SaveToLocalDB(InPath As String)
         
         Tx = Replace(Tx, InPath, "%dbpath%/") 'Instead of doing below, just replce DB path for everything
         
-        If Left(Tx, 5) = "/tmp/" Then Tx = Right(Tx, Len(Tx) - LLMod.InStrRevSingle(Tx, "/")) 'Just keep the screenshot name to nab out of the Archive individually when clicking an Item
+        If Left(Tx, Len(LLMod.TempPath)) = LLMod.TempPath Then Tx = Right(Tx, Len(Tx) - LLMod.InStrRevSingle(Tx, "/")) 'Just keep the screenshot name to nab out of the Archive individually when clicking an Item
                   
         If J = Data.CDescription Then
           Tx = Replace(Data.Items[I, J].Text, Chr(13), Chr(10))
@@ -1307,8 +1335,11 @@ Public Sub GenerateMainList()
         If HideItem = False Then ' Just in case it makes its way to here, still hide it
           If Data.Items[I, Data.CIconRef].Text <> Null Then
             If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)] <> Null Or Val(Data.Items[I, Data.CIconRef].Text) >= 1 Then 'If ok
-            
-              Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))            
+              If Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture <> Null Then
+                Try Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Data.Icons[Val(Data.Items[I, Data.CIconRef].Text)].Picture.Stretch(ListIconSize, ListIconSize))
+              Else
+                Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
+              End If
             Else 'If Broken/missing Icon
               Items.Add(Val(Data.Items[I, Data.CRefID].Text), ItemNameVersion, Theme.Res[1].Picture.Stretch(ListIconSize, ListIconSize)) 'Theme Res 1 is the default Icon
             End If
@@ -1790,7 +1821,9 @@ End
 Public Sub Form_Close()
   'It cleans up it's own mess, no need to delete temp folders
   'Delete Temp Folder
-  'Shell "rm -r " & Chr(34) & Temp$("LLTmp*") & Chr(34) Wait  
+  If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+  If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+  Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
   
   'Clean up downloader (Will quit after download??? or instant?)
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
@@ -3227,7 +3260,8 @@ Public Sub RunMiniInstaller()
       'Run the Admin Script once at the very end before hiding MiniInstaller
       'Message(LLMod.LLScriptSudoContent)
       If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
-        TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
+        If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34)
+        TmpSudoScript = LLMod.TempPath & "LLTmp_Sudo" & Str(Rand(1, 999999)) & ".sh"
         File.Save(TmpSudoScript, LLMod.LLScriptSudoContent)
         
         LLMod.LLScriptSudoContent = "" 'Clear it once done.
@@ -3362,7 +3396,8 @@ Public Sub RunMiniInstaller()
   'This will Run the Admin Script once at the very end before hiding MiniInstaller
   'Message(LLMod.LLScriptSudoContent)
   If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
-    TmpSudoScript = Temp$("LLTmp_Sudo" & Str(Rand(1, 999999))) & ".sh"
+    If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34)
+    TmpSudoScript = LLMod.TempPath & "LLTmp_Sudo" & Str(Rand(1, 999999)) & ".sh"
     File.Save(TmpSudoScript, LLMod.LLScriptSudoContent)
         
     LLMod.LLScriptSudoContent = "" 'Clear it once done.
@@ -3378,6 +3413,10 @@ Public Sub RunMiniInstaller()
   End If
   
   If LLM.QuitOnComplete = True Then
+    'Delete Temp Folder
+    If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+    If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+    Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
     Me.Close
     Quit
   End If
@@ -3760,15 +3799,16 @@ Public Sub DownTime_Timer()
       Else ' It exist, download it
         FailedDownload = False
         'Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Downloading Item: " & QueueURL[QueueUpTo] & Chr(34)
-        Try Kill ("/tmp/lldownload")
+        Try Kill (LLMod.TempPath & "lldownload")
         Print "Downloading: " & GetURL
-        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " 2>&1 | sed -nru '/[0-9]%/ s/.* ([0-9]+)%.*/" & Chr(92) & "1/p' > /tmp/lldownload && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34)
+        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " 2>&1 | sed -nru '/[0-9]%/ s/.* ([0-9]+)%.*/" & Chr(92) & "1/p' > " & LLMod.TempPath & "lldownload && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
  
         If MiniInstaller.Stats.Text = "Downloading..." Then ShowProg = True
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done
           Wait (0.05)
           If ShowProg = True Then
-            Try Prog = File.Load("/tmp/lldownload")
+            Try Prog = File.Load(LLMod.TempPath & "lldownload")
             Try ProgPerc = Right(Prog, 6)
             ProgPerc = Trim(Right(ProgPerc, InStr(ProgPerc, Chr(10), 1)))
             If ProgPerc <> "" Then
@@ -3780,7 +3820,7 @@ Public Sub DownTime_Timer()
             Break
           End If
         Wend
-        Try Kill ("/tmp/lldownload")
+        Try Kill (LLMod.TempPath & "lldownload")
         If Proc.Value = 0 Then
           If Exist(QueueLocal[QueueUpTo] & ".partial") Then 'If you don't have access to the file then it's better to try to delete it and then not move/overwrite as it asks if you want to try, this stops automation.
             If Exist(QueueLocal[QueueUpTo]) Then Try Kill QueueLocal[QueueUpTo]
@@ -3806,7 +3846,13 @@ Public Sub DownTime_Timer()
   If Exist(RepositoryPathLocal & "DownloadDone") Then Shell "rm " & RepositoryPathLocal & "DownloadDone" Wait
   Wait (0.01)
   
-  If ForceClose = True Then Quit 'This is just a precaution for if the wget loop keeps the app from quiting if a problem or forced quit occurs
+  If ForceClose = True Then
+    'Delete Temp Folder
+    If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+    If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+    Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
+    Quit 'This is just a precaution for if the wget loop keeps the app from quiting if a problem or forced quit occurs
+  End If
   If Installing = False And Test <> "" Then Items_Click() 'Reload item once queue completes, if not installing items currently
 End
 
