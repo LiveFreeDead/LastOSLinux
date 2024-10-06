@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.3 2024-10-06-04
+'LastOS v1.2.3 2024-10-06-05
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -496,7 +496,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
     'ExtractFast(FileIn, TmpPath, " --exclude=LLGame.tar.gz" & " --exclude=LLApp.tar.gz" & " --exclude=*.deb" & " --exclude=*.run")    
     
     'Glenn 2027
-    ExtractFast(FileIn, TmpPath, " --wildcards " & Chr(34) & "*.lla" & Chr(34) & " " & Chr(34) & "*.llg" & Chr(34) & " " & Chr(34) & "*.sh" & Chr(34) & " " & Chr(34) & "*.jpg" & Chr(34) & " " & Chr(34) & "*.png" & Chr(34) & " " & Chr(34) & "*.ico" & Chr(34) & " " & Chr(34) & "*.svg" & Chr(34) & " " & Chr(34) & "*.mp4" & Chr(34))
+    ExtractFast(FileIn, TmpPath, " --wildcards " & Chr(34) & "LL*.lla" & Chr(34) & " " & Chr(34) & "LL*.llg" & Chr(34) & " " & Chr(34) & "LL*.sh" & Chr(34) & " " & Chr(34) & "LL*.jpg" & Chr(34) & " " & Chr(34) & "LL*.png" & Chr(34) & " " & Chr(34) & "LL*.ico" & Chr(34) & " " & Chr(34) & "LL*.svg" & Chr(34) & " " & Chr(34) & "LL*.mp4" & Chr(34))
     
     OriginalFileIn = FileIn
     FileIn = TmpPath 'Make it load below like normal, just need to deal with screenshot loading now
