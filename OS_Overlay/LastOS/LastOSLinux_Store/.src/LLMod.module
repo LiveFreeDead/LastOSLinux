@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.3 2024-10-06-05
+'LastOS v1.2.3 2024-10-06-06
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -82,7 +82,7 @@ Public LLScript As String 'Post Processing Script
 Public LLScriptFile As String
 
 Public LLScriptSudo As String 'Post Processing Script
-Public LLScriptSudoFile As String = TempPath & "/LastOSLinuxStore_Sudo.sh"
+Public LLScriptSudoFile As String = User.Home & "/.lltemp/" & "LastOSLinuxStore_Sudo.sh"
 Public LLScriptSudoContent As String
 
 'Others
@@ -1462,7 +1462,7 @@ Public Sub MakeFileType(APP As String, EXT As String, COMMENT As String, EXECU A
   APP = Replace(APP, " ", ".") 'Remove Spaces
   
   
-  If Not Exist(TempPath) Then Shell "mkdir -p " & Chr(34) & TempPath & Chr(34)
+  If Not Exist(TempPath) Then Shell "mkdir -p " & Chr(34) & TempPath & Chr(34) Wait
   'MIME Type
   'Print "MIME Output"
   
