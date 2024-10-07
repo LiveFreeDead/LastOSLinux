@@ -85,6 +85,7 @@ chmod +x "/LastOS/*.desktop"
 
 #Enable flathub repo's
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 
 #The fix for this is running sudo apt update -y just before running mksquashfs, leave here incase it come back, I'll also leave the service that runs as it is a failsafe.
