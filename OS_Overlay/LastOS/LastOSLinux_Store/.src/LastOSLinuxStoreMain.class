@@ -3723,6 +3723,7 @@ Public Sub LoadRepositoryDatabase()
           Data.Items[DRows, Data.CIconRef].Text = "0"
           Data.Items[DRows, Data.CSelected].Text = "F"
           
+          If Data.Items[DRows, Data.CPathApp].Text = "" Then Data.Items[DRows, Data.CPathApp].Text = "/nonething/"
           If Exist(LLMod.ExpPath(Data.Items[DRows, Data.CPathApp].Text)) = True Then
             Data.Items[DRows, Data.CInstalled].Text = "T" 'Hide installed items if picked to
           Else

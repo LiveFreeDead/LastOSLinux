@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.3 2024-10-06-06
+'LastOS v1.2.3 2024-10-07-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -712,6 +712,7 @@ Public Function LoadLLFile(FileIn As String) As Boolean
         End If
       End If
     Next
+    If LLAppPath = "" Then LLAppPath = "/nonething/" 'Fixes hidden items
   Endif
   'Clean Up
   'Delete Temp Folder (Moved this to form unload so that we can make use of the Icons and Screenshots being loaded

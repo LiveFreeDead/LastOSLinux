@@ -224,6 +224,10 @@ Public Sub Form_Open()
           If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)
         End If
       End If
+      'Delete Temp Folder
+      If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+      If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+      Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait 'Make folder incase dual instances of Store are running.
       Quit 
     End Select
   End If
@@ -315,7 +319,10 @@ Public Sub Form_Open()
         LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
         Try Kill TmpSudoScript 'Remove tmp script file
       End If  
-      
+      'Delete Temp Folder
+      If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+      If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+      Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait 'Make folder incase dual instances of Store are running.
       If LineSilent = False Then Shell "notify-send --hint=int:transient:1 " & Chr(34) & "Installed: " & LLMod.LLTitle & Chr(34)    
     End If
     Me.Close
