@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Add FlatHub Repository
+Exec="/LastOS/Scripts/AddFlathubRepo.sh"
+Path=/LastOS
+Comment=Add support for Flathub
+Terminal=true
+Icon=/LastOS/LLOSStore.png
+Type=Application
+Categories=Other
+X-Desktop-File-Install-Version=0.26
