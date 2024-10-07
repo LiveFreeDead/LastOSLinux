@@ -62,7 +62,8 @@ yad --image="dialog-information" \
   --title "LastOSLinux Installing" \
   --text "\n  Please wait while LastOS installs some things..." &
 
-
+#Make sure login background is set
+gsettings set x.dm.slick-greeter background '/usr/share/backgrounds/lastos/Login.jpg'
 
 
 #Replace Home Path in custom .desktop files for new users
@@ -81,6 +82,9 @@ cp /LastOS/*.desktop $HOME/Desktop
 chmod +x "$HOME/Desktop/*.desktop"
 chmod +x "/LastOS/*.desktop"
 #chmod +x "/LastOS/ssWPI_Installer.sh"
+
+#Enable flathub repo's
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 
 #The fix for this is running sudo apt update -y just before running mksquashfs, leave here incase it come back, I'll also leave the service that runs as it is a failsafe.

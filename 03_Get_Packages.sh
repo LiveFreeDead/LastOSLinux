@@ -104,6 +104,10 @@ sudo apt install -y ./debs/dwarfs-bin_0.9.9-1_amd64.deb
 #Install opengl extras, 
 sudo apt install -y ./debs/sdrpp_ubuntu_noble_amd64.deb
 
+#Enable Flathub repo
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
 
 #Handbreak, This is very large, This will auto download components in needs via updates (nVidia Module if have that GFX card), Disabled, too large, it's in the Store
 #flatpak install -y flathub fr.handbrake.ghb
