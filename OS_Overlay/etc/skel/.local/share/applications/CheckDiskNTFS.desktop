@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Check Disk NTFS
+Exec="/LastOS/Tools/chkdsk/CheckDisk.sh"
+Path=/LastOS/Tools/chkdsk/
+Comment=Check an UnMounted NTFS Partition for errors to allow mounting them again
+Terminal=false
+Icon=/LastOS/Tools/chkdsk/NTFS.png
+Type=Application
+Categories=System;
