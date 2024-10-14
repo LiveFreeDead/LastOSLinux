@@ -1,13 +1,8 @@
 #!/bin/bash
 
-files=$(echo $NEMO_SCRIPT_SELECTED_URIS | sed -e 's/file:\/\///g' -e 's/\%20/\ /g')
-
-Pat="Z:$files"
-
-echo cd \"$HOME/.wine/dosdevices/c:\" >"$HOME/.setups"
-echo cd \"Program Files/SetupS.SendTo/\" >>"$HOME/.setups"
-echo "echo Installing with SetupS..." >>"$HOME/.setups"
-echo wine ./SetupS.exe "\"$Pat"\" 2\>/dev/null >>"$HOME/.setups"
-chmod +x "$HOME/.setups"
-x-terminal-emulator -e "$HOME/.setups"
-rm "$HOME/.setups"
+for f in "$@"
+do
+    notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
+    wine $HOME/.wine/dosdevices/c:/Program\ Files/SetupS.SendTo/SetupS.exe "Z:$f"
+done
+notify-send --hint=int:transient:1  "Installation Complete." ""

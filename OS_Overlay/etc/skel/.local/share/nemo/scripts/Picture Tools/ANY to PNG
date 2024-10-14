@@ -1,6 +1,6 @@
 #!/bin/bash
 
-files="$*"
-filesout=$(basename "$files" .tga).png
-
-convert "$files" "$filesout"
+for f in "$@"
+do
+    convert "$f" -format png "${f%.*}_Convert.png"
+done

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-files="$*"
-filesout=$(basename "$files" .webp)
-
-ffmpeg -i "$files" "$filesout.jpg"
-

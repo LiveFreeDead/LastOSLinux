@@ -2,5 +2,5 @@
 
 for f in "$@"
 do
-    chmod +x "$f"
+    wine "$f"&
 done

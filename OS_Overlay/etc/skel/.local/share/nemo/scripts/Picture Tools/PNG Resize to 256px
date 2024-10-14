@@ -1,6 +1,6 @@
 #!/bin/bash
 
-files="$*"
-fileshalf="$*"_256x256.png
-
-convert "$files" -resize "256>" "$fileshalf"
+for f in "$@"
+do
+    convert "$f" -resize "256>" -format png "${f%.*}_256.png"
+done

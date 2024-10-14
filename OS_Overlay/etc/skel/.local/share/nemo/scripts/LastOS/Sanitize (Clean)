@@ -1,13 +1,6 @@
 #!/bin/bash
 
-files=$(echo $NEMO_SCRIPT_SELECTED_URIS | sed -e 's/file:\/\///g' -e 's/\%20/\ /g')
-
-Pat="Z:$files"
-
-echo cd \"/LastOS/Tools/Sanitize\" >"$HOME/.sanitize"
-echo "echo Opening with Sanitize..." >>"$HOME/.sanitize"
-echo wine ./Sanitize.exe "\"$Pat"\" 2\>/dev/null >>"$HOME/.sanitize"
-chmod +x "$HOME/.sanitize"
-bash "$HOME/.sanitize"
-
-rm "$HOME/.sanitize"
+for f in "$@"
+do
+    wine /LastOS/Tools/Sanitize/Sanitize.exe "Z:$f"&
+done

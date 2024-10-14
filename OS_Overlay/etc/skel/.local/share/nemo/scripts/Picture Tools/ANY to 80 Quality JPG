@@ -1,7 +1,6 @@
 #!/bin/bash
 
-files="$*"
-fileshalf="$*"80.jpg
-
-mogrify "$files" -quality 80 "$fileshalf"
-
+for f in "$@"
+do
+    convert "$f" -quality 80 -format jpg "${f%.*}_80.jpg"
+done

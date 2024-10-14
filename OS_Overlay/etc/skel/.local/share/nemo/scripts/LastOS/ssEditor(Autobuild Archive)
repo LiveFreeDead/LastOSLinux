@@ -1,13 +1,6 @@
 #!/bin/bash
 
-files=$(echo $NEMO_SCRIPT_SELECTED_URIS | sed -e 's/file:\/\///g' -e 's/\%20/\ /g')
-
-Pat="Z:$files"
-
-echo cd \"$HOME/.wine/dosdevices/c:\" >"$HOME/.setups"
-echo cd \"Program Files/SetupS.SendTo/ssEditor\" >>"$HOME/.setups"
-echo "echo Opening with SetupS Editor..." >>"$HOME/.setups"
-echo wine ./ssEditor.exe -autobuild -MakeExpressInstaller=on "\"$Pat"\" 2\>/dev/null >>"$HOME/.setups"
-chmod +x "$HOME/.setups"
-x-terminal-emulator -e "$HOME/.setups"
-rm "$HOME/.setups"
+for f in "$@"
+do
+    wine $HOME/.wine/dosdevices/c:/Program\ Files/SetupS.SendTo/ssEditor/ssEditor.exe -autobuild -MakeExpressInstaller=on "Z:$f"
+done

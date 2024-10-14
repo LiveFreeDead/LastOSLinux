@@ -1,8 +1,7 @@
 #!/bin/bash
 
-files="$*"
-fileshalf="$*"_Half.jpg
-
-#mogrify -resize 50%
-convert "$files" -resize 50% "$fileshalf"
+for f in "$@"
+do
+    convert "$f" -resize 50% -format jpg "${f%.*}_Half.jpg"
+done
 
