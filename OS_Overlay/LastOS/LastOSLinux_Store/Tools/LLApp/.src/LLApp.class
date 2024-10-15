@@ -1,5 +1,6 @@
 ' Gambas class file
 
+Public GeneratingLLGame As Boolean = False
 Public GeneratedInstallToPath As String
 Public ForceClose As Boolean = False
 Public AddingFromFile As Boolean
@@ -413,6 +414,7 @@ Public Sub Form_Open()
         
         If Exist(CP & "/LLGame.png") Then 'It's most likely a LLGame
           BuildTypeCheck.Value = True 'Is A Game
+          LLMod.LLBuildType = "LLGame"          
           
           'Glenn 2027
           If InstallToText.Text = "" Or InstallToText.Text = "/nonething/" Then 'Make sure this check is first so it doesn't slow down other clicking
@@ -436,7 +438,7 @@ Public Sub Form_Open()
           End If
           
           'CompressBuild.Value = True 'Disable this for now, Seems safer as I need things extracted to get the exec name
-          
+          GeneratingLLGame = True 'I'll use this to add Categories from Main tab to first Link until the user clicks the 2nd tab
         End If
        End If
     End If 
@@ -877,6 +879,15 @@ Public Sub URLText_Change()
 End
 Public Sub CatCombo_Change()
   LLMod.LLCategory = CatCombo.Text
+  If GeneratingLLGame = True Then
+    If LLMod.LLBuildType = "LLGame" Then 'Make games have default Category
+      'If LLMod.LnkCatalog[1] = "" Then        
+        LLMod.LnkCatalog[1] = "Game; " & LLMod.LLCategory & "; "
+        MenuCatalogText.Text = "Game" & Chr(10) & LLMod.LLCategory & Chr(10)
+        MenuCatalogCombo.Text = "Game"
+      'End If
+    End If
+  End If
 End
 
 Public Sub BuildTypeCheck_KeyRelease()
@@ -1017,6 +1028,7 @@ Public Sub TabStrip1_Click()
   
   'Message(TabStrip1.Current.Text)
   If TabStrip1.Current.Text = "Install/Links" Then '(Changed to 2nd Tab)
+    GeneratingLLGame = False
     If InstallToText.Text = "" Or InstallToText.Text = "/nonething/" Then 'Make sure this check is first so it doesn't slow down other clicking
       If LLMod.LLTitle <> "" Then '(Make A Install To Path)
       GeneratedInstallToPath = "%" & LLMod.LLBuildType & "s%/" & Replace(LLMod.LLTitle, " ", ".") 'Add The s so we know it's Plural (Main folder)
@@ -1418,5 +1430,11 @@ End
 Public Sub PostScriptSudo_GotFocus()
 
   CurrScript = "Script_Sudo"
+
+End
+
+Public Sub CatCombo_Click()
+
+  
 
 End
