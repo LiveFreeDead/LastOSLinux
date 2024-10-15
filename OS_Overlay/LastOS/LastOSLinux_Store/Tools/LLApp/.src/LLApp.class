@@ -24,6 +24,7 @@ Public CurrScript As String = "Script"
 
 Public Sub Form_Open()
   Dim S As String
+  Dim I As Integer
   Dim UseThisPath As String
   Dim OldLineFileIn As String
   Dim TmpSudoScript As String
@@ -398,6 +399,48 @@ Public Sub Form_Open()
         BuildToFolder.Text = TryPat 'Given up
       End If
     End Select
+    
+    If LLMod.LLTitle = "" Then
+      If IncludeFolder.Text <> "/tmp/not set" Then 'Use path to set Title
+        Dim ParentPath As String
+        Dim CP As String
+        Dim GeneratedInstallToPath As String
+        CP = IncludeFolder.Text
+        If Right(CP, 1) = "/" Then CP = Left(CP, Len(CP) - 1)'Remove last Slash
+        ParentPath = Right(CP, Len(CP) - LLMod.InStrRevSingle(CP, "/"))
+        TitleText.Text = ParentPath
+        VersionText.Text = "v1.0"
+        
+        If Exist(CP & "/LLGame.png") Then 'It's most likely a LLGame
+          BuildTypeCheck.Value = True 'Is A Game
+          
+          'Glenn 2027
+          If InstallToText.Text = "" Or InstallToText.Text = "/nonething/" Then 'Make sure this check is first so it doesn't slow down other clicking
+            If LLMod.LLTitle <> "" Then '(Make A Install To Path)
+            GeneratedInstallToPath = "%" & LLMod.LLBuildType & "s%/" & Replace(LLMod.LLTitle, " ", ".") 'Add The s so we know it's Plural (Main folder)
+            If LLMod.LLVersion <> "" Then GeneratedInstallToPath &= "_" & LLMod.LLVersion
+            GeneratedInstallToPath &= "_" & LLMod.LLBuildType & "/"
+            InstallToText.Text = GeneratedInstallToPath
+            End If    
+          End If
+          
+          LLMod.LnkCount = 1
+          LLMod.LnkDisplayName[1] = ParentPath
+          LLMod.LnkExec[1] = GeneratedInstallToPath
+          LLMod.LnkRunInPath[1] = GeneratedInstallToPath
+          LLMod.LnkIcon[1] = GeneratedInstallToPath & "LLGame.png"
+          DisplayNameCombo.Add("1> " & LLMod.LnkDisplayName[1], 1)                     
+          DisplayNameCombo.Text = "1> " & LLMod.LnkDisplayName[1] 'Show first item only
+          If EditLnk(1) = True Then
+            'Good
+          End If
+          
+          'CompressBuild.Value = True 'Disable this for now, Seems safer as I need things extracted to get the exec name
+          
+        End If
+       End If
+    End If 
+    
   End If
 End
 
@@ -974,7 +1017,7 @@ Public Sub TabStrip1_Click()
   
   'Message(TabStrip1.Current.Text)
   If TabStrip1.Current.Text = "Install/Links" Then '(Changed to 2nd Tab)
-    If InstallToText.Text = "" Then 'Make sure this check is first so it doesn't slow down other clicking
+    If InstallToText.Text = "" Or InstallToText.Text = "/nonething/" Then 'Make sure this check is first so it doesn't slow down other clicking
       If LLMod.LLTitle <> "" Then '(Make A Install To Path)
       GeneratedInstallToPath = "%" & LLMod.LLBuildType & "s%/" & Replace(LLMod.LLTitle, " ", ".") 'Add The s so we know it's Plural (Main folder)
       If LLMod.LLVersion <> "" Then GeneratedInstallToPath &= "_" & LLMod.LLVersion

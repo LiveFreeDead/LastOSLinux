@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,90,74)
+  MoveScaled(0,0,90,75)
   Text = ("LLFile Editor")
   Icon = Picture["Tools/LastOS.png"]
   Resizable = False
@@ -51,7 +51,7 @@
     }
   }
   { TabStrip1 TabStrip
-    MoveScaled(0,0,90,55)
+    MoveScaled(0,0,90,56)
     Count = 4
     Index = 0
     Text = ("General")
@@ -339,60 +339,60 @@
     Index = 0
   }
   { BuildBut Button
-    MoveScaled(61,57,13,6)
+    MoveScaled(61,58,13,6)
     ToolTip = ("Saves LLFile and builds the install folder to Build To path (Compresses to a single .tar if Compressed is picked)")
     Text = ("Build")
   }
   { Label15 Label
-    MoveScaled(1,56,7,4)
+    MoveScaled(1,57,7,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
     Text = ("Include")
   }
   { !IncludeFolder TextBox
-    MoveScaled(9,56,46,4)
+    MoveScaled(9,57,46,4)
     #Public = True
     ToolTip = ("The contents of this folder will be added to be installed")
   }
   { BrowsePathBut2 Button
-    MoveScaled(55,56,5,4)
+    MoveScaled(55,57,5,4)
     Text = ("..")
   }
   { Label16 Label
-    MoveScaled(1,61,7,4)
+    MoveScaled(1,62,7,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
     Text = ("Build To")
   }
   { BuildToFolder TextBox
-    MoveScaled(9,61,46,4)
+    MoveScaled(9,62,46,4)
     ToolTip = ("You can make a new path to build in or use the same path you include")
   }
   { BrowsePathBut3 Button
-    MoveScaled(55,61,5,4)
+    MoveScaled(55,62,5,4)
     Text = ("..")
   }
   { !CompressBuild CheckBox
-    MoveScaled(75,55,14,4)
+    MoveScaled(75,56,14,4)
     #Public = True
     ToolTip = ("Tick this if you also want a single tar file and the folder version (Puts in root folder)")
     Text = ("Compressed")
   }
   { !NoInstall CheckBox
-    MoveScaled(75,59,14,4)
+    MoveScaled(75,60,14,4)
     #Public = True
     ToolTip = ("Items that don't extract to an installed to folder (no tar.gz) need this ticked, Items with no links often need this checked (Such as tweaks)")
     Text = ("No Install")
   }
   { ArgsLine Label
-    MoveScaled(6,66,83,4)
+    MoveScaled(6,67,83,4)
     ToolTip = ("This is the Arguments Given from call command")
     Padding = 2
     Alignment = Align.Left
     Border = Border.Sunken
   }
   { Label22 Label
-    MoveScaled(0,66,5,4)
+    MoveScaled(0,67,5,4)
     ToolTip = ("This folder content will  be included in the build as LL{Type}.tar.gz")
     Alignment = Align.Right
     Text = ("Args:")
