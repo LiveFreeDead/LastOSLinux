@@ -430,7 +430,14 @@ Public Sub Form_Open()
           LLMod.LnkEditing = 1
           LLMod.LnkActive[1] = True
           LLMod.LnkDisplayName[1] = ParentPath
-          LLMod.LnkExec[1] = GeneratedInstallToPath
+          
+          If Exist(CP & "/start.sh") Then
+            LLMod.LnkExec[1] = GeneratedInstallToPath & "start.sh" 'If it's a game and this file exists, it;s usually right for my games
+          Else
+            LLMod.LnkExec[1] = GeneratedInstallToPath
+          End If
+          
+          
           LLMod.LnkRunInPath[1] = GeneratedInstallToPath
           LLMod.LnkIcon[1] = GeneratedInstallToPath & "LLGame.png"
           DisplayNameCombo.Add("1> " & LLMod.LnkDisplayName[1], 1)                     
