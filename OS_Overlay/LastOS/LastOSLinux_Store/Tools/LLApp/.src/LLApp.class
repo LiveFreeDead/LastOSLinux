@@ -427,6 +427,8 @@ Public Sub Form_Open()
           End If
           
           LLMod.LnkCount = 1
+          LLMod.LnkEditing = 1
+          LLMod.LnkActive[1] = True
           LLMod.LnkDisplayName[1] = ParentPath
           LLMod.LnkExec[1] = GeneratedInstallToPath
           LLMod.LnkRunInPath[1] = GeneratedInstallToPath
