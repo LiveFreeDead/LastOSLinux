@@ -3174,6 +3174,7 @@ End
 '************************************************* MINI-INSTALLER, RUNNING stuff ******************************************
 
 Public Sub RunMiniInstaller()
+  If Downloading = True Then Return 'Make sure it doesn't try to run installer until screenshots downloaded.
   If Installing = True Then Return 'One at a time
   Dim ItemToInstall As Integer
   Dim TmpSudoScript As String
@@ -3191,11 +3192,10 @@ Public Sub RunMiniInstaller()
   Dim OldTitle As String
   Dim InstallCount As Integer
   
-  'Don't start the installer until ALL existing downloads are done, Still only downloads one at a time, which is about all LastOS.org can handle anyway
-  While Downloading = True 'Can't do more until it's fully downloaded
-    Wait (0.01)
-  Wend
-  
+  'Don't start the installer until ALL existing downloads are done, Still only downloads one at a time, which is about all LastOS.org can handle anyway  
+  'While Downloading = True 'Can't do more until it's fully downloaded
+  '  Wait (0.01)
+  'Wend
   
   'Change Category to All, Generate Main List and step through them, else all the hidden items you previously selected install too.
   'I'll leave this one, if someone is messing about they'll get the mini installer every time
