@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    notify-send --hint=int:transient:1  "Please wait, Installing Windows App:" "$f"
+    wine $HOME/.wine/dosdevices/c:/Program\ Files/SetupS.SendTo/SetupS.exe "Z:$f"
+done
+notify-send --hint=int:transient:1  "Installation Complete." ""

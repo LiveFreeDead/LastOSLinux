@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas -edit "$NEMO_SCRIPT_SELECTED_FILE_PATHS"
+

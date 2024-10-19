@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    wine $HOME/.wine/dosdevices/c:/Program\ Files/SetupS.SendTo/ssEditor/ssEditor.exe -autobuild -MakeExpressInstaller=on "Z:$f"
+done

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -d "$*" ]; then 
+
+dir=$*
+subdir="${dir##*/}"
+
+cd "$*"
+cd ..
+
+zip -r --symlinks "$*".zip "./$subdir"
+
+else
+zenity --timeout 10 --info --text "MUST only give a single path to compress it's contents" &
+fi

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    echo "$f"
+    ffmpeg -i "$f" "${f%.*}_Convert.jpg"
+done
+

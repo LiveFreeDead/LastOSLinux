@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas -install "$f"
+done

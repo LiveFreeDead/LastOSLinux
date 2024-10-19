@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    cwebp "$f" -q 100 -o "${f%.*}_100.webp"
+done

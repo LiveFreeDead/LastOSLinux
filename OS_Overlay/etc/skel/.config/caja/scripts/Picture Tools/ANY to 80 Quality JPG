@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    convert "$f" -quality 80 -format jpg "${f%.*}_80.jpg"
+done

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    dwebp "$f" -o "${f%.*}_Convert.png"
+done

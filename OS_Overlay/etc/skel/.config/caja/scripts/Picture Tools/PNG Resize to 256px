@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    convert "$f" -resize "256>" -format png "${f%.*}_256.png"
+done

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=LastOS-MATE
+Type=X-GNOME-Metatheme
+Comment=
+
+[X-GNOME-Metatheme]
+GtkTheme=LastOS-Orchis-Dark-Compact
+MetacityTheme=LastOS-Orchis-Dark-Compact
+IconTheme=Windows-10-master
+GtkColorScheme=link_color:#3281EA,visited_link_color:#CE93D8
+CursorTheme=DMZ-White
+CursorSize=24
+BackgroundImage=/usr/share/backgrounds/linuxmint/default_background.jpg
