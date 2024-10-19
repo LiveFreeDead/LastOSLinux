@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>Terminal</icon>
+	<name>Open in Terminal</name>
+	<submenu></submenu>
+	<unique-id>1729317653358125-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Open terminal in the selected folder</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>folder</icon>
+	<name>Open as Root</name>
+	<submenu></submenu>
+	<unique-id>1729317653358254-2</unique-id>
+	<command>pkexec thunar %F</command>
+	<description>Open the folder with administration privileges</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>application-x-llapp</icon>
+	<name>Install with LLFile</name>
+	<submenu>LastOS Tools</submenu>
+	<unique-id>1729329158248292-1</unique-id>
+	<command>/usr/bin/llfile -install %f</command>
+	<description>Install with LLFile</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<directories/>
+	<other-files/>
+	<text-files/>
+</action>
+<action>
+	<icon>application-x-llapp</icon>
+	<name>Edit in LLFile Editor</name>
+	<submenu>LastOS Tools</submenu>
+	<unique-id>1729329158248292-2</unique-id>
+	<command>/usr/bin/llfile -edit %f</command>
+	<description>Edit the LLFile in the Editor</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<directories/>
+	<other-files/>
+	<text-files/>
+</action>
+<action>
+	<icon>emblem-symbolic-link</icon>
+	<name>Create a Link</name>
+	<submenu></submenu>
+	<unique-id>1729317653358384-3</unique-id>
+	<command>ln -s %f  &apos;Link to %n&apos;</command>
+	<description>Create a symbolic link for each selected item</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+	<other-files/>
+</action>
+<action>
+	<icon>application-certificate</icon>
+	<name>Verify</name>
+	<submenu></submenu>
+	<unique-id>1729317653358430-4</unique-id>
+	<command>mint-iso-verify %f</command>
+	<description>Verify the authenticity and integrity of the image</description>
+	<range></range>
+	<patterns>*.iso;*.ISO</patterns>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>gtk-find</icon>
+	<name>Search</name>
+	<submenu></submenu>
+	<unique-id>1729317653358578-5</unique-id>
+	<command>catfish %f</command>
+	<description>Search for Files</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+</actions>

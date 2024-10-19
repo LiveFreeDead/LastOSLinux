@@ -7,6 +7,7 @@ bash 03_Get_Packages.sh
 bash 04_Get_WINE.sh
 bash 05_Settings_Main_User.sh
 bash 05_Settings_Root_User.sh
+bash 05_XFCE_Settings.sh
 bash 05_MATE_Settings.sh
 
 bash 07_Clean_OS.sh
