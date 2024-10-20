@@ -139,81 +139,85 @@ Public Sub Form_Open()
       RemoteVersion = 1 
       Try LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
       Try RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
-      If LocalVersion <> "" And RemoteVersion <> "" Then
-        
-        Installing = True
-        'Message(LocalVersion & " = " & RemoteVersion)
-        If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
-          LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
-          Wait (0.03)
-          Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
-          Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-          GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
-          While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
-            Wait (0.01)
-            If ForceClose = True Then
-              'Delete Temp Folder
-              If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-              If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-              Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
-              Quit ' No point in looping the user already quit
-            End If
-            If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
-          Wend
+      Try LocalVersion = Replace(LocalVersion, ".", "")
+      Try RemoteVersion = Replace(RemoteVersion, ".", "")
+      If LocalVersion <> Null And RemoteVersion <> Null Then
+        If LocalVersion <> "" And RemoteVersion <> "" Then
           
-          If Exist("/tmp/LastLinuxStore.gambas") Then 'Downloaded, install update     
-            Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
-            Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
-            Shell "mv -f /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
-            Shell "mv -f /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
-            Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
-            
-            '------------------------------
-            'Also Update LLApp.gambas if the store updated
-            Try Kill "/tmp/LLApp.gambas" ' Clear previous download
+          Installing = True
+          'Message(LocalVersion & " = " & RemoteVersion)
+          If Val(LocalVersion) < Val(RemoteVersion) Then 'There is an update
+            LoadingScreen.Status.Text = "Updating store: v" & LocalVersion & " to v" & RemoteVersion
+            Wait (0.03)
+            Try Kill "/tmp/LastLinuxStore.gambas" ' Clear previous download
             Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
-            GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas", "/tmp/LLApp.gambas")
+            GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/LastLinuxStore.gambas", "/tmp/LastLinuxStore.gambas")
             While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
               Wait (0.01)
               If ForceClose = True Then
                 'Delete Temp Folder
                 If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
                 If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-                Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait 'Make folder incase dual instances of Store are running.
+                Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) 'Make folder incase dual instances of Store are running.
                 Quit ' No point in looping the user already quit
               End If
-              If Exist("/tmp/LLApp.gambas") Then Break 'Gets out of While, it's downloaded
+              If Exist("/tmp/LastLinuxStore.gambas") Then Break 'Gets out of While, it's downloaded
             Wend
             
-            If Exist("/tmp/LLApp.gambas") Then 'Downloaded, install update
-              Shell "chmod +x /tmp/LLApp.gambas" Wait
-              Chmod "/tmp/LLApp.gambas" To "rwxrwxr--" 'Make file executable
-              Shell "mv -f /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
-              Shell "mv -f /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
-              Shell "chmod +x /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
-            End If
-            '-----------------------------
-            
-            
-            OrigArgs = ""
-            For Each S In Args
-              S = Trim(S)
-              If S <> "" Then 
-                OrigArgs = OrigArgs & " " & S
+            If Exist("/tmp/LastLinuxStore.gambas") Then 'Downloaded, install update     
+              Shell "chmod +x /tmp/LastLinuxStore.gambas" Wait
+              Chmod "/tmp/LastLinuxStore.gambas" To "rwxrwxr--" 'Make file executable
+              Shell "mv -f /LastOS/LastOSLinux_Store/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas.old" Wait
+              Shell "mv -f /tmp/LastLinuxStore.gambas /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+              Shell "chmod +x /LastOS/LastOSLinux_Store/LastLinuxStore.gambas" Wait
+              
+              '------------------------------
+              'Also Update LLApp.gambas if the store updated
+              Try Kill "/tmp/LLApp.gambas" ' Clear previous download
+              Try Kill RepositoryPathLocal & "FailedDownload" 'Clear FailedDownload if Exist
+              GetOnlineFile("https://github.com/LiveFreeDead/LastOSLinux/raw/main/OS_Overlay/LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas", "/tmp/LLApp.gambas")
+              While Not Exist(RepositoryPathLocal & "FailedDownload") 'This loop stops all other downloads until it's done or failed
+                Wait (0.01)
+                If ForceClose = True Then
+                  'Delete Temp Folder
+                  If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+                  If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+                  Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait 'Make folder incase dual instances of Store are running.
+                  Quit ' No point in looping the user already quit
+                End If
+                If Exist("/tmp/LLApp.gambas") Then Break 'Gets out of While, it's downloaded
+              Wend
+              
+              If Exist("/tmp/LLApp.gambas") Then 'Downloaded, install update
+                Shell "chmod +x /tmp/LLApp.gambas" Wait
+                Chmod "/tmp/LLApp.gambas" To "rwxrwxr--" 'Make file executable
+                Shell "mv -f /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas.old" Wait
+                Shell "mv -f /tmp/LLApp.gambas /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
+                Shell "chmod +x /LastOS/LastOSLinux_Store/Tools/LLApp/LLApp.gambas" Wait
               End If
-            Next
-            Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" & OrigArgs 'The args transfer to next call after update NO WAIT here
-            LoadingScreen.Hide 'Just hide the loading screen until we quit after a second, then the new one will start
-            Wait (1)
-            'Delete Temp Folder
-            If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-            If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-            Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait 'Make folder incase dual instances of Store are running.
-            Quit
+              '-----------------------------
+              
+              
+              OrigArgs = ""
+              For Each S In Args
+                S = Trim(S)
+                If S <> "" Then 
+                  OrigArgs = OrigArgs & " " & S
+                End If
+              Next
+              Shell "/LastOS/LastOSLinux_Store/LastLinuxStore.gambas" & OrigArgs 'The args transfer to next call after update NO WAIT here
+              LoadingScreen.Hide 'Just hide the loading screen until we quit after a second, then the new one will start
+              Wait (1)
+              'Delete Temp Folder
+              If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+              If InStr(LLMod.TempPath, ".lltemp", 1) >= 1 Then Shell "rm -rf " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+              Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait 'Make folder incase dual instances of Store are running.
+              Quit
+            End If
           End If
+          
+          Installing = False
         End If
-        
-        Installing = False
       End If
     End If
   End If 'End of Checking for update
