@@ -18,7 +18,10 @@ sudo apt update -y
 #Cleanup extras
 
 #Clean LastOS No Cache Repo Builder so end users get to use their cached items (icons in store etc).
-rm /LastOS/LastOSLinux_Store/RepoBuilderNoCache
+rm -f /LastOS/LastOSLinux_Store/RepoBuilderNoCache
+
+#Remove Config files that we don't want on the current install (Mainly the First Logon.desktop)'
+sudo rm -f "$HOME/.config/autostart/First Logon.desktop"
 
 #Recent Files
 rm $HOME/.local/share/recently-used.xbel
