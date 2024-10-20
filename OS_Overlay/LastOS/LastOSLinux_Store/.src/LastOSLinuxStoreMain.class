@@ -134,9 +134,11 @@ Public Sub Form_Open()
       If Exist("/tmp/version") Then Break 'Gets out of While, it's downloaded
     Wend
     If Not Exist(RepositoryPathLocal & "FailedDownload") Then 'If can't download the version file, then there is no internet?
-      Try RemoteVersion = Trim(File.Load("/tmp/version"))  
-      LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
-      RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
+      Try RemoteVersion = Trim(File.Load("/tmp/version")) 
+      LocalVersion = 1
+      RemoteVersion = 1 
+      Try LocalVersion = Left(Application.Version, LLMod.InStrRevSingle(Application.Version, ".") - 1)
+      Try RemoteVersion = Left(RemoteVersion, LLMod.InStrRevSingle(RemoteVersion, ".") - 1)
       If LocalVersion <> "" And RemoteVersion <> "" Then
         
         Installing = True

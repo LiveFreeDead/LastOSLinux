@@ -2,7 +2,7 @@
 Title=LastOSLinux Store
 Startup=LoadingScreen
 Icon=Themes/LLOSStore.png
-Version=1.1043.203
+Version=1.1044.204
 Component=gb.image
 Component=gb.gui.qt
 Component=gb.form
@@ -24,3 +24,7 @@ Systems=ubuntu
 Menus=ubuntu:"Applications/System/Package Management"
 Categories=ubuntu:"System"
 Groups=ubuntu:"utils"
+Tags=Gambas 3.9,Utility,Game,PackageManager,System
+Dependencies=wget,xclip,xdotool,7zip
+GambasVersion=3.19
+WebSite=www.LastOS.org
