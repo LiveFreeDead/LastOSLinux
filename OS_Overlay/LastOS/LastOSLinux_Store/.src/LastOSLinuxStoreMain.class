@@ -3346,6 +3346,31 @@ Public Sub RunMiniInstaller()
     
   Dim ItemINI As String
   Dim OldStats As String
+  Dim TmpSudoWaitScript As String
+  
+  TmpSudoScript = LLMod.TempPath & "LLTmp_Sudo" & Str(Rand(1, 999999)) & ".sh"
+  TmpSudoWaitScript = LLMod.TempPath & "LLTmp_Sudo_Wait" & Str(Rand(1, 999999)) & ".sh"
+  
+  'Ask for Sudo password and hold sudo permissions until needed
+  If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait
+  
+  Try Kill TmpSudoScript 'Remove tmp script file
+  Try Kill TmpSudoWaitScript 'Remove tmp wait script file
+  
+  File.Save(TmpSudoWaitScript, "#!/bin/bash" & Chr(10) & Chr(10) & "echo 'done' > " & LLMod.TempPath & "gotpassword.ini" & Chr(10) & "until [ -f '" & LLMod.TempPath & "waitdone.ini' ]" & Chr(10) & "do" & Chr(10) & "sleep 1" & Chr(10) & "done" & Chr(10) & "rm -f " & LLMod.TempPath & "waitdone.ini" & Chr(10) & "sudo " & TmpSudoScript & Chr(10) & "echo 'done' > " & LLMod.TempPath & "waitran.ini")
+  
+  Try Kill LLMod.TempPath & "gotpassword.ini" 'Remove got password check
+  
+  Try Chmod TmpSudoWaitScript To "rwxrwxr--" 'Make sudo script file executable
+  'LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoWaitScript & Chr(39) & Chr(34), "")
+  Shell "x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoWaitScript & Chr(39) & Chr(34) 'Wait 'Need to wit for the password to be done or it gets skipped' Can't wait or the terminal waits and never triggers
+  
+  While Not Exist(LLMod.TempPath & "gotpassword.ini")
+    Wait (0.1)
+  Wend
+  Try Kill LLMod.TempPath & "gotpassword.ini" 'Remove got password check
+  
+  
   
   'Do Installs
   MiniInstaller.Show  
@@ -3405,17 +3430,26 @@ Public Sub RunMiniInstaller()
   
   'This will Run the Admin Script once at the very end before hiding MiniInstaller
   'Message(LLMod.LLScriptSudoContent)
-  If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run
+  'If LLMod.LLScriptSudoContent <> "" Then 'Only run if something is in it to run ' No I need to run it every time now I trigger it or the terminal stays open
     If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-    TmpSudoScript = LLMod.TempPath & "LLTmp_Sudo" & Str(Rand(1, 999999)) & ".sh"
+    'Move TmpSudoScript to declares above so I can point to it with the trigger file
     File.Save(TmpSudoScript, LLMod.LLScriptSudoContent)
         
     LLMod.LLScriptSudoContent = "" 'Clear it once done.
     
     Try Chmod TmpSudoScript To "rwxrwxr--" 'Make sudo script file executable
-    LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
+    'LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
+    
+    Try Kill LLMod.TempPath & "waitran.ini" 'Remove end of script check
+    
+    Shell "echo 'go' > " & LLMod.TempPath & "waitdone.ini" 'Trigger Sudo script to run and then wait for it to finish
+    While Not Exist(LLMod.TempPath & "waitran.ini")
+      Wait (0.1)
+    Wend
     Try Kill TmpSudoScript 'Remove tmp script file
-  End If  
+    Try Kill TmpSudoWaitScript 'Remove tmp wait script file
+    Try Kill LLMod.TempPath & "waitran.ini" 'Remove end of script check
+  'End If  
   
   If LLMod.RefreshPanel = True Then
     LLMod.RefreshPanel = False
@@ -3672,7 +3706,10 @@ Public Sub GetRepositoryDatabase()
     For I = 0 To RepositoryListCount - 1
       
       'Get new Repo DB or keep old one otherwise
-      Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
+      'Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
+      Shell LLMod.Linuxwget & " --tries=6 --timeout=9 -q -O " & Chr(34) & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & Chr(34) & " " & RepositoryList[I] Wait
+      
+      
       If Exist(RepositoryPathLocal & "LastOSLinuxRepository.db-new") Then
         Try Kill RepositoryPathLocal & "LastOSLinuxRepository.db" 'Kill any existing DB's if a new one is downloaded, just to make sure we aren't using an out of date DB
         Shell "mv -f " & RepositoryPathLocal & "LastOSLinuxRepository.db-new" & " " & RepositoryPathLocal & "LastOSLinuxRepository.db" Wait
@@ -3813,7 +3850,9 @@ Public Sub DownTime_Timer()
         Try Kill (LLMod.TempPath & "lldownload")
         Print "Downloading: " & GetURL
         If Not Exist(LLMod.TempPath) Then Shell "mkdir -p " & Chr(34) & LLMod.TempPath & Chr(34) Wait
-        Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " 2>&1 | sed -nru '/[0-9]%/ s/.* ([0-9]+)%.*/" & Chr(92) & "1/p' > " & LLMod.TempPath & "lldownload && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+        'Proc = Shell "wget --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " 2>&1 | sed -nru '/[0-9]%/ s/.* ([0-9]+)%.*/" & Chr(92) & "1/p' > " & LLMod.TempPath & "lldownload && echo 'done' > " & RepositoryPathLocal & "DownloadDone"
+ 
+        Proc = Shell LLMod.Linuxwget & " --tries=6 --timeout=9 -q -O " & Chr(34) & QueueLocal[QueueUpTo] & ".partial" & Chr(34) & " --show-progress " & Chr(34) & GetURL & Chr(34) & " 2>&1 | sed -nru '/[0-9]%/ s/.* ([0-9]+)%.*/" & Chr(92) & "1/p' > " & LLMod.TempPath & "lldownload && echo 'done' > " & RepositoryPathLocal & "DownloadDone"        
  
         If MiniInstaller.Stats.Text = "Downloading..." Then ShowProg = True
         While Not Exist(RepositoryPathLocal & "DownloadDone") 'This loop stops all other downloads until it's done

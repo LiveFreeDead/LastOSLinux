@@ -26,6 +26,9 @@ Public Sub Form_Open()
   LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
   If Not Exist(LLMod.Linux7z) Then LLMod.Linux7z = "7z" 'Fall back to built in 7z if not available
   
+  LLMod.Linuxwget = LLMod.AppPath & "/Tools/wget"
+  If Not Exist(LLMod.Linuxwget) Then LLMod.Linuxwget = "wget" 'Fall back to built in wget if not available
+  
   'Parse args to see if launcher
   For Each S In Args
     S = Trim(Lower(S))

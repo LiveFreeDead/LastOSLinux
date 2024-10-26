@@ -25,7 +25,7 @@ Public CurrScript As String = "Script"
 
 Public Sub Form_Open()
   Dim S As String
-  Dim I As Integer
+  'Dim I As Integer
   Dim UseThisPath As String
   Dim OldLineFileIn As String
   Dim TmpSudoScript As String
@@ -405,7 +405,7 @@ Public Sub Form_Open()
       If IncludeFolder.Text <> "/tmp/not set" Then 'Use path to set Title
         Dim ParentPath As String
         Dim CP As String
-        Dim GeneratedInstallToPath As String
+        'Dim GeneratedInstallToPath As String
         CP = IncludeFolder.Text
         If Right(CP, 1) = "/" Then CP = Left(CP, Len(CP) - 1)'Remove last Slash
         ParentPath = Right(CP, Len(CP) - LLMod.InStrRevSingle(CP, "/"))

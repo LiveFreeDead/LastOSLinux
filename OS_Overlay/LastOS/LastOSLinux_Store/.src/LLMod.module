@@ -1,6 +1,6 @@
 ' Gambas module file
 
-'LastOS v1.2.3 2024-10-07-01
+'LastOS v1.2.4 2024-10-27-01
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
 
 Public InstallingMulti As Boolean
@@ -10,6 +10,8 @@ Public RefreshPanel As Boolean = False
 Public Win7zCmd As String = Chr(34) & "C:" & Chr(92) & "Program Files" & Chr(92) & "SetupS.SendTo" & Chr(92) & "Tools" & Chr(92) & "7z.exe" & Chr(34) & " -mtc -aoa x "
 
 Public Linux7z As String = Application.Path & "/Tools/7zzs"
+
+Public Linuxwget As String = Application.Path & "/Tools/wget"
 
 Public FlatpakDest As String
 
