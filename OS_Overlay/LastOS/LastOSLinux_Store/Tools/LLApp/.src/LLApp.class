@@ -40,7 +40,13 @@ Public Sub Form_Open()
   'Message(LLMod.AppPath)
   LLMod.Linux7z = LLMod.AppPath & "/Tools/7zzs"
   If Not Exist(LLMod.Linux7z) Then LLMod.Linux7z = "7z" 'Fall back to built in 7z if not available
-
+  
+  'Detect Terminal
+  If Exist("/usr/bin/xfce4-terminal") Then LLMod.MyTerm = "/usr/bin/xfce4-terminal"
+  If Exist("/usr/bin/konsole") Then LLMod.MyTerm = "/usr/bin/konsole"
+  If Exist("/usr/bin/gnome-terminal") Then LLMod.MyTerm = "/usr/bin/gnome-terminal"
+  If Exist("/usr/bin/x-terminal-emulator") Then LLMod.MyTerm = "/usr/bin/x-terminal-emulator"
+  
   LLMod.HomePath = LLMod.Slashed(Application.Env["HOME"])
 
   CurrentPath = LLMod.Slashed(Application.Dir)
@@ -318,7 +324,7 @@ Public Sub Form_Open()
         LLMod.LLScriptSudoContent = "" 'Clear it once done.
         
         Try Chmod TmpSudoScript To "rwxrwxr--" 'Make sudo script file executable
-        LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
+        LLMod.Execute(LLMod.MyTerm & " -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
         Try Kill TmpSudoScript 'Remove tmp script file
       End If  
       'Delete Temp Folder

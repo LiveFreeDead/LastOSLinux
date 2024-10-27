@@ -36,9 +36,13 @@
   { Install Menu Install
     Name = "Install"
     Text = ("Install")
+    Enabled = False
+    Visible = False
     { InstallPick Menu Install
       Name = "InstallPick"
       Text = ("Pick File To Install")
+      Enabled = False
+      Visible = False
       Shortcut = "Ctrl+I"
     }
   }

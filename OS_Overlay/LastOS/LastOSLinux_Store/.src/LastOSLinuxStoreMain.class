@@ -3277,7 +3277,7 @@ Public Sub RunMiniInstaller()
         LLMod.LLScriptSudoContent = "" 'Clear it once done.
         'Glenn 2027
         Try Chmod TmpSudoScript To "rwxrwxrwx" 'Make sudo script file executable
-        LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo exec" & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
+        LLMod.Execute(LLMod.MyTerm & " -e " & Chr(34) & "sudo exec" & Chr(39) & TmpSudoScript & Chr(39) & Chr(34), "")
         Try Kill TmpSudoScript 'Remove tmp script file
       End If  
     
@@ -3363,7 +3363,7 @@ Public Sub RunMiniInstaller()
   
   Try Chmod TmpSudoWaitScript To "rwxrwxr--" 'Make sudo script file executable
   'LLMod.Execute("x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoWaitScript & Chr(39) & Chr(34), "")
-  Shell "x-terminal-emulator -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoWaitScript & Chr(39) & Chr(34) 'Wait 'Need to wit for the password to be done or it gets skipped' Can't wait or the terminal waits and never triggers
+  Shell LLMod.MyTerm & " -e " & Chr(34) & "sudo " & Chr(39) & TmpSudoWaitScript & Chr(39) & Chr(34) 'Wait 'Need to wit for the password to be done or it gets skipped' Can't wait or the terminal waits and never triggers
   
   While Not Exist(LLMod.TempPath & "gotpassword.ini")
     Wait (0.1)

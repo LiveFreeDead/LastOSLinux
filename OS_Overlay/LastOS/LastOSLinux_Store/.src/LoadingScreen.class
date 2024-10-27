@@ -2,7 +2,8 @@
 
 
 Public Sub Form_Open()
-  Dim S As String
+  Dim S As String  
+  
   Me.Background = &h000000
   Me.Foreground = &hFFFFFF
   Status.Foreground = &hFFFFFF
@@ -28,6 +29,13 @@ Public Sub Form_Open()
   
   LLMod.Linuxwget = LLMod.AppPath & "/Tools/wget"
   If Not Exist(LLMod.Linuxwget) Then LLMod.Linuxwget = "wget" 'Fall back to built in wget if not available
+  
+  'Detect Terminal
+  If Exist("/usr/bin/xfce4-terminal") Then LLMod.MyTerm = "/usr/bin/xfce4-terminal"
+  If Exist("/usr/bin/konsole") Then LLMod.MyTerm = "/usr/bin/konsole"
+  If Exist("/usr/bin/gnome-terminal") Then LLMod.MyTerm = "/usr/bin/gnome-terminal"
+  If Exist("/usr/bin/x-terminal-emulator") Then LLMod.MyTerm = "/usr/bin/x-terminal-emulator"
+  'Message(MyTerm)
   
   'Parse args to see if launcher
   For Each S In Args

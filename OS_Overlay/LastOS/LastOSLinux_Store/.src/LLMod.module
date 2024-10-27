@@ -1,7 +1,9 @@
 ' Gambas module file
 
-'LastOS v1.2.4 2024-10-27-01
+'LastOS v1.2.4 2024-10-27-02
 Public StoreMode As Integer = 0 '0 Is Install Mode, 1 Is Launcher Mode, need Launcher mode for LLAppEditor? not anymore
+
+Public MyTerm As String = "gnome-terminal"
 
 Public InstallingMulti As Boolean
 
@@ -1029,7 +1031,7 @@ Public Function InstallLLFile(LLAFile As String) As Boolean
         If LLScriptSudoContent = "" Then LLScriptSudoContent = "#!/bin/bash" & Chr(10) & Chr(10) 'Make script have header if empty
         LLScriptSudoContent &= AddSudoScript(InstallToPath & "LLScript_Sudo.sh") 'Make all Sudo work go into a new script file        
         'I can't capture all the scripts and run at the end, I can't run as sudo or it'll apply to the wrong paths etc, so has to be this way (for now).
-      End If  
+      End If
     Else 'It's not installable, just run the scripts (From where they are, can't use expanded variable) and be done with it
       If TmpPath = "" Then TmpPath = LLINIPath 'If not a tar then it uses the current path off USB or DVD etc
       If Exist(TmpPath & "LLScript.sh") Then
@@ -1348,7 +1350,12 @@ Public Function ExpPath(PathIn As String) As String
   'Change --user to --system if set to, else leaves as set in App/Game
   If FlatpakDest = "system" Then PathIn = Replace(PathIn, "--user", "--system", gb.IgnoreCase)
   If FlatpakDest = "user" Then PathIn = Replace(PathIn, "--system", "--user", gb.IgnoreCase)  
-    
+  
+  'Change Terminal to correct one so it'll work on more distro's
+  PathIn = Replace(PathIn, "x-terminal-emulator", MyTerm, gb.IgnoreCase) ' This will allow you to use any distro that doesn't have the Terminal in the default scripts
+  PathIn = Replace(PathIn, "gnome-terminal", MyTerm, gb.IgnoreCase) ' This will allow you to use any distro that doesn't have the Terminal in the default scripts
+  PathIn = Replace(PathIn, "konsole", MyTerm, gb.IgnoreCase) ' This will allow you to use any distro that doesn't have the Terminal in the default scripts
+  PathIn = Replace(PathIn, "xfce4-terminal", MyTerm, gb.IgnoreCase) ' This will allow you to use any distro that doesn't have the Terminal in the default scripts
   
   Return PathIn
 End
