@@ -1438,11 +1438,6 @@ Public Sub RedrawTheme()
   Screenshot.Width = LLM.OrigScreenWidth * LLM.ScaleX
   Screenshot.Height = LLM.OrigScreenHeight * LLM.ScaleY
   
-  MoviePlayer.Left = Screenshot.Left
-  MoviePlayer.Top = Screenshot.Top
-  MoviePlayer.Width = Screenshot.Width
-  MoviePlayer.Height = Screenshot.Height
-  
   Title.Left = Screenshot.Left
   Title.Width = Screenshot.Width
   Title.Height = Screenshot.Top
@@ -1537,7 +1532,6 @@ End
 
 
 Public Sub Items_Click()
-  MovieToPlay = ""
   If ForceClose Then Return 'This is incase wget ties up downloading.
   
   If CtrlPressed = False And DoneOnce = True Then 'If used Ctrl to show unique name, revert to showing selected amount
@@ -1545,10 +1539,7 @@ Public Sub Items_Click()
     Return  
   End If
   
-  Try MoviePlayer.Stop ' Stop Any Movies
-  MovieTimer.Enabled = False
   Screenshot.Visible = True
-  MoviePlayer.Visible = False
   If MouseRight Then 'Right clicked
     'Return 'Don't do anything here -Doesn't update the screen but changed the index, bad idea, would have to reverted to last user selected item if we want this in the future
   End If
@@ -1662,29 +1653,9 @@ Public Sub Items_Click()
     Try LLM.Screenshot = Picture.Load(LLM.AppPath & "/Themes/" & LLM.ThemeName & "/Screenshot.jpg")
   End If
   
-  'Try Movie here
   
-  If Exist(RPOnly & UN & ".mp4") Then
-    RealPath = RPOnly & UN & ".mp4"    
-  Else
-    RealPath = Data.Items[RefsID, Data.CFileMovie].Text
-  End If
-  
-  
-  If LLM.UseVideoPlayback = True And Exist(RealPath) Then
-    MovieToPlay = RealPath
-    Try MoviePlayer.URL = RealPath ' Load the movie in case the users starts it    
-    Try MoviePlayer.Play
-    Wait (0.01) ' Let it do a quick play so it caches
-    Try MoviePlayer.Stop
-    MovieTimer.Restart
-    MovieTimer.Enabled = True
-  Else
-    Screenshot.Visible = True
-    MoviePlayer.Visible = False
-    MoviePlayer.Stop ' Just In Case
-    MovieTimer.Enabled = False 'Just in case
-  End If
+  Screenshot.Visible = True
+   
  
   'Screenshot.Picture = LLM.Screenshot.Stretch(Screenshot.W, Screenshot.H) 'Only resize the displayed picture, we want full res for Windows resizing
   TmpImage = LLM.Screenshot.Image
@@ -3042,8 +3013,6 @@ Public Sub StartButton_MouseUp()
 End
 
 Public Sub RunGame(GameID As Integer)
-  MoviePlayer.Stop ' Just In Case
-  MovieTimer.Enabled = False 'Just in case
   Categories.SetFocus() ' This fixes the issue with the mouse not clicking items when it returns from running a game
   Wait (0.03)
   LastOSLinuxStoreMain.Hide ' Hide to run a game
@@ -3492,8 +3461,6 @@ End
 
 Public Sub Screenshot_MouseUp()
   If Items.Current <> Null Then ' On an Item
-    MovieTimer.Enabled = False 'Disable the movie from playing if user clicks to cycle through the screenshots
-    Try MoviePlayer.Stop ' Stop it too
     Dim ScreenSh As String
     ScreenShotCounter = ScreenShotCounter + 1
     ScreenSh = Data.Items[Items.Current.Key - 1, Data.CFileScreenshot].Text
@@ -3513,45 +3480,6 @@ End
 
 Public Sub ItemURL_MouseDown()
   Shell "xdg-open " & ItemURL.Text
-End
-
-Public Sub MoviePlayer_MouseDown()
-  If MoviePlayer.State = 4 Then ' 4 Playing, 3 Paused
-    MoviePlayer.Pause
-  Else
-    MoviePlayer.Play
-  End If
-End
-
-Public Sub MoviePlayer_DblClick()
-  Try MoviePlayer.Stop ' Stop movie and show screenshot again if double clicked
-  Screenshot.Visible = True
-  MoviePlayer.Visible = False  
-
-End
-
-Public Sub MovieTimer_Timer()
-  MovieTimer.Enabled = False
-  MoviePlayer.Border = False ' Hide Border
-  MoviePlayer.ShowControl = False
-  
-  If Exist(MovieToPlay) Then 
-    Screenshot.Visible = False
-    MoviePlayer.Visible = True
-    MoviePlayer.Volume = LLM.VideoVolume '0.2 '20%
-    'MoviePlayer.URL = Data.Items[CurrentItemKey - 1, Data.CFileMovie].Text 'Moved this back to item click so it can preload the movie
-    MoviePlayer.Play
-  Else
-    Screenshot.Visible = True
-    MoviePlayer.Visible = False
-  End If
-
-End
-
-Public Sub MoviePlayer_AboutToFinish()
-  MoviePlayer.Stop ' Stop early
-  Screenshot.Visible = True
-  MoviePlayer.Visible = False  
 End
 
 Public Sub BuildRepository()
@@ -3937,9 +3865,6 @@ End
 
 
 Public Sub StartPushed()  
-  'Don't allow pressing start on a Item and have it play the movie in the background
-  MoviePlayer.Stop ' Just In Case
-  MovieTimer.Enabled = False 'Just in case
   'Check if ctrl is held to build Repository
   If LLMod.StoreMode = 0 And CtrlPressed = True Then 'Only make Repo's out of Install Mode items (not Launcher)
     CtrlPressed = False ' Just make sure it resets

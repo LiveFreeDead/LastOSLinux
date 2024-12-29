@@ -133,15 +133,6 @@
     Foreground = Color.White
     Text = ("Not Specified")
   }
-  { MoviePlayer MediaView
-    MoveScaled(45,5,11,9)
-    Visible = False
-    ShowControl = False
-  }
-  { MovieTimer #Timer
-    #MoveScaled(34,-3)
-    Delay = 3000
-  }
   { DownTime #Timer
     #MoveScaled(0,56)
     Delay = 100
